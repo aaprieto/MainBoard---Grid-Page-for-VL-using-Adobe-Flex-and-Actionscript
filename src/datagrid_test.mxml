@@ -1,0 +1,2684 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas  xmlns:mx="http://www.adobe.com/2006/mxml"  xmlns:local="*" creationComplete="init(event)" width="100%"  color="#000000"> 
+	<mx:HTTPService
+		id="httpAYT"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="aytResultHandler(event)"
+		fault="hsFaultHandler(event)"
+		>     
+		<mx:request>
+			<ezware_request>
+				<action>ayt</action>
+				<sid>{my_sid}</sid>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>   
+	<mx:HTTPService id="xmlcontrolconfig" url="data/XmlControlFile.xml" 
+					result="{launchXMLControl(event)}" 
+					fault = "{faultxmlcontrol(event)}"
+					/>
+	<mx:HTTPService 
+		id="dataList_2" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="ListHandler2(event)"   
+		method="POST" 
+		fault="faultListHandler2(event)"
+		contentType="application/xml"  
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>{g_my_action}</action>  
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{"REFRESH," + mainBoard + "," + ret_date + "," + ret_time + drilldown_reqparm}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>   
+		</mx:request>
+	</mx:HTTPService> 	
+	<mx:HTTPService 
+		id="retrieve_componentsearch" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		contentType="application/xml"  
+		result="LotListHandler(event);"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	 
+
+	
+	<mx:HTTPService 
+		id="dataList_history" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="ListHandlerHistory(event)" 
+		method="POST" 
+		fault="faultListHandlerHistory(event)"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="dateRange_history" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="DateRangeHandlerHistory(event)" 
+		method="POST" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	 
+	 
+	<mx:HTTPService 
+		id="propertiesList" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="propertyListHandler(event)" 
+		method="POST" 
+		fault="faultpropertyListHandler(event)"
+		contentType="application/xml"  
+	
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>       
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>   
+			</ezware_request>
+		</mx:request>   
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="dataList" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="ListHandler(event)" 
+		method="POST"       
+		fault="faultListHandler(event)"
+		contentType="application/xml"  
+		   
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="mbdmodule_getpropertylist" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="mbdmodule_getproperty(event)" 
+		method="POST" 
+		fault="mbdmodule_getpropertylistfaultHandler(event)"
+		contentType="application/xml"
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="mbdmodule_getpropertylist_crunch" 
+		url="{_xlcColumn}" 
+		useProxy="false" 
+		result="mbdmodule_getproperty(event)" 
+		method="POST" 
+		fault="mbdmodule_getpropertylistfaultHandler(event)"
+		contentType="application/xml"  
+		
+		>
+		
+		
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="filterheaderlist"  
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="filterheader(event)" 
+		method="POST" 
+		fault="filterheaderfaultHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsheader}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="filterheaderlist2"  
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="filterheader2(event)" 
+		method="POST" 
+		fault="filterheaderfaultHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsheader}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="filterdetaillist"  
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="filterdetail(event)" 
+		method="POST" 
+		fault="filterdetailfaultHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsdetail}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="deletelist" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="deleteres(event)" 
+		method="POST" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService  
+		id="deletefiltercodes" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="res_delfiltercode(event)"
+		method="POST" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	<mx:HTTPService  
+		id="defaultpersistentview" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="res_defaultpersistentview(event)"
+		method="POST" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+		<mx:HTTPService 
+		id="createupdate" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="ror_main_inc(event)" 
+		fault="faultcreateupdateHandler(event)"
+		method="POST" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	<mx:HTTPService id="createupdate_two" 
+					url="/ror/filterdetails/createtwo" 
+					useProxy="false" 
+					result="ror_main_inc_2(event)" 
+					method="POST" 
+					fault="faultcreateupdateHandler(event)"
+					contentType="application/xml">
+			<mx:request xmlns="">
+					<filterdetail>
+						<action>{toxml_action}</action>
+						<datafield>{toxml_datafield}</datafield>
+						<datatype>{toxml_datatype}</datatype>
+						<filtercode>{toxml_filtercode}</filtercode>
+						<usercode>{toxml_usercode}</usercode>
+						<value>{toxml_value}</value>
+						<xmlheaderdoccode>{toxml_xmlheaderdoccode}</xmlheaderdoccode>
+					</filterdetail>	
+			</mx:request>
+	</mx:HTTPService>
+
+	<mx:HTTPService 
+		id="createheadermm" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="updateheadermm(_xlcCode)" 
+		fault="faultcreatemaintainheaderHandler(event)"
+		method="POST" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="createheadermm2" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="updateheadermm2(_xlcCode)" 
+		fault="faultcreatemaintainheaderHandler(event)"
+		method="POST" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	<mx:HTTPService 
+		id="SubmitDDOpsSec" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="res_dd_ops(event)"
+		fault="faultresdd_ops(event)"
+		method="POST" 
+		contentType="application/xml"  
+		request="{xmlResults}"
+		>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="SubmitOprGroup" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="res_oprgroup(event)"
+		fault="fault_oprgroup(event)"
+		method="POST" 
+		contentType="application/xml"  
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>REFRESH,UPD_{mainBoard},{finalvarOprGrp}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+
+ 	<mx:HTTPService
+		id="navigateToJobProgram"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		result="triggerProfileresult(event)"
+		fault="faulttriggerProfile(event)"
+		
+	> 
+
+		<mx:request>
+			<ezware_request> 
+				<action>runJob</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid> 
+				<parameters>{dd_reqParms}</parameters>
+				<systemAndJob>{_xlcSetupJob}</systemAndJob>
+				<version>2</version>
+				<source>job_exec</source>
+				<chain>{parentApplication.chainCode}</chain>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+
+	<mx:HTTPService 
+		id="validate_copytogroup" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="{copytogroupHandler(event)}"
+		fault="{faultcopytogroup(event)}" 
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>    
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	
+	<mx:HTTPService 
+		id="ActionButtons" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		result="{actionbuttonsHandler(event)}"
+		fault="{faultactionbuttons(event)}" 
+		contentType="application/xml"  
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>REFRESH,RETRIEVE|ACTIONBTNS|{mainBoard}|</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="MyViewButtons" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		result="{myviewbuttonsHandler(event)}"
+		fault="{faultmyviewbuttons(event)}" 
+		contentType="application/xml"  
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>REFRESH,RETRIEVE|MYVIEWS|{myName_main}|{mainBoard}|</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	
+	<mx:HTTPService 
+		id="httpGlobalVariable"
+		
+		/>
+
+	<mx:HTTPService 
+		id="add_maintain_operatorgroup" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		result="{createOperatorGroupHandler(event)}"
+		fault="{faultOperatorGroup(event)}" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	<mx:HTTPService 
+		id="delete_maintain_operatorgroup" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		result="{deleteOperatorGroupHandler(event)}"
+		fault="{faultDeleteOperatorGroup(event)}" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="retrieve_maintainrendition" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST"        
+		result="{retrieveMaintainRenditionHandler(event)}"
+		fault="{faultRetrieveMaintainRendition(event)}" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>REFRESH,RETRIEVE|MAINTAINRENDITIONS|{myName_main}|</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>	
+	<mx:HTTPService 
+		id="retrieve_maintainview" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST"        
+		result="{retrieveMaintainViewHandler(event)}"
+		fault="{faultRetrieveMaintainView(event)}" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>REFRESH,RETRIEVE|MAINTAINVIEWS|{myName_main}|</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="retrieve_operator" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST"        
+		result="{retrieveOperatorHandler(event)}"
+		fault="{faultRetrieveOperator(event)}"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>REFRESH,RETRIEVE|OPERATOR|{dg.selectedItem.operator_code}|</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="retrieve_groupforoperators" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST"        
+		result="{retrieveOperatorGroupHandler(event)}"
+		fault="{faultRetrieveOperatorGroup(event)}"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>REFRESH,RETRIEVE|OPERATORGROUPS|{myName_main}|</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="unlock_operator" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		result="{unlockOperatorHandler(event)}"
+		fault="{faultunlockOperator(event)}" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="add_maintain_operator" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		result="{createOperatorHandler(event)}"
+		fault="{faultOperatorGroup(event)}" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="delete_maintain_operator" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		result="{deleteOperatorHandler(event)}"
+		fault="{faultDeleteOperatorGroup(event)}" 
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="exporttoxml" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="{exporttoexcelHandler(event)}"
+		method="POST" 
+		fault="faultexporttoxml(event)"
+		contentType="application/xml"  
+		
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmse2e}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>   
+			</ezware_request>
+		</mx:request>   
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="saveMyViewHeader" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="{resultMyViewHeaderHandler(event)}"
+		method="POST" 
+		fault="faultMyViewHeaderHandler(event)"
+		contentType="application/xml"  
+		
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsMyViewParameters}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>   
+			</ezware_request>
+		</mx:request>   
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="saveMyViewColumns" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="{resultMyViewColumnsHandler(event)}"
+		method="POST" 
+		fault="faultMyViewHeaderColumns(event)"
+		contentType="application/xml"  
+		
+		
+		>
+		<mx:request>   
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsMyViewParameters}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>   
+			</ezware_request>
+		</mx:request>   
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="saveMyViewFilters" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="{resultMyViewFiltersHandler(event)}"
+		method="POST" 
+		fault="faultMyViewHeaderFilters(event)"
+		contentType="application/xml"  
+		
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsMyViewParameters}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>   
+			</ezware_request>
+		</mx:request>   
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="saveMyViewQueryHTTP" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="{resultMyViewQueryHandler(event)}"
+		method="POST"   
+		fault="faultMyViewHeaderQuery(event)"
+		contentType="application/xml"  
+		
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsMyViewParameters}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>   
+			</ezware_request>
+		</mx:request>   
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="saveMyViewCrunchHTTP"       
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="{resultMyViewCrunchHandler(event)}"
+		method="POST"   
+		fault="faultMyViewCrunch(event)"
+		contentType="application/xml"  
+		
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsMyViewParameters}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>   
+			</ezware_request>
+		</mx:request>   
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="getColumnSettings" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="ColumnsSettingsHandler(event)" 
+		method="POST"       
+		fault="faultListColumnsSetting(event)"
+		contentType="application/xml"  
+		
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsColumnsSetting}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	
+	<mx:HTTPService 
+		id="retrievemvquery" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="MvQueryHandler(event)"
+		method="POST" 
+		fault="faultMVQueryRetrieve(event)"
+		contentType="application/xml"  
+		>     
+		<mx:request>
+			<ezware_request> 
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsmvquery}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="retrievemvcrunch"   
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="MvCrunchHandler(event)"
+		method="POST"     
+		fault="faultMVCrunchRetrieve(event)"
+		contentType="application/xml"  
+		>     
+		<mx:request>
+			<ezware_request> 
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsmvquery}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="saveMyViewCrunchSubHTTP"       
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="{resultMyViewCrunchHandler(event)}"
+		method="POST"   
+		fault="faultMyViewCrunchSub(event)"
+		contentType="application/xml"  
+		
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsMyViewParameters}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>   
+			</ezware_request>
+		</mx:request>   
+	</mx:HTTPService>   
+	
+	
+	<mx:HTTPService 
+		id="saveMyViewChartHTTP"       
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="resultmyViewChart(event)"
+		method="POST"      
+		fault="faultMyViewChart(event)"
+		contentType="application/xml"  
+		
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsMyViewParameters}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>   
+			</ezware_request>
+		</mx:request>   
+	</mx:HTTPService>
+	
+	
+	
+	<mx:HTTPService 
+		id="retrievemvchart"   
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="MvChartHandler(event)"
+		method="POST"     
+		fault="faultMVChartRetrieve(event)"
+		contentType="application/xml"  
+		>     
+		<mx:request>
+			<ezware_request> 
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsmvquery}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="retrievemvchart_subtotal"   
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="MvChartHandlerSubTotal(event)"
+		method="POST"     
+		fault="faultMVChartRetrieve(event)"
+		contentType="application/xml"  
+		>     
+		<mx:request>
+			<ezware_request> 
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsmvquery}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="updatemyview_sequence"   
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="MyViewSequenceHandler(event)"
+		method="POST"     
+		fault="faultUpdateMyViewSequence(event)"
+		contentType="application/xml"  
+		>     
+		<mx:request>      
+			<ezware_request> 
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsmvquery}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="saveMyViewOldRenditionPerstent" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="{resultMyViewMergeHandler(event)}"
+		method="POST" 
+		fault="faultMyViewMergeHandler(event)"
+		contentType="application/xml"  
+		
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_my_action}</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{reqParmsMyViewParametersOldRenditionPersistent}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>   
+			</ezware_request>
+		</mx:request>   
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="SubmitDateVariable" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="{ValueDateListHandler(event)}"
+		method="POST" 
+		fault="getValueDatefaultListHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{my_c_code1}</company>
+				<sid>{my_sid}</sid>
+				<parameters>{"REFRESH,RETRIEVE|VARIABLEDATES|" + myName_main + "|" + my_c_code1 + "|"}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>   
+			</ezware_request> 
+		</mx:request>      
+	</mx:HTTPService>
+<mx:Script source="StringFilter.as"/>
+<mx:Script source="DateFilter.as"/> 	
+<mx:Script source="NumberFilter.as"/> 
+<mx:Script source="RefreshFunction.as"/>
+<mx:Script source="AddFunction.as"/>
+<mx:Script source="ActionFunction.as"/>
+<mx:Script source="ResultHandler.as"/>
+<mx:Script source="DatagridHandler.as"/>
+<mx:Script source="InterfaceDatagridHandler.as"/>
+	<mx:Script source="CopytoClipboard.as"/>
+
+<mx:Script source="MacroInterface.as"/>
+<mx:Script source="ChartManagerBean.as"/>
+<mx:Script source="XMLCreation.as"/>
+<mx:Script source="CrunchProcess.as"/>
+<mx:Script source="TripleH.as"/>
+<mx:Script source="AlertMessageHandler.as"/>
+<mx:Script source="IconsInitialization.as"/>
+
+<mx:Script source="ResolutionHandlerActionGrid.as"/>
+<mx:Script source="ResultStatus.as"/>
+<mx:Script source="Pivot.as"/>
+<mx:Script source="InteractiveMyLogisticsSecurity.as"/>
+
+<mx:Script source="DashboardCrunch.as"/>	  
+	
+<mx:Style source="css/main.css"/>
+
+ 
+<mx:Script>
+
+
+	<![CDATA[
+		import com.handler.CopyToClipboardClass;
+		import com.handler.ExportToExcel;
+		import com.handler.ManagerDatagridHandler;
+		import com.shared.ManipulateDate;
+		import com.utilities.Utils;
+		
+		import flash.events.*;
+		import flash.events.MouseEvent;
+		
+		import mx.collections.ArrayCollection;
+		import mx.collections.Sort;
+		import mx.collections.SortField;
+		import mx.collections.XMLListCollection;
+		import mx.containers.*;
+		import mx.containers.HBox;
+		import mx.controls.*;
+		import mx.controls.AdvancedDataGrid;
+		import mx.controls.Alert;
+		import mx.controls.DataGrid;
+		import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+		import mx.controls.dataGridClasses.DataGridColumn;
+		import mx.core.IUITextField;
+		import mx.effects.*;
+		import mx.events.AdvancedDataGridEvent;
+		import mx.events.IndexChangedEvent;
+		import mx.events.ItemClickEvent;
+		import mx.managers.PopUpManager;
+		import mx.rpc.events.*;
+		import mx.states.SetStyle;
+		import mx.utils.ArrayUtil;
+		import mx.utils.ObjectProxy;
+		import mx.validators.StringValidator;
+	
+   
+  		[Bindable]
+ 			private var _xlcCatalog:XMLListCollection;    //the dataProvider for the DG
+   		
+  		[Bindable]
+  		private var myName:String;
+   		[Bindable]
+ 			public var _xlcColumn:ArrayCollection = new ArrayCollection; 
+		[Bindable]
+		public var _xlcColumnQuery:ArrayCollection = new ArrayCollection; 
+		[Bindable]
+		public var _LotxlcColumn:ArrayCollection = new ArrayCollection; 
+		
+ 		[Bindable]
+ 			public var S_xlcColumn:ArrayCollection = new ArrayCollection; 
+ 		[Bindable]
+ 			public var _xlcColumnGroup:ArrayCollection = new ArrayCollection;  			
+ 		[Bindable]
+ 			public var _xlcTitle:String;
+ 		[Bindable]	
+ 			public var _xlcRefreshAll	
+ 		[Bindable]
+ 			public var _xlcCode:String; 		
+ 		[Bindable]
+ 			public var _xlcSetupJob:String;
+ 		[Bindable]
+ 			public var _xlcActionCommand:String;
+ 		[Bindable]
+ 			public var  _xlcLockColumn:int;
+		[Bindable]
+		public var  _xlcRenditionCode:String;
+		[Bindable]
+		public var  _xlcRenditionbtntitle:String;
+		[Bindable]
+		public var  _xlcRenditionDescription:String;
+		[Bindable]
+		public var  _xlcDynamicIndicator:String;
+		[Bindable]
+		public var  _xlcextensiblefield:String;
+ 		[Bindable]
+ 			public var _xlcHistory:String; 
+ 		[Bindable]
+			public var tdObjectCollection:ArrayCollection = new ArrayCollection;
+		 [Bindable]
+			public var tdObjectCollectionRefresh:ArrayCollection = new ArrayCollection;	
+ 		[Bindable]
+			public var Array1:ArrayCollection = new ArrayCollection;
+		[Bindable]
+			public var Array2:ArrayCollection = new ArrayCollection;
+ 		[Bindable]
+			public var Array3:ArrayCollection = new ArrayCollection;
+		[Bindable]
+			public var Array4:ArrayCollection = new ArrayCollection;
+		[Bindable]
+			public var Array5:ArrayCollection = new ArrayCollection;
+		[Bindable]
+			public var Array6:ArrayCollection = new ArrayCollection;
+		[Bindable]
+		public var ArrayColumnGroup:ArrayCollection = new ArrayCollection;
+		[Bindable]
+			public var ArrayMultipleFilter:ArrayCollection = new ArrayCollection;
+		[Bindable]
+			public var ArrayFilterInsert:ArrayCollection = new ArrayCollection;
+	    [Bindable]
+          	private var custom_id:String = new String;
+		[Bindable]
+            private var custom_datatype:String = new String;
+		[Bindable]
+            private var custom_text:String = new String;
+		[Bindable]
+			private var custom_datafield:String = new String;
+		[Bindable]	
+			private var action_command:String = new String;
+		[Bindable]
+			private var fh:ArrayCollection = new ArrayCollection;
+		[Bindable]
+			private var fhp:ArrayCollection = new ArrayCollection;		
+		[Bindable]
+			private var ArrayPandT:ArrayCollection = new ArrayCollection;	
+		[Bindable]
+			private var fd:ArrayCollection = new ArrayCollection;	 
+		[Bindable]
+			public var fdp:ArrayCollection = new ArrayCollection;	
+		[Bindable]
+			private var ArrayDetailPandT:ArrayCollection = new ArrayCollection;	
+		
+		
+		
+		
+		[Bindable]
+		public var fd_crunch:ArrayCollection = new ArrayCollection;	 
+		[Bindable]
+		public var fdp_crunch:ArrayCollection = new ArrayCollection;	
+		[Bindable]
+		private var ArrayDetailPandT_GrandTotal_Crunch:ArrayCollection = new ArrayCollection;	
+		
+		
+		[Bindable]
+			private var toxml_datatype:String;
+		[Bindable]
+			private var toxml_datafield:String;
+		[Bindable]
+			private var toxml_value:String;
+		[Bindable]
+			private var toxml_action:String;
+		[Bindable]
+			private var toxml_usercode:String;
+		[Bindable]
+			private var toxml_xmlheaderdoccode:String;
+		[Bindable]
+			private var toxml_filtercode:String;
+		[Bindable]
+			private var toxml_filterdescription:String;				 
+		[Bindable]
+			private var toxml_data:String;
+		[Bindable]
+			private var	toxml_mbdcode:String;
+		[Bindable]
+			private var toxml_property:String;		
+		[Bindable]
+ 		    public var mainBoard:String;	
+		[Bindable]
+ 		    public var rendition:String;	
+		[Bindable]
+ 		    public var myName_main:String;	
+ 		    
+		[Bindable]
+ 		    public var my_c_code1:String;	
+		//[Bindable]
+		//public var my_viewcode:String;	
+		    
+		[Bindable]
+ 		    public var runjobcode:String;	
+		[Bindable]
+ 		    public var ret_date:String = "19010101";	
+		[Bindable]
+ 		    public var ret_time:String = "000000";	
+		[Bindable]
+ 		    public var ret_datetime:String;	
+		[Bindable]
+ 		    public var ror_inc:int;	
+ 		 [Bindable]
+ 		    public var my_sid:String;	
+		[Bindable]
+			public var ag_application_entry:String;
+ 		 [Bindable]
+ 		 	public var g_my_action:String;  
+ 		 [Bindable]    
+ 		 	public var reqParms:String;	
+		
+		[Bindable]    
+		public var reqParmsmvquery:String;	
+		
+		
+		[Bindable]    
+		public var reqParmse2e:String;	
+		[Bindable]    
+		private var reqParmsMyViewParameters:String;
+		[Bindable]    
+		private var reqParmsMyViewParametersOldRenditionPersistent:String;
+		[Bindable]    
+		private var reqParmsColumnsSetting;
+		[Bindable]    
+		public var reqParmsheader:String;
+		[Bindable]    
+		public var reqParmsdetail:String;
+		
+		[Bindable]
+		public var rdcode:String = '';	 
+		[Bindable]
+		public var reqParmsrender:String;	 
+	 
+ 		 [Bindable]
+ 		 	public var dd_reqParms:String;	
+ 		 [Bindable]
+ 		 	public var reqSJ:String;	
+ 		 [Bindable]
+ 		 	public var refresh_mainboard:String;	 		
+ 		 [Bindable]
+			public var cs_SortByArray:ArrayCollection = new ArrayCollection;
+		 [Bindable]
+			public var cs_TotalSortByArray:ArrayCollection = new ArrayCollection;
+		[Bindable]
+			public var cs_CAArray:ArrayCollection = new ArrayCollection;	   
+		[Bindable]
+			public var idx_CAArray:int = new int;	
+		[Bindable]
+			public var ctr_CAArray:int = new int;
+		[Bindable]
+			public var saveas:String = new String;		
+		[Bindable]
+			public var viewcombo:String = new String;		
+		[Bindable]
+			public var saveviews:String = new String;		
+		[Bindable]
+			public var userfh:String = new String;
+		[Bindable]
+			public var ArrayTotalSelected:ArrayCollection = new ArrayCollection;
+		[Bindable]
+			public var xml_str:String = new String;
+		[Bindable]
+			public var history_daterange_from:String = new String;
+		[Bindable]
+			public var history_daterange_to:String = new String;
+ 		[Bindable]
+			public var flash_interrupt:Boolean= false;
+		[Bindable]
+ 			public var xmlheaderdoc_type:String = new String; 	
+ 		[Bindable]
+ 			public var dd_columnone:String = new String; 	
+ 		[Bindable]
+ 		public var dd_field:String = new String; 	
+ 		[Bindable]
+		public var dd_xml_str:String = new String;
+ 		 [Bindable]
+        public var xmlResults:XML = new XML;
+         [Bindable]
+        public var finalvarOprGrp:String = new String;
+        [Bindable]
+		public var hover_help_actiongrid_domain:String = new String;
+		[Bindable]
+		public var previous_drilldown:String = new String;
+		[Bindable]
+        public var filterDescription_persistent:String = new String;
+        [Bindable]
+        public var filterDescription_transient:String = new String;
+        [Bindable]
+		private var myDropdownFactory:ClassFactory;
+		[Bindable]
+		public var typeofretrieval:String = new String;
+		[Bindable]
+		public var unitofspeed:String = new String;
+		[Bindable]
+		public var timeelapsed:String = new String;
+		[Bindable]    
+		private var arr_actionbuttons:ArrayCollection = new ArrayCollection;
+		private var arr_myviewbuttons:ArrayCollection = new ArrayCollection;
+		[Bindable]
+		private var historyParametersQuery:ArrayCollection = new ArrayCollection;
+		
+		// For Auto Refresh Function
+		[Bindable]
+		public var autorefresh_flag:String = new String;
+		[Bindable]
+		public var autorefreshTimeLimit:String;
+		[Bindable]
+		public var drilldown_flag:String = 'N';
+		[Bindable]
+		public var drilldown_reqparm:String = new String;
+		[Bindable]    
+		private var displayLot:String  = new String;	 	
+	    [Bindable]
+        public var finalxmlResults:XML = new XML;
+		
+		
+	//	[Bindable]
+	//	public var stringquerydetl:String = new String;
+		
+		// 0 - Myview & Columns & rows
+		// 1 - with Crunch
+		// 2 - with Chart
+		[Bindable]  
+		public var myview_level:int = 0;
+		
+		
+  		 [Bindable]  
+        public var finalxmlResultsString:String = new String;
+		
+		
+		
+		
+		
+		
+		[Bindable]  
+		public var myview_flag:int = 1;
+		
+		
+		
+		[Bindable]
+		private var usermv:String = new String;
+		
+		[Bindable]
+		[Embed(source="assets/assets_lockcolumncolor_1.swf#BlankBar")]
+		private var blankBar:Class;
+		  
+		[Bindable]
+		[Embed(source="assets/assets_lockcolumncolor_1.swf#RedVBar")]
+		private var redVBar:Class;
+		
+		[Bindable]
+		[Embed(source="assets/assets_lockcolumncolor_1.swf#GreyVBar")]
+		
+		
+		
+		
+		private var greyVBar:Class;
+  		private var myAlert:Alert =  new Alert;
+		public var crunch:Boolean = false;
+		public var pivot:Boolean = false;
+  		public var crunch_xlcColumn:ArrayCollection = new ArrayCollection;
+  		public var crunch_Array1:ArrayCollection = new ArrayCollection; 
+		public var pivot_Array1:ArrayCollection = new ArrayCollection; 
+		 
+  			private var prefix_column:String;
+  			private var aFormFields:Array = new Array();
+    		private var dgc:AdvancedDataGridColumn = new AdvancedDataGridColumn;
+    		private var globalstringforrender:Boolean;
+    		private var datagridflag:Boolean = false;
+    		private var action_command_add:String = new String;
+    		private var g_datafield:String;
+    		public var c_utils:Utils = new Utils();
+			public var exporttoexcel:ExportToExcel = new ExportToExcel();   
+		//	public var copytoclipboard:CopyToClipboardClass = new CopyToClipboardClass();   
+		
+			public var copytoclipboard:CopyToClipboardClass = new CopyToClipboardClass();
+		
+    		public var manager_datagrid_handler:ManagerDatagridHandler = new ManagerDatagridHandler();
+    		public var dg_vsb:int = new int;	
+    		public var dg_hsb:int = new int;
+    		
+    		
+    		public var sort_custom_datafield:String = new String;
+	   		public	var sort_custom_text:String = new String;
+	   		public	var sort_custom_datatype:String = new String;
+	   		public	var sort_action_command:String = new String;
+	   		public	var sort_flag:Boolean= true;
+	   		public	var sort_mini_flag:Boolean= true;
+		
+
+		
+		public var str:String = new String();
+		public var arrsel:ArrayCollection = new ArrayCollection;
+			public var ArrayIcons:ArrayCollection= new ArrayCollection;
+    		 // Create and display the Menu control.
+            private function createAndShow():void {
+                var myMenu:Menu = Menu.createMenu(null, myMenuData, false);
+                myMenu.labelField="@label";
+                myMenu.show(10, 10);
+            }
+             import flash.utils.Timer;
+            import flash.events.TimerEvent;
+			private const HR_MASK:String = "00";
+            private const MIN_MASK:String = "00";
+            private const SEC_MASK:String = "00";
+            private const MS_MASK:String = "000"; 
+            private const TIMER_INTERVAL:int = 10;
+
+            private var baseTimer:int;
+
+            private var t:Timer;
+
+           
+
+            private function updateTimer(evt:TimerEvent):void {
+                  var d:Date = new Date(getTimer() - baseTimer);
+                var hr:String =  (HR_MASK + d.hoursUTC).substr(-HR_MASK.length);
+                var min:String = (MIN_MASK + d.minutes).substr(-MIN_MASK.length);
+                var sec:String = (SEC_MASK + d.seconds).substr(-SEC_MASK.length);
+                var ms:String = (MS_MASK + d.milliseconds).substr(-MS_MASK.length);
+                counter.text = String(hr + ":" + min + ":" + sec );
+            }
+
+            private function startTimer():void {
+                baseTimer = getTimer();
+                t.start();
+            }
+
+            private function stopTimer():void {
+                t.stop();
+            }
+
+      		private function dataGrid_headerShift(evt:IndexChangedEvent):void {
+               
+                if (evt.newIndex <= 0){
+                		Alert.show("Not Allowed 1");
+                		
+                }
+                if (evt.newIndex > 0){
+                	Alert.show("Does it still goes here?");
+                
+                	var dg:AdvancedDataGrid = AdvancedDataGrid(evt.currentTarget);
+                	var column:AdvancedDataGridColumn = dg.columns[evt.newIndex];
+                	var obj:Object = new Object;
+                	obj.columnId = _xlcColumn[evt.oldIndex]["columnId"];
+                	obj.dataField = _xlcColumn[evt.oldIndex]["dataField"];
+                	obj.title_header = _xlcColumn[evt.oldIndex]["title_header"];
+                	obj.width = _xlcColumn[evt.oldIndex]["width"];
+                	obj.datatype = _xlcColumn[evt.oldIndex]["datatype"];
+                	_xlcColumn.removeItemAt(evt.oldIndex);
+                	_xlcColumn.addItemAt(obj,evt.newIndex);
+                	_xlcColumn.refresh();
+                	globalstringforrender = false;
+                	catchRenderer(evt);
+		        }
+               
+            }
+           
+		
+	
+        	
+]]>
+</mx:Script>
+	
+ <mx:Style>
+        .centerAlignDataGridCol {
+            fontWeight: bold;
+            textAlign: center;
+			
+        }
+	 .myHeaderStyles {
+		 color: red;
+		 fontWeight: bold;
+	 }
+    </mx:Style>
+   <!-- Define the menu data. -->
+    <mx:XML format="e4x" id="myMenuData">
+        <root>
+            <menuitem label="Clear" tooltip="Clear"/>
+            <menuitem label="Keep Selected" />
+            <menuitem label="Discard Selected" />
+            <menuitem label="Select All" />
+            <menuitem label="Reset" />
+            <menuitem label="Un-Sort" />
+            <menuitem label="Simultaneous Multiple Filter" />
+			<menuitem label="DB Refresh" />
+                        
+        </root>
+    </mx:XML>
+	<mx:Zoom id="zoomIn" zoomWidthTo="1" zoomHeightTo="1" />
+    <mx:Zoom id="shrink" duration="100" zoomHeightTo=".9" zoomWidthTo=".9" />
+    <mx:Zoom id="revert" duration="50" zoomHeightTo="1" zoomWidthTo="1" />
+	
+<mx:Rotate id="rotate" />
+    <mx:NumberFormatter id="numberFormatter" precision="2" 
+        useThousandsSeparator="true" useNegativeSign="true"/>
+    <mx:NumberFormatter id="rownumberFormatter" precision="0" 
+        useThousandsSeparator="true" useNegativeSign="true"/>
+	<mx:HBox id="h1" width="100%" height="100%" horizontalScrollPolicy="off">
+ 	 	<mx:Panel id="panel"  height="100%"  horizontalScrollPolicy="off"  
+ 	 		width="{h1.width}"  verticalGap="0" statusStyleName="color:'white'"
+  			rollOver="{stopHoverTimer()}"
+			title="{_xlcTitle}" headerHeight="25"
+			titleStyleName="customTitleStyle"
+  		 color="#FCFAFA" borderColor="#D7A8EB">
+		<mx:HBox width="100%" height="67">
+			<mx:TabNavigator id="tabnav_buttons" width="100%" height="100%"  paddingTop="5"
+							  
+							 >  
+			
+				      
+				<mx:Canvas id="tab_userpreferences" width="100%" 
+						   label="Preferences"
+						   mouseOver="{tabnav_buttons.removeEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel)}"
+						   mouseOut="{tabnav_buttons.addEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel);}"
+						   >    
+					
+					
+					<mx:HBox id="hb_preferences" width="100%" height="32"  mouseWheel="handleMouseWheelTabPreferences(event)"
+							 mouseOver="{tabnav_buttons.removeEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel)}"
+							 mouseOut="{tabnav_buttons.addEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel);}"
+							 
+							 >	
+						     
+						<local:ActionGridImageButton
+							id="img_leftscrollpreferences"     
+							doc_id="1005"
+							click="{leftClickforPreferences(event), stopHoverTimer()}"    
+							source="@Embed(source='image/left_arrow_small_actiongrid.png')"
+							mouseOver="{mousehovering(event,'Left Scroll','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							
+							/>
+						<mx:HBox id="hbox_preferences" width="{dg.width - 75}" 
+								 height="32" horizontalGap="0" horizontalScrollPolicy="off">
+							<mx:Spacer width="10"/>
+							
+							
+							<local:ActionGridImageButton
+								id="img_query"  
+								doc_id="1005"
+								click="{dataList2_trigger(event, false), stopHoverTimer()}"
+								source="@Embed(source='image/ico_query.png')"
+								mouseOver="{mousehovering(event,'MyViewQuery','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								/>  
+							
+							<local:CustomRibbonLabel id="lbl_query" text="Query"  	  
+													 mouseOver="{mousehovering(event,'MyViewQuery','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}"
+													 click="{dataList2_trigger(event, false), stopHoverTimer()}"
+													 />    
+							
+							
+							<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="15"/>
+							
+							<local:ActionGridImageButton
+								id="img_column"  
+								doc_id="1005"
+								click="{runColumn(event), stopHoverTimer()}"
+								source="@Embed(source='image/ico_columnsetting.png')"
+								mouseOver="{mousehovering(event,'Columns','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								/>  
+							
+							<local:CustomRibbonLabel id="columns" text="Columns"  	  
+													 mouseOver="{mousehovering(event,'Columns','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}" 
+													 click="{runColumn(event), stopHoverTimer()}"
+													 />  
+							
+							
+							
+							<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="15"/>
+							
+							
+						
+							
+							<local:ActionGridImageButton
+								id="img_currentview"         
+								doc_id="1005"
+								click="{launchHistoryLog(event), stopHoverTimer()}"
+								source="@Embed(source='image/ico_rows.png')"
+								mouseOver="{mousehovering(event,'Rows','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								/>     
+							<local:CustomRibbonLabel id="settings" text="Rows"  	  
+													 mouseOver="{mousehovering(event,'Rows','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}" 
+													 click="{launchHistoryLog(event), stopHoverTimer()}"
+													 />    
+			  			
+							<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="15"/>
+							<local:ActionGridImageButton
+								id="img_myviews"  
+								doc_id="1005"
+								click="{startMyViews(event), stopHoverTimer()}"
+								source="@Embed(source='image/ico_renditions.png')"
+								mouseOver="{mousehovering(event,'MyViews','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								/>  
+							
+							<local:CustomRibbonLabel id="myviews" text="MyViews"  	  
+													 mouseOver="{mousehovering(event,'MyViews','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}" 
+													 click="{startMyViews(event), stopHoverTimer()}"
+													 />   
+							<mx:Label text=":"  fontSize="18" fontWeight="bold" color="#000202" width="11"/> 
+							<mx:TextInput backgroundColor="#85E7FF" color="#000606" id="myviews_code" fontWeight="bold" fontSize="15"
+										  textAlign="center" width="175"  height="28" editable="false" 
+										  cornerRadius="4" 
+										  text="{_xlcRenditionCode}"
+										  borderStyle="inset"
+										  click="{startMyViews(event), stopHoverTimer(),parentApplication.mainboard_h_command.setFocus()}"
+										  mouseOver="{mousehovering(event,'MyViews','BUTTON')}"
+										  mouseOut="{stopHoverTimer()}"
+										  useHandCursor="true" buttonMode="true"
+										  mouseChildren="false"
+										  toolTip="MyView Code"
+										  />
+							<mx:TextInput backgroundColor="#85E7FF" color="#000606" id="myviews_btntitle" fontWeight="bold" fontSize="15"
+										  textAlign="center" width="175"  height="28" editable="false" 
+										  cornerRadius="4" 
+										  text="{_xlcRenditionbtntitle}"
+										  borderStyle="inset" 
+										  click="{startMyViews(event), stopHoverTimer(),parentApplication.mainboard_h_command.setFocus()}"
+										  mouseOver="{mousehovering(event,'MyViews','BUTTON')}"
+										  mouseOut="{stopHoverTimer()}"
+										  useHandCursor="true" buttonMode="true"
+										  mouseChildren="false"
+										  toolTip="MyView Button Title"
+										  />
+							
+							<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+							
+							<mx:HBox id="myview_buttons" horizontalGap="0">
+								
+							</mx:HBox>
+							
+							
+							 
+							
+						
+							
+							<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="15"
+									  visible="false"
+									  />
+							
+							
+							
+							
+							
+							<local:ActionGridImageButton
+								id="img_renditions"  
+								doc_id="1005"
+								click="{startRender(event), stopHoverTimer()}"
+								source="@Embed(source='image/ico_renditions.png')"
+								mouseOver="{mousehovering(event,'Renditions','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								visible="false"
+								/>     
+							
+							<local:CustomRibbonLabel id="renditions" text="Rendition"  	  
+													 mouseOver="{mousehovering(event,'Renditions','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}" 
+													 click="{startRender(event), stopHoverTimer()}"
+													 visible="false"
+													 />   
+							<mx:Label text=":"  fontSize="18" fontWeight="bold" color="#000202" width="11"
+									  visible="false"/> 
+							<mx:TextInput backgroundColor="#85E7FF" color="#000606" id="rendition_code" fontWeight="bold" fontSize="15"
+										  textAlign="center" width="122"  height="28" editable="false" 
+										  cornerRadius="4" 
+										  text="{_xlcRenditionCode}"
+										  borderStyle="inset"
+										  click="{startRender(event), stopHoverTimer(),parentApplication.mainboard_h_command.setFocus()}"
+										  mouseOver="{mousehovering(event,'Renditions','BUTTON')}"
+										  mouseOut="{stopHoverTimer()}"
+										  useHandCursor="true" buttonMode="true"
+										  mouseChildren="false"
+										  visible="false"
+										  />  
+							
+							
+							<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="15"
+									  visible="false"/>
+							<local:ActionGridImageButton
+								id="img_persistent_views"  
+								doc_id="1005"
+								click="{startViews(event,'fhp'), stopHoverTimer()}"
+								source="@Embed(source='image/ico_persistent_views.png')"
+								mouseOver="{mousehovering(event,'Persistent View','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								visible="false"
+								/> 
+							<local:CustomRibbonLabel id="lbl_persistentviews" text="Persistent View"  	  
+													 mouseOver="{mousehovering(event,'Persistent View','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}"
+													 click="{startViews(event,'fhp'), stopHoverTimer()}"
+													 visible="false"
+													 />    
+							<mx:Label text=":"  fontSize="18" fontWeight="bold" color="#000202" width="11"
+									  visible="false"/> 
+							<mx:TextInput backgroundColor="#85E7FF" color="#000606" id="lbl_persistent_view" fontWeight="bold" fontSize="15"
+										  textAlign="center" width="147"  height="28" editable="false"
+										  cornerRadius="4" 
+										  text="No selection"
+										  borderStyle="inset"
+										  click="{startViews(event,'fhp'), stopHoverTimer(),parentApplication.mainboard_h_command.setFocus()}"
+										  mouseOver="{mousehovering(event,'Persistent View','BUTTON')}"
+										  mouseOut="{stopHoverTimer()}"
+										  useHandCursor="true" buttonMode="true"
+										  mouseChildren="false"
+										  visible="false"
+										  />
+							
+							<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="15"
+									  visible="false"/>
+							<local:ActionGridImageButton
+								id="img_transient_views"  
+								doc_id="1005"
+								click="{startViews(event,'fh'), stopHoverTimer() }"
+								source="@Embed(source='image/ico_transient_views.png')"
+								mouseOver="{mousehovering(event,'Transient View','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								visible="false"
+								/>
+							<local:CustomRibbonLabel id="lbl_transientviews" text="Transient View"  	  
+													 mouseOver="{mousehovering(event,'Transient View','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}"
+													 click="{startViews(event,'fh'), stopHoverTimer() }"
+													 visible="false"
+													 />    	
+							
+							<mx:Label text=":"  fontSize="18" fontWeight="bold" color="#000202" width="11"
+									  visible="false"/> 
+							
+							<mx:TextInput backgroundColor="#85E7FF" color="#000606" id="lbl_transient_view" fontWeight="bold" fontSize="15"
+										  textAlign="center" width="147"  height="28" editable="false"
+										  cornerRadius="4" 
+										  text="No selection"
+										  borderStyle="inset"    
+										  click="{startViews(event,'fh'), stopHoverTimer(),parentApplication.mainboard_h_command.setFocus()}"
+										  mouseOver="{mousehovering(event,'Transient View','BUTTON')}"
+										  mouseOut="{stopHoverTimer()}"
+										  useHandCursor="true" buttonMode="true"
+										  mouseChildren="false"
+										  visible="false"
+										  />
+							
+							<!-- 
+							<local:HighViewButton label="column" id="column"
+												  click="{runColumn(event), stopHoverTimer()}"
+												  />           
+							-->
+							
+						</mx:HBox> 
+						<local:ActionGridImageButton
+							id="img_rightscrollpreferences"  
+							doc_id="1005"
+							click="{rightClickforPreferences(event), stopHoverTimer()}"
+							source="@Embed(source='image/right_arrow_small_actiongrid.png')"
+							mouseOver="{mousehovering(event,'Right Scroll','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+					</mx:HBox> 	
+					
+					
+				</mx:Canvas>
+				<mx:HBox   label="Panels"  id="tab_panels"  
+						   width="100%" height="100%" minHeight="0" minWidth="0"  verticalScrollPolicy="off"
+						   horizontalScrollPolicy="off"
+						   mouseWheel="handleMouseWheelTabPanel(event)"
+						   mouseOver="{tabnav_buttons.removeEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel)}"
+						   mouseOut="{tabnav_buttons.addEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel);}"
+						   >       
+				</mx:HBox >    
+				<mx:Canvas id="tab_actions" width="100%"
+						   label="Actions"
+						   >
+				<mx:HBox width="100%" height="32"  mouseWheel="handleMouseWheelTabActions(event)"
+						 mouseOver="{tabnav_buttons.removeEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel)}"
+						 mouseOut="{tabnav_buttons.addEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel);}">	
+					<local:ActionGridImageButton
+						id="img_leftscroll"     
+						doc_id="1005"
+						click="{leftClickforActions(event), stopHoverTimer()}"
+						source="@Embed(source='image/left_arrow_small_actiongrid.png')"
+						mouseOver="{mousehovering(event,'Left Scroll','BUTTON')}"
+						mouseOut="{stopHoverTimer()}"
+						/>
+					<mx:HBox id="hbox_action" width="{dg.width - 75}" height="32" horizontalGap="0" horizontalScrollPolicy="off">
+						<mx:Spacer width="10"/> 
+						
+						<local:ActionGridImageButton
+							id="img_multi_filter"  
+							doc_id="1005"               
+							click="{launchMultipleFilter(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_multi_filter.png')"
+							mouseOver="{mousehovering(event,'Multi-Filter','BUTTON')}"     
+							mouseOut="{stopHoverTimer()}"
+							/>
+						<local:CustomRibbonLabel id="lbl_multi_filter" text="Multi Filter" 
+												 click="{launchMultipleFilter(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Multi-Filter','BUTTON')}"     
+												 mouseOut="{stopHoverTimer()}"
+												 />  
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						<!--
+						<local:ActionGridImageButton
+							id="img_refresh"  
+							doc_id="1005"
+							click="{dataList2_trigger(event, false), stopHoverTimer()}"
+							source="@Embed(source='image/ico_refresh.png')"
+							mouseOver="{mousehovering(event,'Refresh','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>     
+						
+						<local:CustomRibbonLabel id="lbl_refresh" text="Refresh"  	  
+												 mouseOver="{mousehovering(event,'Refresh','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 click="{dataList2_trigger(event, false), stopHoverTimer()}"
+												 />    
+						
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						-->
+						<!--
+						<local:ActionGridImageButton
+							id="img_query"  
+							doc_id="1005"
+							click="{dataList2_trigger(event, false), stopHoverTimer()}"
+							source="@Embed(source='image/ico_query.png')"
+							mouseOver="{mousehovering(event,'Query','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							 />  
+					
+						<local:CustomRibbonLabel id="lbl_query" text="Query"  	  
+												 mouseOver="{mousehovering(event,'Query','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 click="{dataList2_trigger(event, false), stopHoverTimer()}"
+												 />    
+			
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						-->
+						
+						<!--
+						<local:ActionGridImageButton
+							id="img_maximumnumberofrows"  
+							doc_id="1005"
+							click="{keepNoOfRows(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_clear.png')"
+							mouseOver="{mousehovering(event,'Maximum # of Row(s)','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>  
+						<local:CustomRibbonLabel id="lbl_maximumnumberofrows" text="Maximum # of Row(s)" 
+												 click="{keepNoOfRows(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Maximum # of Row(s)','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}" 
+												 />    
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						-->
+						
+					          
+						
+						<local:ActionGridImageButton
+							id="img_clear"  
+							doc_id="1005"
+							click="{help_clear(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_clear.png')"
+							mouseOver="{mousehovering(event,'Clear','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							  />  
+						<local:CustomRibbonLabel id="lbl_clear" text="Clear" 
+												 click="{help_clear(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Clear','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 />    
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						<!--
+						<local:ActionGridImageButton
+							id="img_reset"  
+							doc_id="1005"
+							click="{action_reset(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_reset.png')"
+							mouseOver="{mousehovering(event,'Reset','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/> 
+						   
+						      
+						
+					
+						<local:CustomRibbonLabel id="lbl_reset" text="Reset" 
+												 click="{action_reset(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Reset','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 /> 
+						 
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						-->
+						<local:ActionGridImageButton
+							id="img_keep_selected"  
+							doc_id="1005"
+							click="{choose(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_keep_selected.png')"
+							mouseOver="{mousehovering(event,'Keep Selected','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+						<local:CustomRibbonLabel id="lbl_keep_selected" text="Keep Selected" 
+												 click="{choose(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Keep Selected','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 />  
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						<local:ActionGridImageButton
+							id="img_discard_selected"  
+							doc_id="1005"
+							click="{lose(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_discard_selected.png')"
+							mouseOver="{mousehovering(event,'Discard Selected','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							 />
+						<local:CustomRibbonLabel id="lbl_discard_selected" text="Discard Selected" 
+												 click="{lose(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Discard Selected','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 />  
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						<local:ActionGridImageButton
+							id="img_select_all"  
+							doc_id="1005"
+							click="{selectAll(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_select_all.png')"
+							mouseOver="{mousehovering(event,'Select All','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							 />
+						<local:CustomRibbonLabel id="lbl_select_all" text="Select All" 
+												 click="{selectAll(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Select All','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 />  
+					
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						
+						
+						
+						<local:ActionGridImageButton
+							id="img_unsort"  
+							doc_id="1005"
+							click="{refreshSort(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_unsort.png')"
+							mouseOver="{mousehovering(event,'Unsort','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							 />
+						<local:CustomRibbonLabel id="lbl_unsort" text="Unsort" 
+												 click="{refreshSort(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Unsort','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 />  
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						<local:ActionGridImageButton
+							id="img_total_selected"  
+							doc_id="1005"
+							click="{TotalSelected(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_total_selected.png')"
+							mouseOver="{mousehovering(event,'Total Selected','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							 /> 
+						<local:CustomRibbonLabel id="lbl_total_selected" text="Total Selected" 
+												 click="{TotalSelected(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Total Selected','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 />  
+						
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						
+						<local:ActionGridImageButton
+							id="img_copy_to_clipboard"  
+							doc_id="1005"               
+							click="{launchCopytoClipboard(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_copytoclipboard.png')"
+							mouseOver="{mousehovering(event,'Copy-to-Clipboard','BUTTON')}"     
+							mouseOut="{stopHoverTimer()}"
+							/>
+						<local:CustomRibbonLabel id="lbl_copy_to_clipboard" text="Copy to Clipboard" 
+												 click="{launchCopytoClipboard(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Copy-to-Clipboard','BUTTON')}"     
+												 mouseOut="{stopHoverTimer()}"
+												 />  
+					</mx:HBox>
+					<local:ActionGridImageButton
+						id="img_rightscroll"  
+						doc_id="1005"
+						click="{rightClickforActions(event), stopHoverTimer()}"
+						source="@Embed(source='image/right_arrow_small_actiongrid.png')"
+						mouseOver="{mousehovering(event,'Right Scroll','BUTTON')}"
+						mouseOut="{stopHoverTimer()}"
+						/>
+				</mx:HBox>	
+				</mx:Canvas>
+				<mx:HBox   label="Commands"  id="tab_commands"   
+						   width="100%" height="100%" minHeight="0" minWidth="0"  verticalScrollPolicy="off"
+						   horizontalScrollPolicy="off" 
+						   mouseWheel="handleMouseWheelTabCommands(event)" 
+						   mouseOver="{tabnav_buttons.removeEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel)}"
+						   mouseOut="{tabnav_buttons.addEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel);}"
+						   >
+					<!-- local:ActionGridImageButton
+					id="img_all_commands1"       
+					doc_id="1005"
+					mouseUp="{img_all_commands.source = 'image/ico_all_commands.png'}"
+					click="{parentApplication.launchMoreInfo(), stopHoverTimer()}"
+					mouseDown="{img_all_commands.source = 'image/ico_all_commands_down.png',stopHoverTimer()}"   
+					source="@Embed(source='image/ico_all_commands.png')"
+					mouseOver="{mousehovering(event,'All Commands','BUTTON')}"
+					mouseOut="{stopHoverTimer(),img_all_commands.source = 'image/ico_all_commands.png'}"
+					height="25"  width="138" / -->
+				</mx:HBox >
+				<mx:Canvas id="tab_specials" width="100%"
+						   label="Specials"
+						   > 
+					
+					<mx:HBox width="100%" height="32"  mouseWheel="handleMouseWheelTabSpecials(event)"
+							 mouseOver="{tabnav_buttons.removeEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel)}"
+							 mouseOut="{tabnav_buttons.addEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel)}">	
+						<local:ActionGridImageButton
+							id="img_leftscrollspecials"     
+							doc_id="1005"
+							click="{leftClickforSpecials(event), stopHoverTimer()}"
+							source="@Embed(source='image/left_arrow_small_actiongrid.png')"
+							mouseOver="{mousehovering(event,'Left Scroll','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+					<mx:HBox id="hbox_specials" width="{dg.width - 75}" height="32" horizontalGap="0" horizontalScrollPolicy="off">
+								
+					
+					<!-- mx:HBox width="100%"  height="32" horizontalGap="0" --> 
+						<mx:Spacer width="10" />
+						
+						
+						<!--
+						<local:ActionGridImageButton
+							id="img_charting_dialog"  
+							doc_id="1005"
+							click="{ChartHandler(event),stopHoverTimer() }"
+							source="@Embed(source='image/ico_export_sorted.png')"
+							mouseOver="{mousehovering(event,'Charting Dialog','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+						<local:CustomRibbonLabel id="lbl_charting_dialog" text="Charting Dialog" 
+												 click="{ChartHandler(event),stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Charting Dialog','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 />
+						
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						-->     
+						<!-- ico_flash_filter -->
+						<local:ActionGridImageButton
+							id="img_flash_filter"  
+							doc_id="1005"
+							click="{flashFilter(event), stopHoverTimer() }"
+							source="@Embed(source='image/TinySpecial.png')"
+							mouseOver="{mousehovering(event,'Flash Filter','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							  />
+						<local:CustomRibbonLabel id="lbl_flash_filter" text="Flash Filter" 
+												 click="{flashFilter(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Flash Filter','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 />  
+						
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						<!-- ico_crunch -->
+						<local:ActionGridImageButton
+							id="img_crunch_grand_totals"  
+							doc_id="1005"
+							click="{fdp_crunch = new ArrayCollection, ca_sort(event), stopHoverTimer() }"
+							source="@Embed(source='image/TinySpecial.png')"
+							mouseOver="{mousehovering(event,'Crunch % Grand Totals','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							  />
+						<local:CustomRibbonLabel id="lbl_crunch_grand_totals" text="Crunch % Grand Totals" 
+												 click="{fdp_crunch = new ArrayCollection, ca_sort(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Crunch % Grand Totals','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 /> 
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						<!-- ico_crunch -->
+						<local:ActionGridImageButton
+							id="img_crunch_sub_totals"  
+							doc_id="1005"
+							click="{launch_SubCrunch(event), stopHoverTimer() }"
+							source="@Embed(source='image/TinySpecial.png')"
+							mouseOver="{mousehovering(event,'Crunch % Sub-Totals','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+						<local:CustomRibbonLabel id="lbl_crunch_sub_totals" text="Crunch % Sub-Totals" 
+												 click="{launch_SubCrunch(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Crunch % Sub-Totals','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 /> 
+						<!--
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						<local:ActionGridImageButton
+							id="img_export_all_to_excel"  
+							doc_id="1005"
+							click="{convertDGToHTMLTable(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_export_all.png')"
+							mouseOver="{mousehovering(event,'Export All','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+						<local:CustomRibbonLabel id="lbl_export_all_to_excel" text="Export All" 
+												 click="{convertDGToHTMLTable(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Export All','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 /> 
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						<local:ActionGridImageButton
+							id="img_export_sorted_to_excel"  
+							doc_id="1005"
+							click="{convertDGToHTMLTable(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_export_sorted.png')"
+							mouseOver="{mousehovering(event,'Export Sorted','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							 />
+						<local:CustomRibbonLabel id="lbl_export_sorted_to_excel" text="Export Sorted" 
+												 click="{convertDGToHTMLTable(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Export Sorted','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 /> 
+						
+						-->
+						<!--
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						<local:ActionGridImageButton
+							id="img_xml_data_mapper"  
+							doc_id="1005"
+							click="{pre_startMapper(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_total_selected.png')"
+							mouseOver="{mousehovering(event,'XML Data Mapper','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+						
+						
+						<local:CustomRibbonLabel id="lbl_xml_data_mapper" text="XML Data Mapper" 
+												 click="{pre_startMapper(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'XML Data Mapper','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 />  
+						
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+					
+						<local:ActionGridImageButton
+							id="img_export_to_xml"  
+							doc_id="1005"
+							click="{startExporttoXML(event), stopHoverTimer() }"
+							source="@Embed(source='image/ico_multi_filter.png')"
+							mouseOver="{mousehovering(event,'Export To XML','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+						<local:CustomRibbonLabel id="lbl_export_to_xml" text="Export To XML" 
+												 click="{startExporttoXML(event), stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Export To XML','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 /> 
+						
+						
+						
+						-->
+						<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+						<!-- ico_reset -->
+						<local:ActionGridImageButton
+							id="img_pivotcolumnstorow"  
+							doc_id="1005"  
+							click="{launchPivotChooser(event),stopHoverTimer() }"
+							source="@Embed(source='image/TinySpecial.png')"
+							mouseOver="{mousehovering(event,'Columns to Row','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/> 
+						<local:CustomRibbonLabel id="lbl_pivotcolumnstorow" text="Columns to Rows" 
+												 click="{launchPivotChooser(event),stopHoverTimer() }"
+												 mouseOver="{mousehovering(event,'Columns to Row','BUTTON')}"
+												 mouseOut="{stopHoverTimer()}"
+												 /> 
+						
+						
+					</mx:HBox>
+						<local:ActionGridImageButton
+							id="img_rightscrollspecials"  
+							doc_id="1005" 
+							click="{rightClickforSpecials(event), stopHoverTimer()}"
+							source="@Embed(source='image/right_arrow_small_actiongrid.png')"
+							mouseOver="{mousehovering(event,'Right Scroll','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+						
+								   
+					</mx:HBox>
+				</mx:Canvas>
+     
+				<mx:Canvas id="tab_spreadsheet" width="100%"
+						   label="Spreadsheet"
+						   > 
+					<mx:HBox width="100%" height="32"  mouseWheel="handleMouseWheelTabSpreadsheet(event)"
+							 mouseOver="{tabnav_buttons.removeEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel)}"
+							 mouseOut="{tabnav_buttons.addEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel)}">	
+						<local:ActionGridImageButton
+							id="img_leftscrollspreadsheet"     
+							doc_id="1005"
+							click="{leftClickforSpreadsheet(event), stopHoverTimer()}"
+							source="@Embed(source='image/left_arrow_small_actiongrid.png')"
+							mouseOver="{mousehovering(event,'Left Scroll','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+						<mx:HBox id="hbox_spreadsheet" width="{dg.width - 75}" height="32" horizontalGap="0" horizontalScrollPolicy="off">
+							
+							
+							
+							<mx:Spacer width="10" />
+							
+						
+						    <!-- ico_export_all -->
+							<local:ActionGridImageButton
+								id="img_export_all_to_excel"  
+								doc_id="1005"
+								click="{convertDGToHTMLTable(event), stopHoverTimer() }"
+								source="@Embed(source='image/TinySpread.png')"
+								mouseOver="{mousehovering(event,'Export All','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								/>
+							<local:CustomRibbonLabel id="lbl_export_all_to_excel" text="Export All" 
+													 click="{convertDGToHTMLTable(event), stopHoverTimer() }"
+													 mouseOver="{mousehovering(event,'Export All','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}"
+													 /> 
+							<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+							<!-- ico_export_sorted -->
+							<local:ActionGridImageButton
+								id="img_export_sorted_to_excel"  
+								doc_id="1005"
+								click="{convertDGToHTMLTable(event), stopHoverTimer() }"
+								source="@Embed(source='image/TinySpread.png')"
+								mouseOver="{mousehovering(event,'Export Sorted','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								/>
+							<local:CustomRibbonLabel id="lbl_export_sorted_to_excel" text="Export Sorted" 
+													 click="{convertDGToHTMLTable(event), stopHoverTimer() }"
+													 mouseOver="{mousehovering(event,'Export Sorted','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}"
+													 /> 
+							
+					          
+							
+							 
+							
+							
+						</mx:HBox>
+						<local:ActionGridImageButton
+							id="img_rightscrollspreadsheet"  
+							doc_id="1005" 
+							click="{rightClickforSpreadsheet(event), stopHoverTimer()}"
+							source="@Embed(source='image/right_arrow_small_actiongrid.png')"
+							mouseOver="{mousehovering(event,'Right Scroll','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+						
+						
+					</mx:HBox>
+				</mx:Canvas>
+				<mx:Canvas id="tab_xml" width="100%"
+						   label="XML"
+						   > 
+					
+					<mx:HBox width="100%" height="32"  mouseWheel="handleMouseWheelTabXML(event)"
+							 mouseOver="{tabnav_buttons.removeEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel)}"
+							 mouseOut="{tabnav_buttons.addEventListener(MouseEvent.MOUSE_WHEEL,handleMouseWheel)}">	
+						<local:ActionGridImageButton
+							id="img_leftscrollxml"     
+							doc_id="1005"
+							click="{leftClickforSpecials(event), stopHoverTimer()}"
+							source="@Embed(source='image/left_arrow_small_actiongrid.png')"
+							mouseOver="{mousehovering(event,'Left Scroll','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+						<mx:HBox id="hbox_xml" width="{dg.width - 75}" height="32" horizontalGap="0" horizontalScrollPolicy="off">
+							
+							
+							<!-- mx:HBox width="100%"  height="32" horizontalGap="0" --> 
+							<mx:Spacer width="10" />
+							
+							
+						
+							<!-- ico_total_selected -->
+							<local:ActionGridImageButton
+								id="img_xml_data_mapper"  
+								doc_id="1005"
+								click="{pre_startMapper(event), stopHoverTimer() }"
+								source="@Embed(source='image/TinyXML.png')"
+								mouseOver="{mousehovering(event,'XML Data Mapper','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								/>
+						        
+							
+							<local:CustomRibbonLabel id="lbl_xml_data_mapper" text="XML Data Mapper" 
+													 click="{pre_startMapper(event), stopHoverTimer() }"
+													 mouseOver="{mousehovering(event,'XML Data Mapper','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}"
+													 />  
+							
+							<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+							<!--
+							<local:ActionGridImageButton
+								id="img_export_to_xml"  
+								doc_id="1005"
+								click="{startExporttoXML(event), stopHoverTimer() }"
+								source="@Embed(source='image/ico_multi_filter.png')"
+								mouseOver="{mousehovering(event,'Export To XML','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								/>
+							<local:CustomRibbonLabel id="lbl_export_to_xml" text="Export To XML" 
+													 click="{startExporttoXML(event), stopHoverTimer() }"
+													 mouseOver="{mousehovering(event,'Export To XML','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}"
+													 /> 
+							
+							-->
+							  <!-- ico_multi_filter -->     
+							<local:ActionGridImageButton
+								id="img_export_to_xml"  
+								doc_id="1005"
+								click="{pre_startExporttoXML(event), stopHoverTimer() }"
+								source="@Embed(source='image/TinyXML.png')"
+								mouseOver="{mousehovering(event,'Export To XML','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								/>
+							<local:CustomRibbonLabel id="lbl_export_to_xml" text="Export To XML" 
+													 click="{pre_startExporttoXML(event), stopHoverTimer() }"
+													 mouseOver="{mousehovering(event,'Export To XML','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}"
+													 /> 
+							
+							<mx:Label text="|" fontSize="18"  fontWeight="bold" color="#1E555B" width="14"/>
+							<!-- ico_multi_filter -->
+							<local:ActionGridImageButton
+								id="img_export_to_xml_controlxml"  
+								doc_id="1005"
+								click="{xmlcontrolconfig.send(event), stopHoverTimer() }"
+								source="@Embed(source='image/TinyXML.png')"
+								mouseOver="{mousehovering(event,'XML Control','BUTTON')}"
+								mouseOut="{stopHoverTimer()}"
+								/>
+							<local:CustomRibbonLabel id="lbl_export_to_xml_controlxml" text="XML Control" 
+													 click="{xmlcontrolconfig.send(), stopHoverTimer() }"
+													 mouseOver="{mousehovering(event,'XML Control','BUTTON')}"
+													 mouseOut="{stopHoverTimer()}"    
+													 /> 
+						</mx:HBox>        
+						<local:ActionGridImageButton   
+							id="img_rightscrollxml"  
+							doc_id="1005" 
+							click="{rightClickforSpecials(event), stopHoverTimer()}"
+							source="@Embed(source='image/right_arrow_small_actiongrid.png')"
+							mouseOver="{mousehovering(event,'Right Scroll','BUTTON')}"
+							mouseOut="{stopHoverTimer()}"
+							/>
+						
+						
+					</mx:HBox>
+					
+					
+					
+					
+				</mx:Canvas>
+			    
+			</mx:TabNavigator>   
+		</mx:HBox>	
+		
+		<mx:HBox
+			id="hb" color="#030000" fontWeight="bold" fontSize="14"
+			
+			width="{dg.width}" horizontalGap="0" horizontalScrollPolicy="off" borderStyle="solid"
+			
+			mouseOver="{mousehovering(event,'Filter Field','COLUMN_FILTER')}"
+		   	 	mouseOut="{stopHoverTimer()}"
+		   	 	
+			
+		
+			
+		/>    
+   
+			<local:ActionGridADG id="dg" dataProvider="{Array1}" draggableColumns="false" columnStretch="{flagger(event)}"  
+								 
+								 render="{catchRenderer(event)}" scroll="{flagger(event)}" headerRelease="{headRelEvt(event)}"
+								 width="{h1.width - 20}"
+								 height="100%" horizontalScrollPolicy="on" verticalScrollPolicy="on" allowMultipleSelection="true" 
+								 dragEnabled="true" dropEnabled="true" dragMoveEnabled="true"   dragEnter="dragStartHandler(event)"  
+								 sortExpertMode="false"
+								 sortableColumns="true" 
+								 passObject = "{_xlcColumn}"
+								 xmlheaderdoccode = "{_xlcCode}"
+								 variableRowHeight="true"
+								 headerWordWrap="true"
+								 verticalLockedSeparatorSkin="{greyVBar}"  
+								 
+								 lockedColumnCount="{_xlcLockColumn}"   
+								         
+								 itemClick="doubleclickHandler(event)"
+								
+								 >
+			</local:ActionGridADG>     
+		
+  		<mx:HBox id="hb_total"  width="{dg.width}" horizontalGap="0" 
+  			horizontalScrollPolicy="off" borderStyle="solid" fontSize="14"
+  			mouseOver="{mousehovering(event,'Column Totals','COLUMN_TOTALS')}"
+		   	mouseOut="{stopHoverTimer()}"
+		   	/>
+
+		<mx:HBox width="100%" height="30">
+			<mx:Image
+				click="{leftClickforBottomCommands(event)}"
+				
+				source="@Embed(source='image/left_arrow_small_actiongrid.png')"
+				useHandCursor="true" buttonMode="true"
+				mouseChildren="false"
+				/>  
+			<!-- mx:HBox width="100%" height="27" verticalScrollPolicy="off"
+					 horizontalScrollPolicy="auto" -->
+			<mx:Box id="bx_bottom_commands" direction="horizontal"  
+					width="100%" height="27" minHeight="0" minWidth="0"  
+					horizontalScrollPolicy="off"  verticalScrollPolicy="off"
+					mouseWheel="handleMouseWheelBottomCommands(event)"
+					horizontalGap="0"
+					>	
+
+				<mx:Spacer width="100%"/>
+				<local:ActionGridImageButton id="img_backall" source="image/ico_backall_grey.png" 
+											 height="28" click="backDrillDown_all(event)" 
+											 mouseOver="{mousehovering(event,'Back All','BUTTON')}"
+											 mouseOut="{stopHoverTimer(),img_flash_filter.source = 'image/ico_flash_filter.png'}"
+											 
+											 /> 
+				<local:ActionGridImageButton id="img_back1" source="image/ico_back1_grey.png" 
+											 height="28" click="{backDrillDown_1(event)}" 
+											 mouseOver="{mousehovering(event,'Back 1','BUTTON')}"
+											 mouseOut="{stopHoverTimer(),img_flash_filter.source = 'image/ico_flash_filter.png'}"
+											 
+											 />         
+				<mx:Spacer width="100%"/>
+
+				
+				<local:HighViewButton id="btn_undo" doc_id="1041" label="Undo" 
+					mouseOver="{mousehovering(event,'Undo','BUTTON')}"
+					mouseOut="{stopHoverTimer()}" 
+					click="{launchHistoryLog(event), stopHoverTimer()}"
+				/>
+				
+				<mx:Spacer width="100%"/>
+				<local:HighViewButton doc_id="1000" id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+									  label="{_xlcTitle}"
+									  height="27"   
+									  
+									  styleName="{'highResolutionLabel'}"
+									  useHandCursor="true" buttonMode="true"   
+									  mouseChildren="false"
+									  click="{parentApplication.scholarcap_mousehovering(event,'',_xlcTitle,'BUTTON')}"
+									  color="#000000" fontWeight="bold" fontSize="10"/>  
+				
+				<mx:Spacer width="100%"/>
+				
+				<local:ActionGridImageButton
+					id="img_refresh"  
+					doc_id="1005"
+					click="{dataList2_trigger(event, false), stopHoverTimer()}"
+					source="@Embed(source='image/ico_refresh.png')"
+					mouseOver="{mousehovering(event,'Refresh','BUTTON')}"
+					mouseOut="{stopHoverTimer()}"
+					/>     
+				
+				<local:CustomRibbonLabel id="lbl_refresh" text="Refresh"  	  
+										 mouseOver="{mousehovering(event,'Refresh','BUTTON')}"
+										 mouseOut="{stopHoverTimer()}"
+										 click="{dataList2_trigger(event, false), stopHoverTimer()}"
+										 />   
+				<mx:TextInput backgroundColor="#85E7FF" color="#000606" id="counter" fontWeight="bold" fontSize="15"
+							  textAlign="center" rollOver="{mousehovering(event,'Time Since Last Refresh' ,'LAST_REFRESH')}"
+							  rollOut="{stopHoverTimer()}" width="122"  height="25" editable="false"
+							  cornerRadius="4" 
+							  borderStyle="inset"
+							  click="{parentApplication.mainboard_h_command.setFocus()}"
+							  />
+				<local:CustomRibbonLabel id="lbl_autorerefreshswitch" text="Auto-Refresh"  	  
+										 mouseOver="{mousehovering(event,'Auto-Refresh','BUTTON')}"
+										 mouseOut="{stopHoverTimer()}" 
+										 click="{switchAutoRefresh(event), stopHoverTimer()}"
+										 />      
+				<local:ActionGridImageButton id="img_autorerefreshswitch" source="image/ico_auto_refresh_off.png" 
+											 height="25" click="{switchAutoRefresh(event)}" 
+											 mouseOver="{mousehovering(event,'Auto-Refresh','BUTTON')}"
+											 mouseOut="{stopHoverTimer(),img_flash_filter.source = 'image/ico_flash_filter.png'}"
+											 width="51" />
+				<mx:Spacer width="4%"/>
+				
+				<mx:Label id="autorefresh_ctr" fontFamily="Arial" height="30" styleName="{'highResolutionLabel'}"
+						  paddingTop="2" color="#030303" fontWeight="bold"  visible="false" width="1"/>
+				
+				<!-- local:ActionGridImageButton id="img_lstrefrsh"  source="image/ico_time_since_last_refresh.png"
+						  click="{dataList2_trigger(event, false)}"
+						  rollOver="{mousehovering(event,'Time Since Last Refresh' ,'Button')}"
+						  rollOut="{stopHoverTimer()}"  
+						  / -->
+				<!--
+				<local:CustomRibbonLabel id="lbl_lstrefresh" text="Time Since Last Refresh" 
+										 click="{dataList2_trigger(event, false)}"
+										 rollOver="{mousehovering(event,'Time Since Last Refresh' ,'BUTTON')}"
+										 rollOut="{stopHoverTimer()}"
+										 />    
+				<mx:Label text=":"  fontSize="18" fontWeight="bold" color="#000202" width="11"/>
+				-->
+				<!-- mx:TextInput backgroundColor="#85E7FF" color="#000606" id="counter" fontWeight="bold" fontSize="15"
+							  textAlign="center" rollOver="{mousehovering(event,'Time Since Last Refresh' ,'LAST_REFRESH')}"
+							  rollOut="{stopHoverTimer()}" width="122"  height="25" editable="false"
+							  cornerRadius="4" 
+							  borderStyle="inset"
+							  click="{parentApplication.mainboard_h_command.setFocus()}"
+							  / -->
+			
+			
+				
+				<mx:Spacer width="4%"/>
+
+				<local:CustomRibbonLabel id="lbl_rows" text="Total Rows Displayed" 
+										
+										 rollOver="{mousehovering(event,'Total Rows Displayed' ,'ROWS')}"
+										 rollOut="{stopHoverTimer()}"
+										 />  
+				<mx:Label text=":"  fontSize="18" fontWeight="bold" color="#000202" width="11"/>
+				<mx:TextInput id="total_rows"  width="73" render="{totalRowsRetrieved()}"  
+						  textAlign="center" fontWeight="bold" backgroundColor="#85E7FF" color="#000606" fontSize="15"
+						  rollOver="{mousehovering(event,'Total Rows Displayed' ,'ROWS')}"
+						  rollOut="{stopHoverTimer()}"  height="25" editable="false"
+						  cornerRadius="4" 
+						  borderStyle="inset"
+						  click="{parentApplication.mainboard_h_command.setFocus()}"
+						  />
+				
+			
+				
+				<mx:Label id="lbl_of"  width="21" text="of" 
+						  textAlign="left" fontWeight="bold" color="#000000" fontSize="15"
+						  rollOver="{mousehovering(event,'Total Rows Displayed' ,'ROWS')}"
+						  rollOut="{stopHoverTimer()}"
+						  />	
+				<mx:TextInput id="sumofall_rows" width="73"  render="{sumRowsRetrieved()}"
+						  textAlign="center" fontWeight="bold" backgroundColor="#85E7FF" color="#000606" fontSize="15"
+						  height="25" editable="false" cornerRadius="4" 
+						  borderStyle="inset"
+						  click="{parentApplication.mainboard_h_command.setFocus()}"
+						  rollOver="{mousehovering(event,'Total Rows Displayed' ,'ROWS')}"
+						  rollOut="{stopHoverTimer()}"
+						  />
+				
+				
+				
+				<mx:Spacer width="4%"/>
+
+				<local:CustomRibbonLabel id="lbl_gather" text="Time to Load" 
+										 
+										 rollOver="{mousehovering(event,'Time to Load' ,'GATHER')}"
+										 rollOut="{stopHoverTimer()}"
+										 />  
+				<mx:Label text=":"  fontSize="18" fontWeight="bold" color="#000202" width="11"/>
+				<mx:TextInput id="timeofretrieval"  width="95" text="{timeelapsed + ' ' + unitofspeed}"  
+						  textAlign="center" fontWeight="bold"  backgroundColor="#85e7ff" color="#000606"  fontSize="15"
+						  rollOver="{mousehovering(event,'Time to Load' ,'GATHER')}"
+						  rollOut="{stopHoverTimer()}"
+						  height="25" editable="false"
+						  cornerRadius="4" 
+						  borderStyle="inset"
+						  click="{parentApplication.mainboard_h_command.setFocus()}"
+						  />
+
+				<mx:Spacer width="100%"/>
+			</mx:Box>
+			
+			<mx:Image
+				click="{rightClickforBottomCommands(event)}"
+				source="@Embed(source='image/right_arrow_small_actiongrid.png')"
+				useHandCursor="true" buttonMode="true"
+				mouseChildren="false"
+				     
+				/>
+		</mx:HBox>
+			<mx:HBox id="h_footer" width="100%" horizontalScrollPolicy="off"/>
+			
+	</mx:Panel>
+
+		
+
+	</mx:HBox>
+
+	
+</mx:Canvas>

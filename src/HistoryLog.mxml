@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="874" height="640"  verticalScrollPolicy="off"
+	        layout="vertical"
+        showCloseButton="true"
+        close="titleWindow_close(event);"
+		x="160" y="120"  
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+ 		backgroundImage=""
+        
+		creationComplete="init()"   
+        xmlns:local="*">
+<!-- mx:Style source="css/main.css"/ -->
+<mx:Script>
+	<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+
+		 	[Bindable]
+ 		    public var myArray:Array;
+			[Bindable]
+			public var currentrendtion:String;
+		[Bindable]
+		public var _xlcColumnlocal:ArrayCollection;
+		[Bindable]
+		public var persistentview:String;
+		[Bindable]
+		public var transientview:String;
+		[Bindable]
+		public var _title:String;
+
+ 	/*
+
+ 		   private function clickUndo(evt:Event):void {
+           
+           				myArray.splice(1.1);
+           
+           }
+    */       
+ 		    private function titleWindow_close(evt:Event):void {
+                 PopUpManager.removePopUp(this);	
+           }
+		import mx.controls.dataGridClasses.DataGridColumn;
+            private function init():void {
+				//Alert.show(_xlcColumnlocal.length.toString());
+			
+				var dgc:DataGridColumn = new DataGridColumn("title");
+				dgc.visible = false;
+				var cols:Array = dg_1.columns
+				cols.push(dgc);
+			//	myArray.("title");
+				dg_1.columns = cols;
+				
+				
+				var flag:Boolean = false;
+				var tempstring:String;
+                 dg_1.selectedIndex = myArray.length;
+				 lbl_renditioncode.text =  currentrendtion;
+				 var str_len:int;
+				 var str_entry:String;
+				 /* Get values fot Title Header to Display on Settings */
+				 if  (myArray.length > 0){
+				 	for( var i:int = 0; i < myArray.length; i++ )
+					 {
+						var str_segment_array:Array = [];
+						str_segment_array = myArray[i]["column"].split(";");	
+						str_len = str_segment_array.length;
+						tempstring = new String();
+						flag = false;
+						for (var xa:int=0; xa<str_len;xa++){
+							str_entry = str_segment_array[xa].toString();
+							//Alert.show(str_entry);
+							/* Search for _xlcColumnlocal */
+							for (var x:int=0; x<_xlcColumnlocal.length;x++){
+								
+								if (_xlcColumnlocal[x]["dataField"] == str_entry ){
+								
+									tempstring = tempstring + _xlcColumnlocal[x]["title_header"] + ";";
+									//Alert.show(tempstring);
+									flag = true;
+									break;
+								}     
+							}
+						}
+						if (flag == true){
+							tempstring = tempstring.substr(0, tempstring.length -1);
+							myArray[i].title = tempstring;
+						} else {
+							myArray[i].title = myArray[i]["column"];
+						}	
+					 }
+				}	 
+				 
+				 
+                 //dg_1.setFocus();
+				 myArray.refresh();
+				// dg_1.dataProvider=myArray;
+           }
+           
+	]]>     
+</mx:Script>
+<mx:Style source="css/main.css"/>
+ <mx:VBox width="100%" height="100%">
+	<mx:HBox width="100%">
+		
+		<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+							  height="27"
+							  width="78"
+							  useHandCursor="true" buttonMode="true"   
+							  mouseChildren="false"
+							  click="{parentApplication.scholarcap_mousehovering(event,'','Current Settings Console','BUTTON')}"
+							 
+							  />
+		<mx:Spacer width="100%"/>
+		<mx:Label text="{_title + ' Rows'}" width="100%" textAlign="center"  fontSize="19" color="#010101" fontWeight="bold"/>	
+		<mx:Spacer width="100%"/>
+		<mx:Spacer width="78"/>
+	</mx:HBox> 
+ 	
+	 
+	 <mx:HBox width="100%">
+		 
+		
+		 <mx:Spacer width="100%"/>
+		 <mx:Label text="Data Filters and Sort Settings" width="100%" textAlign="center"  fontSize="19" color="#010101" fontWeight="bold"/>	
+		 <mx:Spacer width="100%"/>
+	 </mx:HBox> 
+	 
+	   
+	 
+	 
+	 
+	 
+ <mx:Panel width="100%" height="47" layout="absolute" headerHeight="5"  backgroundColor="#E2E2E2"> 
+	 <mx:VBox width="100%" verticalGap="0">
+	 <mx:HBox>
+	 <!-- local:HighViewButton id="btn_launchrendition" doc_id="1042" label="Renditions" / --> 
+	 
+	 <mx:Label  id="l_rendition" text="MyView Code:" fontSize="15" fontWeight="bold" width="147"/> 
+	 <!-- mx:Label  id="lbl_renditioncode"  fontSize="14" fontWeight="bold" useHandCursor="true" buttonMode="true"
+				mouseChildren="false"/ -->  
+		 
+		 
+		 <mx:TextInput backgroundColor="#85e7ff" 
+					   color="#000606" 
+					   id="lbl_renditioncode" 
+					   fontWeight="bold" fontSize="15"
+					   textAlign="center" width="196"  height="25" editable="false"
+					   cornerRadius="4" 
+					   borderStyle="inset"    
+					   /> 
+		 
+	 </mx:HBox>
+		 <!--
+	 <mx:HBox>
+		
+		 
+		 <mx:Label  id="l_pv" text="Persistent View: " fontSize="15" fontWeight="bold" width="147"/> 
+		
+		 <mx:TextInput backgroundColor="#85e7ff" 
+					   color="#000606" 
+					   id="lbl_pv"
+					   fontWeight="bold" fontSize="15"
+					   textAlign="center" width="196"   height="25" editable="false"
+					   cornerRadius="4" 
+					   borderStyle="inset"    
+					   text="{persistentview}"
+					   /> 
+	 </mx:HBox>
+	 <mx:HBox>
+		 
+		 
+		 <mx:Label  id="l_tv" text="Transient View: " fontSize="15" fontWeight="bold" width="147"/> 
+		 
+		 <mx:TextInput backgroundColor="#85e7ff" 
+					   color="#000606" 
+					   id="lbl_tv"
+					   fontWeight="bold" fontSize="15"
+					   textAlign="center" width="196"   height="25" editable="false"
+					   cornerRadius="4" 
+					   borderStyle="inset"    
+					    text="{transientview}"
+					   /> 
+	 </mx:HBox>   
+		 -->
+		</mx:VBox>     
+ </mx:Panel> 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 <mx:Panel width="100%" height="462" layout="vertical" headerHeight="5"> 	 
+        <mx:DataGrid id="dg_1" dataProvider="{myArray}" draggableColumns="false" editable="true" allowMultipleSelection="true"
+						width="100%" height="100%" horizontalScrollPolicy="auto" verticalScrollPolicy="on" sortableColumns="false" variableRowHeight="true">
+					
+						<mx:columns> 
+						    <mx:DataGridColumn id="adc_view" dataField="view" headerText="View" width="50" visible="false" editable="false" />
+							<mx:DataGridColumn id="adc_action_command" dataField="action" headerText="Action" width="90"  editable="false" />
+							<mx:DataGridColumn id="adc_column" dataField="column"  headerText="Column" visible="false" width="1" editable="false" wordWrap="true"/>
+							<mx:DataGridColumn id="adc_title" dataField="title" headerText="Title" width="270" editable="false" wordWrap="true"/>
+		                	<mx:DataGridColumn id="adc_value" dataField="value" headerText="Value" width="150" editable="true"  wordWrap="true"/>
+		                	<mx:DataGridColumn id="adc_type" dataField="type" headerText="Type" width="1" visible="true" editable="false"/>
+		 				</mx:columns>   
+		
+			
+		</mx:DataGrid> 	
+	      		<mx:HBox horizontalGap="0" width="100%">
+        		<!-- mx:Button label="DB Refresh" / -->
+        		<local:HighViewButton id="btn_undo" doc_id="1041" label="Undo Selected" />
+        		
+        		
+        		<!-- mx:Button id="btn_reapply" label="Re-Apply" / -->
+        		<local:HighViewButton id="btn_undoall" doc_id="1042" label="Undo All" />
+					
+				<!--	Remove this for now for the One Click Dashboard Functionality
+        		<local:HighViewButton id="btn_save_persistent" doc_id="1043" label="Save as Persistent" />
+        		<local:HighViewButton id="btn_save_transient" doc_id="1044" label="Save as Transient" />
+					-->
+					
+				<local:HighViewButton id="btn_reset" label="Reset MyView"/>
+					<local:HighViewButton id="btn_base" label="Reset to BASE"/>	
+				<mx:Spacer width="100%"/>	
+        		<local:HighViewButton id="btn_close" doc_id="1045" label="Close" click="titleWindow_close(event);" />
+        	</mx:HBox>
+	 </mx:Panel>	 
+     </mx:VBox>   	
+</mx:TitleWindow>

@@ -1,0 +1,17 @@
+<root>
+<Panel>
+<code>005</code>
+<title>Trip WiP ActionGrid</title>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="Trip" columnstart="0"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="trip" dataField="trip" title_header="Trip" width="240" datatype="S"  wordwrap="false" />
+<column columnId="1" columnName="destinatn" dataField="destination" title_header="Destination" width="240" datatype="S"  wordwrap="false" />
+<column columnId="2" columnName="dp_date" dataField="dispatch" title_header="Dispatch" width="240" datatype="D"  wordwrap="false" />
+<column columnId="3" columnName="trip_stat" dataField="status" title_header="Status" width="240" datatype="S"  wordwrap="false" />
+<column columnId="4" columnName="driver" dataField="driver" title_header="Driver" width="240" datatype="S"  wordwrap="false" />
+<column columnId="5" columnName="" dataField="" title_header="" width="1500" datatype="S"  wordwrap="false"  />
+</AdvancedDataGridColumn>
+</root>

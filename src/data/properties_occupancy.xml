@@ -1,0 +1,59 @@
+<root>
+<Panel>
+<code>016</code>
+<title>Occupancy WiP ActionGrid</title>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="Locations" columnstart="0"/>
+<columngroup headerText="Dimensions" columnstart="10"/>
+<columngroup headerText="Attributes" columnstart="15"/>
+<columngroup headerText="Cubic Space" columnstart="25"/>
+<columngroup headerText="Quantities" columnstart="31"/>
+<columngroup headerText="Stock" columnstart="37"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="whs_loc" dataField="whs_loc" title_header="Whs-Loc" width="120" datatype="S" />
+<column columnId="1" columnName="warehouse" dataField="warehouse" title_header="Whs" width="80" datatype="S" />
+<column columnId="2" columnName="loctn_vis" dataField="loctn_vis" title_header="Visual Loc" width="110" datatype="S" />
+<column columnId="3" columnName="occupied" dataField="occupied" title_header="Occupied?" width="110" datatype="S" />
+<column columnId="4" columnName="loctn_int" dataField="loctn_int" title_header="Internal Loc" width="120" datatype="S" />
+<column columnId="5" columnName="loctn_seq" dataField="loctn_seq" title_header="Loc Seq" width="100" datatype="S" />
+<column columnId="6" columnName="aisle" dataField="aisle" title_header="Aisle" width="80" datatype="S" />
+<column columnId="7" columnName="side" dataField="side" title_header="Side" width="80" datatype="S" />
+<column columnId="8" columnName="col" dataField="col" title_header="Column" width="90" datatype="S" />
+<column columnId="9" columnName="tier" dataField="tier" title_header="Tier" width="80" datatype="S" />
+<column columnId="10" columnName="whs_loc" dataField="whs_loc" title_header="Whs-Loc" width="120" datatype="S" />
+<column columnId="11" columnName="width" dataField="width" title_header="Width" width="90" datatype="N" />
+<column columnId="12" columnName="length" dataField="length" title_header="Length" width="110" datatype="N" />
+<column columnId="13" columnName="height" dataField="height" title_header="Height" width="90" datatype="N" />
+<column columnId="14" columnName="cube" dataField="cube" title_header="Cube" width="80" datatype="N" />
+<column columnId="15" columnName="whs_loc" dataField="whs_loc" title_header="Whs-Loc" width="120" datatype="S" />
+<column columnId="16" columnName="stg_type" dataField="stg_type" title_header="Stg Type" width="100" datatype="S" />
+<column columnId="17" columnName="sprtn_code" dataField="sprtn_code" title_header="Separation" width="120" datatype="S" />
+<column columnId="18" columnName="plrty_code" dataField="plrty_code" title_header="Popularity" width="110" datatype="S" />
+<column columnId="19" columnName="co_storage" dataField="co_storage" title_header="Co-Stg" width="100" datatype="S" />
+<column columnId="20" columnName="stg_zone" dataField="stg_zone" title_header="Stg Zone" width="110" datatype="S" />
+<column columnId="21" columnName="wrk_zone" dataField="wrk_zone" title_header="Wrk Zone" width="110" datatype="S" />
+<column columnId="22" columnName="dimentn_cd" dataField="dimentn_cd" title_header="Dimensions" width="130" datatype="S" />
+<column columnId="23" columnName="wght_max" dataField="wght_max" title_header="Max Wgt" width="120" datatype="N" />
+<column columnId="24" columnName="frt_bck" dataField="frt_bck" title_header="Frt/Bck Load" width="130" datatype="S" />
+<column columnId="25" columnName="whs_loc" dataField="whs_loc" title_header="Whs-Loc" width="120" datatype="S" />
+<column columnId="26" columnName="spc_empt" dataField="spc_empt" title_header="Empty" width="100" datatype="N" />
+<column columnId="27" columnName="spc_resv" dataField="spc_resv" title_header="Reserved" width="120" datatype="N" />
+<column columnId="28" columnName="spc_boun" dataField="spc_boun" title_header="Bounded" width="120" datatype="N" />
+<column columnId="29" columnName="spc_fill" dataField="spc_fill" title_header="Filled" width="110" datatype="N" />
+<column columnId="30" columnName="spc_ovfl" dataField="spc_ovfl" title_header="Overfilled" width="120" datatype="N" />
+<column columnId="31" columnName="whs_loc" dataField="whs_loc" title_header="Whs-Loc" width="120" datatype="S" />
+<column columnId="32" columnName="qty_ohnd" dataField="qty_ohnd" title_header="On-Hand Qty" width="140" datatype="N" />
+<column columnId="33" columnName="wght_ohnd" dataField="wght_ohnd" title_header="On-Hand Wgt" width="140" datatype="N" />
+<column columnId="34" columnName="cube_ohnd" dataField="cube_ohnd" title_header="On-Hand Cubic" width="140" datatype="N" />
+<column columnId="35" columnName="qty_rsvd" dataField="qty_rsvd" title_header="Reserved Qty" width="140" datatype="N" />
+<column columnId="36" columnName="qty_expt" dataField="qty_expt" title_header="Expected Qty" width="140" datatype="N" />
+<column columnId="37" columnName="whs_loc" dataField="whs_loc" title_header="Whs-Loc" width="120" datatype="S" />
+<column columnId="38" columnName="client" dataField="client" title_header="Client" width="120" datatype="S" />
+<column columnId="39" columnName="product" dataField="product" title_header="Product" width="120" datatype="S" />
+<column columnId="40" columnName="lot" dataField="lot" title_header="Lot" width="60" datatype="S" />
+<column columnId="41" columnName="qty_ohnd_l" dataField="qty_ohnd_l" title_header="On-Hand Qty" width="140" datatype="N" />
+<column columnId="42" columnName="" dataField="" title_header="" width="1500" datatype="S" />
+</AdvancedDataGridColumn>
+</root>

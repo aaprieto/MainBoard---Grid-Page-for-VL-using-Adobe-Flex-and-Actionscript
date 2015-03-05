@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data>
+<row Probill="L1442480" Flag="I" Appt_Date="2008-04-07" Appt_Time="" Weight="4764" Pieces="397" Del_Appt_Date="2008-04-09" Del_Appt_Time="21:45" Current_Zone="C1" From_Zone="C1" To_Zone="B5" Status="WOP" Pref_Carrier="RLS" Del_Ontime=""/>
+<row Probill="L1442481" Flag="D" Appt_Date="2008-04-07" Appt_Time="" Weight="4764" Pieces="397" Del_Appt_Date="2008-04-09" Del_Appt_Time="21:45" Current_Zone="C1" From_Zone="C1" To_Zone="B5" Status="BAR" Pref_Carrier="ARN" Del_Ontime="Test"/>
+<row Probill="L144248D" Flag="I" Appt_Date="2008-04-07" Appt_Time="" Weight="4764" Pieces="397" Del_Appt_Date="2008-04-09" Del_Appt_Time="21:45" Current_Zone="C1" From_Zone="C2" To_Zone="B3" Status="ARN" Pref_Carrier="OLD" Del_Ontime="More"/>
+</data>

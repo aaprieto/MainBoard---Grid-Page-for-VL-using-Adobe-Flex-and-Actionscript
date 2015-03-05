@@ -1,0 +1,101 @@
+<root>
+<Panel>
+<code>001</code>
+<title>ProBill WiP ActionGrid</title>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="Pick-Up" columnstart="0"/>
+<columngroup headerText="Delivery" columnstart="26"/>
+<columngroup headerText="Miscellaneous" columnstart="49"/>
+<columngroup headerText="Financial" columnstart="68"/>
+<columngroup headerText="Dispatch" columnstart="78"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="invoice" dataField="invoice" title_header="Probill" width="90" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="1" columnName="client" dataField="client" title_header="Client" width="85" datatype="S" docid="" wordwrap="false" analyzeby="yes" filter_seq="2000" tcv="-" />
+<column columnId="2" columnName="dp_status" dataField="dp_status" title_header="P-DS" width="70" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="3" columnName="fr_type" dataField="fr_type" title_header="Fgt Type" width="100" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="4" columnName="serv_level" dataField="serv_level" title_header="Service Level" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="5" columnName="equip_req" dataField="equip_req" title_header="Equip. Req." width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="6" columnName="remark" dataField="remark" title_header="Commodity" width="250" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="7" columnName="pallet_out" dataField="pallet_out" title_header="Plts" width="60" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="8" columnName="weight" dataField="weight" title_header="Wgt" width="100" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="9" columnName="pieces" dataField="pieces" title_header="Pcs" width="80" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="10" columnName="pref_carr" dataField="pref_carr" title_header="Prf Carr" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="11" columnName="carrier" dataField="carrier" title_header="Carrier" width="180" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="12" columnName="extra_1" dataField="extra_1" title_header="Carrier Max Pay" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="13" columnName="master_pro" dataField="master_pro" title_header="MPB" width="70" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="14" columnName="from_code" dataField="from_code" title_header="P Code" width="85" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="15" columnName="from_zone" dataField="from_zone" title_header="P Zn" width="70" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="16" columnName="from_state" dataField="from_state" title_header="P-St" width="60" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="17" columnName="from_city" dataField="from_city" title_header="P City" width="140" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="18" columnName="from_loc" dataField="from_loc" title_header="P Address" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="19" columnName="from_name" dataField="from_name" title_header="P Name" width="140" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="20" columnName="p_appt_dat" dataField="p_apt_dt_f" title_header="P App D" width="110" datatype="D" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="21" columnName="p_appt_tim" dataField="p_appt_tim" title_header="P App T" width="90" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="22" columnName="pumf" dataField="pumf" title_header="P Man#" width="100" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="23" columnName="pumfstat" dataField="pumfstat" title_header="P Man D" width="90" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="24" columnName="pucarr" dataField="pucarr" title_header="P Carrier" width="100" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="25" columnName="pudriv" dataField="pudriv" title_header="P Driver" width="90" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="26" columnName="invoice" dataField="invoice" title_header="Probill" width="90" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="27" columnName="client" dataField="client" title_header="Client" width="85" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="28" columnName="dp_status" dataField="dp_status" title_header="D-DS" width="70" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="29" columnName="fr_type" dataField="fr_type" title_header="Fgt Type" width="100" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="30" columnName="pallet_out" dataField="pallet_out" title_header="Plts" width="60" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="31" columnName="weight" dataField="weight" title_header="Wgt" width="100" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="32" columnName="pieces" dataField="pieces" title_header="Pcs" width="80" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="33" columnName="pref_carr" dataField="pref_carr" title_header="PRF CARR" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="34" columnName="master_pro" dataField="master_pro" title_header="MPB" width="70" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="35" columnName="to_code" dataField="to_code" title_header="D Code" width="95" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="36" columnName="po_num" dataField="po_num" title_header="PO Num" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="37" columnName="sales_rg_c" dataField="sales_rg_c" title_header="Sales" width="90" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="38" columnName="to_zone" dataField="to_zone" title_header="D Zn" width="70" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="39" columnName="to_state" dataField="to_state" title_header="D St" width="80" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="40" columnName="to_city" dataField="to_city" title_header="D City" width="140" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="41" columnName="to_loc" dataField="to_loc" title_header="D Address" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="42" columnName="to_name" dataField="to_name" title_header="D Name" width="140" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="43" columnName="d_appt_dat" dataField="d_apt_dt_f" title_header="D App D" width="110" datatype="D" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="44" columnName="d_appt_tim" dataField="d_appt_tim" title_header="D App T" width="90" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="45" columnName="dlmf" dataField="dlmf" title_header="D MF #" width="100" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="46" columnName="dlmfstat" dataField="dlmfstat" title_header="D MF ST" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="47" columnName="dlcarr" dataField="dlcarr" title_header="D Carrier" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="48" columnName="dldriv" dataField="dldriv" title_header="D Driver" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="49" columnName="invoice" dataField="invoice" title_header="Probill" width="90" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="50" columnName="client" dataField="client" title_header="Client" width="85" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="51" columnName="dp_status" dataField="dp_status" title_header="C-DS" width="70" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="52" columnName="fr_type" dataField="fr_type" title_header="Fgt Type" width="100" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="53" columnName="pallet_out" dataField="pallet_out" title_header="Plts" width="60" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="54" columnName="weight" dataField="weight" title_header="Wgt" width="100" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="55" columnName="pieces" dataField="pieces" title_header="Pcs" width="80" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="56" columnName="pref_carr" dataField="pref_carr" title_header="PRF CARR" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="57" columnName="master_pro" dataField="master_pro" title_header="MPB" width="70" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="58" columnName="from_cntry" dataField="from_cntry" title_header="P Country" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="59" columnName="curr_zone" dataField="curr_zone" title_header="C Zn" width="70" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="60" columnName="to_cntry" dataField="to_cntry" title_header="D Country" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="61" columnName="curr_loc" dataField="curr_loc" title_header="Current Location" width="160" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="62" columnName="fr_class" dataField="fr_class" title_header="Fgt Class" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="63" columnName="cust_num" dataField="cust_num" title_header="Cust Num" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="64" columnName="branch" dataField="branch" title_header="BR" width="60" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="65" columnName="extra_num" dataField="extra_num" title_header="Extra Num" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="66" columnName="bol_num" dataField="bol_num" title_header="BOL Num" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="67" columnName="po_num" dataField="po_num" title_header="PO Num" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="68" columnName="invoice" dataField="invoice" title_header="Probill" width="90" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="69" columnName="client" dataField="client" title_header="Client" width="85" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="70" columnName="bilng_stat" dataField="bilng_stat" title_header="Billing Stat" width="100" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="71" columnName="rev_regu" dataField="rev_regu" title_header="Reg Chrg" width="100" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="72" columnName="rev_cwt" dataField="rev_cwt" title_header="CWT" width="100" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="73" columnName="rev_accs" dataField="rev_accs" title_header="Accs Chrg" width="100" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="74" columnName="rev_fuel" dataField="rev_fuel" title_header="Fuel Chrg" width="100" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="75" columnName="revenue" dataField="revenue" title_header="Tot Revenue" width="140" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="76" columnName="cost" dataField="cost" title_header="Tot Cost" width="140" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="77" columnName="revenue_nt" dataField="revenue_nt" title_header="Net Revenue" width="140" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="78" columnName="profit_mrg" dataField="profit_mrg" title_header="Profit Margin" width="140" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="79" columnName="invoice" dataField="invoice" title_header="Probill" width="90" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="80" columnName="client" dataField="client" title_header="Client" width="85" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="81" columnName="deliv_dat" dataField="d_dt_f" title_header="Deliv Date" width="110" datatype="D" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="82" columnName="deliv_tim" dataField="deliv_tim" title_header="Deliv Time" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="83" columnName="pickup_dat" dataField="p_dt_f" title_header="Pickup Date" width="130" datatype="D" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="84" columnName="pickup_tim" dataField="pickup_tim" title_header="Pickup Time" width="130" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="-" />
+<column columnId="85" columnName="" dataField="" title_header="" width="1500" datatype="S" />
+</AdvancedDataGridColumn>
+</root>

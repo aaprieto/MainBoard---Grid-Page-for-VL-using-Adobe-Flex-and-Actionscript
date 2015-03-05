@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="1152" height="748"   xmlns:ns1="com.fusioncharts.components.*"
+				creationComplete="init(event)"
+				initialize="i_init(event)"
+				
+				showCloseButton="true"
+				close="titleWindow_close(event);"
+				
+				
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundColor="white"
+				backgroundImage=""
+				
+				xmlns:local="*">
+	<mx:Style source="css/main.css"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.AdvancedDataGrid;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.messaging.SubscriptionInfo;
+			
+			[Bindable]
+			public var mfArray:ArrayCollection;
+			[Bindable]
+			public var cap_title:String;
+			[Bindable]
+			public var adv_mfArray:AdvancedDataGrid;
+			[Bindable]
+			public var ca_xlcColumn:ArrayCollection = new ArrayCollection; 
+			[Bindable]
+			private var ac_populatedd:ArrayCollection = new ArrayCollection; 
+			[Bindable]
+			public var showlocal_crunch:String;
+			public var my_xml:String = new String;
+			public var pie_xml:String = new String;
+			private var obj:Object = new Object;
+			[Bindable]
+			private var xm:XML = new XML;
+			[Bindable]
+			private var pie_xm:XML = new XML;
+			[Bindable]
+			private var _chartParam:ArrayCollection=new ArrayCollection;
+			/*
+			private var _chartParam:ArrayCollection=new ArrayCollection([
+			{xAxisName:'Client'},
+			{yAxisName:'Instance'},
+			{showShadow:'1'},
+			{useRoundEdges:'1'},
+			{numVisiblePlot:'14'},
+			{plotGradientColor:''},
+			{legendPosition:'RIGHT'},
+			{showValues:'0'},
+			{baseFont:'13'},
+			{bold:'1'},
+			{plotSpacePercent:'80'},
+			{chartLeftMargin :'2'},
+			{chartRightMargin :'2'} ])
+			;
+			*/
+			private function titleWindow_close(evt:Event):void { 
+				PopUpManager.removePopUp(this);
+			}
+			
+			[Bindable]
+			private var chartStyle:ArrayCollection=new ArrayCollection ([
+				{name: 'CaptionSize', type: 'font', size: '17'},
+				{name: 'X-AxisNameSize', type: 'font', size: '17'},
+				{name: 'Y-AxisNameSize', type: 'font', size: '17'},
+				{name: 'myBevel', type: 'bevel', distance: '3'},
+				{name: 'myShadow', type: 'shadow', angle:'45', distance:'3'},
+				
+				
+				{toObject: 'Caption', styles: 'CaptionSize'},
+				{toObject: 'X-AxisName', styles: 'X-AxisNameSize'},
+				{toObject: 'Y-AxisName', styles: 'Y-AxisNameSize'},
+				{toObject: 'DATAPLOT', styles: 'myBevel, myShadow'},					  					
+			]);
+			
+			/*  <style name='myBevel' type='bevel' distance='3'/>
+			<style name='myShadow' type='shadow' angle='45' distance='3'/>
+			</definition>
+			<application>
+			<apply toObject='DATAPLOT' styles='myBevel, myShadow' /> 
+			*/
+			/*
+			[Bindable]
+			private var chartStyle:ArrayCollection=new ArrayCollection([           
+			{name: 'CaptionSize', type: 'font', size: '17'},           
+			{name: 'MyShadow', type: 'shadow'},               
+			{toObject: 'Caption', styles: 'CaptionSize'},   
+			{toObject: 'Caption', styles: 'MyShadow'},        
+			{toObject: 'Dataplot', styles: 'MyShadow'}])
+			*/
+			/*
+			[Bindable] private var chartStyle: ArrayCollection = new ArrayCollection ([
+			(name: 'CaptionSize', type: 'font', size: '17 '), 
+			(name:' MyShadow ', type:' shadow '), 
+			(toObject: 'Caption', styles: 'CaptionSize'), 
+			(toObject: 'Caption', styles: 'MyShadow'), 
+			(toObject: 'Dataplot', styles: 'MyShadow'}])
+			*/
+			
+			
+			/*
+			private var _chartParam:ArrayCollection=new ArrayCollection([
+			{xAxisName:'Client'},
+			{yAxisName: 'Instance'},
+			{showShadow:'1'},
+			{numVisiblePlot:'28'},
+			{rotateLabels:'1'},
+			{labelDisplay:'ROTATE'},
+			{useRoundEdges:'1'}]);
+			*/
+			/*
+			private var _chartParam:ArrayCollection=new ArrayCollection([
+			{xAxisName:'Client'},
+			{yAxisName:'Instance'},
+			{showShadow:'1'},
+			{numVisiblePlot:'28'},
+			{rotateLabels:'1'},
+			{slantLabels:'1'},
+			{labelDisplay:'ROTATE'},
+			{useRoundEdges:'1'}]);
+			*/
+			private function i_init(event:Event):void{
+				if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+					this.width = 1000;
+					this.height = 575;
+				}
+				
+			}
+			private function init(event:Event):void{
+			
+				/* Populate the drop down combo box */
+			
+				populateCB(event);
+				chart_combo.selectedIndex = 0;
+				
+				cb_forchart.selectedIndex = 0;
+				populateFChart(event);
+				rendered(event);
+			
+			}
+			private function populateFCParams():void{
+				
+				_chartParam = new ArrayCollection;
+				var obj:Object = new Object;
+				obj.showShadow = '1';
+				_chartParam.addItemAt(obj,0);
+				obj = new Object
+				obj.numVisiblePlot = '28';
+				_chartParam.addItemAt(obj,1);
+				obj = new Object
+				obj.rotateLabels = '1';
+				_chartParam.addItemAt(obj,2);
+				obj = new Object
+				obj.labelDisplay = 'ROTATE';
+				_chartParam.addItemAt(obj,3);
+				obj = new Object
+				obj.useRoundEdges = '1';
+				_chartParam.addItemAt(obj,4);
+				obj = new Object
+				obj.yAxisName = cb_forchart.selectedLabel;
+				_chartParam.addItemAt(obj,5);
+				
+				var x_axis_value:String = new String;
+				
+				for (var i_ctr:int = 0; i_ctr < (adv_mfArray.columns.length - 1); i_ctr++){
+					for (var ix:int=0;ix< ca_xlcColumn.length;ix++){
+						/* looking for String Datatype.  The way I see it is that there
+						will always be a column of a String Datatype on the first succeeding columns.
+						*/
+						if (adv_mfArray.columns[i_ctr].dataField == ca_xlcColumn[ix].dataField){
+							/* get only the String datatype for preparation on the 'categories' */
+							if ((ca_xlcColumn[ix].datatype == "S")|| (ca_xlcColumn[ix].datatype == "D")){
+								x_axis_value = x_axis_value + 	adv_mfArray.columns[i_ctr].headerText + "-" ;	
+							}
+							break;
+						}
+					}
+				}
+				obj = new Object
+				obj.xAxisName = x_axis_value;
+				_chartParam.addItemAt(obj,6);
+				
+				obj = new Object
+				obj.caption = cap_title;
+				_chartParam.addItemAt(obj,7);
+				
+				obj = new Object
+				obj.canvasBorderColor='666666';
+				_chartParam.addItemAt(obj,8);
+				obj = new Object
+				obj.canvasBorderThickness='1';
+				_chartParam.addItemAt(obj,9);
+				obj = new Object
+				obj.showPercentageValues='0';
+				_chartParam.addItemAt(obj,10);
+				obj = new Object
+				obj.exportEnabled='0';
+				_chartParam.addItemAt(obj,11);
+				obj = new Object
+				obj.exportFileName='myExportFile';
+				_chartParam.addItemAt(obj,12);
+				
+				_chartParam.refresh();
+				
+				return; 
+			}
+			private function populateFChart(event:Event):void{
+				
+				
+				if (chart_combo.selectedItem.value == 'Pie3D'){
+					forPieChart(event);
+				}else{
+					
+					var chart_head:String = "<chart>" ;
+					
+					var categories_head:String = "<categories>";
+					var categories_main:String = new String;
+					var categories_tail:String = "</categories>"; 
+					var total_categories:String = new String;
+					
+					
+					
+					var dataset_head:String = "<dataset seriesName='" + cb_forchart.selectedLabel + "'>" ;
+					var dataset_main:String = new String;	
+					var dataset_tail:String = "</dataset>"; 
+					var total_dataset:String = new String;
+					
+					
+					
+					
+					var chart_tail:String = "</chart>";
+					
+					
+					
+					
+					// Compute for Categories.
+					
+					/* get row from array */
+					for (var ctr_arr:int=0; ctr_arr<mfArray.length; ctr_arr++){
+						/* get the number of columns on the datagrid */
+						//var rowvalue:String = new String;
+						var category:String = "<category label='";
+						var data_set:String = "<set value='";
+						
+						//category = category + mfArray[ctr].client + "'/>";
+						//categories_main = categories_main + category;
+						/*
+						for (var i_column_ctr:int = 0; i_column_ctr < (adv_mfArray.columns.length - 1); i_column_ctr++){
+							// search for the colums on the xmlheaderdoc 
+							for (var ix:int=0;ix< ca_xlcColumn.length;ix++){
+								//looking for String Datatype.  The way I see it is that there
+								//will always be a column of a String Datatype on the first succeeding columns.
+								//
+								if (adv_mfArray.columns[i_column_ctr].dataField == ca_xlcColumn[ix].dataField){
+									// get only the String datatype for preparation on the 'categories' 
+									if ((ca_xlcColumn[ix].datatype == "S") || (ca_xlcColumn[ix].datatype == "D")){
+										if (mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] == null){
+											mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] = "";
+										}
+										category = category + mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] + "-"  ;
+										//				Alert.show(mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField]);					
+										break;
+									} 
+								} 
+							}
+						}
+						*/
+						//Alert.show("check 1");
+						///////////////////////////////////////////////////////////////////////////////
+						/*
+						for (var i_column_ctr:int = 0; i_column_ctr < (adv_mfArray.columns.length - 1); i_column_ctr++){
+							
+							
+							
+							for (var ix:int=0;ix< ca_xlcColumn.length;ix++){
+							
+								if (adv_mfArray.columns[i_column_ctr].dataField == ca_xlcColumn[ix].dataField){
+									if ((ca_xlcColumn[ix].datatype == "S") || (ca_xlcColumn[ix].datatype == "D")){
+										if (mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] == null){
+											mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] = "";
+										}
+										category = category + mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] + "-"  ;
+										break;
+									} 
+									
+								} 
+							}
+						}
+							*/
+						///////////////////////////////////////////////
+						for (var ix:int=0;ix< ca_xlcColumn.length;ix++){
+							if ((ca_xlcColumn[ix].datatype == "S") || (ca_xlcColumn[ix].datatype == "D")){
+								category = category + mfArray[ctr_arr][ca_xlcColumn[ix].dataField] + "-"  ;
+								//				Alert.show(mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField]);					
+								break;
+							}
+						}
+							
+						
+						
+						//////////////////////////////////////////////
+						categories_main = categories_main + category + "'/>";
+						data_set = data_set + mfArray[ctr_arr][cb_forchart.selectedItem.data]  + "'/>"
+						dataset_main = dataset_main + data_set;
+						
+					}	
+					/* save this is a string variable for category */
+					total_categories = categories_head + categories_main + categories_tail;
+					total_dataset = dataset_head + dataset_main + dataset_tail;
+					my_xml = chart_head + total_categories + total_dataset + chart_tail;
+		//	Alert.show(my_xml);       
+					xm = new XML(my_xml); 
+					populateFCParams();     
+					//	rendered(event);
+					/* Now Check for numeric selected from the ComboBox */	
+				}
+			}
+			
+			private function populateCB(event:Event):void{
+				//Alert.show(adv_mfArray.columns.length.toString());
+				//  First get the colums from the AdvancedDataGrid to populate the drop down list box.
+				/*
+				for (var i_column_ctr:int = 0; i_column_ctr < (adv_mfArray.columns.length - 1); i_column_ctr++){
+					for (var ix:int=0;ix< ca_xlcColumn.length;ix++){
+						
+						if (adv_mfArray.columns[i_column_ctr].dataField == ca_xlcColumn[ix].dataField){
+							if (ca_xlcColumn[ix].datatype == "N"){
+								obj = new Object
+								obj.data = ca_xlcColumn[ix].dataField;
+								
+								if (ca_xlcColumn[ix].title_header == '%'){
+									obj.headertitle = '% ' + ca_xlcColumn[ix-1].title_header;
+								} 
+								else{
+									obj.headertitle = ca_xlcColumn[ix].title_header;
+								}
+								ac_populatedd.addItem(obj);
+							} 
+							break;
+						} 
+					}
+					
+					
+				}
+				*/
+				
+				///////////////////////////////////////////////////////////////////////////////////////
+				//  First get the colums from the AdvancedDataGrid to populate the drop down list box.
+				
+				
+				//for (var i_column_ctr:int = 0; i_column_ctr < (adv_mfArray.columns.length - 1); i_column_ctr++){
+				
+				for (var i_column_ctr:int = 0; i_column_ctr < (ca_xlcColumn.length - 1); i_column_ctr++){
+					
+						
+							if (ca_xlcColumn[i_column_ctr].datatype == "N"){
+								obj = new Object
+								obj.data = ca_xlcColumn[i_column_ctr].dataField;
+								
+								if (ca_xlcColumn[i_column_ctr].title_header == '%'){
+									obj.headertitle = '% ' + ca_xlcColumn[i_column_ctr-1].title_header;
+								} 
+								else{
+									obj.headertitle = ca_xlcColumn[i_column_ctr].title_header;
+								}
+								ac_populatedd.addItem(obj);
+							} 
+							
+					
+					
+				}
+				
+				
+				
+				
+				
+			}
+			private function rendered(e:Event):void
+			{
+				fc.FCChartType = chart_combo.selectedItem.value;
+				fc.FCData(xm);
+				fc.FCParams(_chartParam);
+				fc.FCRender();   
+				
+			}
+			// Function invoked when chart type get changed by selecting conbo-box
+			private function change_chart(e:Event):void
+			{
+				// Changing chart type by FCChartType property				
+				// Calling FCrender function to take effect visually with a blank data.
+				
+				//populateFChart(e);
+				
+				if (e.currentTarget.selectedItem.value == 'Pie3D'){
+					forPieChart(e);
+				}
+				if (e.currentTarget.selectedItem.value != 'Pie3D'){
+					fc.FCChartType=e.currentTarget.selectedItem.value;
+					fc.FCData(xm);
+					fc.FCParams(_chartParam);
+					fc.FCRender();
+				}   
+			}
+			private function forPieChart(event:Event):void{
+				
+				
+				var chart_head:String = "<chart>" ;
+				var set_head:String = "<set label='>";
+				var set_main:String = new String;
+				var set_tail:String = "</>"; 
+				var total_set:String = new String;
+				
+				var chart_tail:String = "</chart>";
+				
+				for (var ctr_arr:int=0; ctr_arr<mfArray.length; ctr_arr++){
+					var set_:String = "<set label='";
+					var data_set_:String = "value='";
+					
+					//category = category + mfArray[ctr].client + "'/>";
+					//categories_main = categories_main + category;
+					
+					for (var i_column_ctr:int = 0; i_column_ctr < (adv_mfArray.columns.length - 1); i_column_ctr++){
+						
+						
+						// search for the colums on the xmlheaderdoc 
+						for (var ix:int=0;ix< ca_xlcColumn.length;ix++){
+							// looking for String Datatype.  The way I see it is that there
+							//will always be a column of a String Datatype on the first succeeding columns.
+							//
+							if (adv_mfArray.columns[i_column_ctr].dataField == ca_xlcColumn[ix].dataField){
+								// get only the String datatype for preparation on the 'categories' 
+								if ((ca_xlcColumn[ix].datatype == "S") || (ca_xlcColumn[ix].datatype == "D")){
+									if (mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] == null){
+										mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] = "";
+									}
+									set_ = set_ + mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] + "-"  ;
+									//				Alert.show(mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField]);					
+									break;
+									
+								} 
+								if (ca_xlcColumn[ix].datatype == "N"){
+									if (mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] == null){
+										mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] = "";
+									}
+									set_ = set_ + mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] + "-"  ;
+								
+									break;
+									
+								} 
+								
+							} 
+						}
+						
+						
+						
+						data_set_ = "' value='" + mfArray[ctr_arr][cb_forchart.selectedItem.data]  + "'/>"
+					}
+					
+
+					
+					
+					set_main = set_main + set_ + data_set_;
+				}
+				
+				pie_xml = chart_head + set_main + chart_tail;
+				//Alert.show(pie_xml);
+				pie_xm = new XML(pie_xml); 
+				//Alert.show(pie_xm.toXMLString());
+				//Alert.show("checkpoint 1");
+				populateFCParams();
+				//fc.FCChartType=event.currentTarget.selectedItem.value;
+				fc.FCChartType='Pie3D';
+				fc.FCData(pie_xm);
+				fc.FCParams(_chartParam);
+				fc.FCRender();   
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<!-- mx:AdvancedDataGrid id="adg1" dataProvider="{_chartParam}" width="100%">
+	
+	</mx:AdvancedDataGrid -->
+	
+	
+	
+	
+	
+	
+	<mx:HBox width="100%">
+		<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+				   height="27"
+				   width="78"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   click="{parentApplication.scholarcap_mousehovering(event,'',showlocal_crunch + ' Chart Console','BUTTON')}"
+				   
+				   />
+		<mx:Spacer width="5%"/>
+		<mx:Label text="Selection:  " fontSize="16" fontWeight="bold"/>
+		<local:HighViewCombobox id="cb_forchart" doc_id="1037" dataProvider="{ac_populatedd}" labelField="headertitle"
+								fontSize="14" color="#030000" prompt="No Selection" change="{populateFChart(event)}"
+								/>
+		
+		<mx:Label text="Select chart type:" fontSize="16" fontWeight="bold"/>
+		<local:HighViewCombobox id="chart_combo" doc_id="1038" change="change_chart(event)" fontSize="14" color="#030000" >
+			<mx:ArrayCollection>
+				<mx:Object label="Column3D" value='MSColumn3D'/>
+				<mx:Object label="Column Chart" value='ScrollColumn2D'/>
+				<mx:Object label="Line Chart" value='ScrollLine2D'/>
+				<mx:Object label="Area Chart" value='ScrollArea2D'/>
+				<mx:Object label="Pie Chart" value='Pie3D'/>
+				<!-- mx:Object label="Combi 2D" value='ScrollColumn2D'/ -->
+				<!-- mx:Object label="Combi DY 2D" value='ScrollCombiDY2D'/ -->
+			</mx:ArrayCollection>
+		</local:HighViewCombobox >
+		<mx:Button label="Refresh Me" click="{init(event);}"/>
+		
+		
+	</mx:HBox>
+	
+	
+	<!-- ns1:FusionCharts id="fc" FCChartType="MSColumn3D" width="100%" height="100%"
+	FCRenderEvent="rendered(event)"  FCDataXML="." 
+	
+	-->
+	<!--
+	<ns1:FusionCharts id="fc" FCChartType="MSColumn3D" width="100%" height="100%"
+	FCDataXML="." 
+	>	
+	<ns1:FCChartData  FCStyles="{chartStyle}"  ChartNoDataText="Please select a numeric value from the Selection Box" />
+	</ns1:FusionCharts>	
+	-->
+	<ns1:FusionCharts id="fc" FCChartType="MSColumn3D" width="100%" height="100%"
+					  FCDataXML="." 
+					  >	
+		<ns1:FCChartData  FCStyles="{chartStyle}"  ChartNoDataText="Please select a numeric value from the Selection Box" />
+	</ns1:FusionCharts>	
+	
+	
+	
+	<mx:HBox width="100%">
+		<!-- local:HighViewButton id="btn_viewSettings" doc_id="1039" label="View Settings"
+		useHandCursor="true"
+		buttonMode="true"
+		mouseChildren="false"
+		
+		
+		/ -->
+		<mx:Spacer width="100%"/>
+		<local:HighViewButton id="btn_close" doc_id="1040" label="Close" click="{titleWindow_close(event)}"/>
+		
+	</mx:HBox>
+	<!--
+	<mx:AdvancedDataGrid id="adg1" dataProvider="{ca_xlcColumn}" designViewDataType="tree">
+		
+	</mx:AdvancedDataGrid>
+	<mx:AdvancedDataGrid id="adg2" dataProvider="{mfArray}" designViewDataType="tree">
+		
+	</mx:AdvancedDataGrid>
+	-->
+</mx:TitleWindow> 

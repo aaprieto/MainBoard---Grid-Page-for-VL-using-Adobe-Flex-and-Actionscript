@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10" width="604" height="470" creationComplete="init(event);" 
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundImage=""
+				layout="horizontal"
+				
+				
+				xmlns:local="*">
+	
+	
+	<mx:Script> 
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.events.CloseEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy; 
+			
+			[Bindable]
+			public var arr_views:ArrayCollection;
+			[Bindable]
+			public var currentview:String;
+			[Bindable]
+			public var titleviews:String;
+			[Bindable]
+			public var currentfilter_views:String;
+			private function titleWindow_close(evt:Event):void { 
+				PopUpManager.removePopUp(this);
+			}
+			private function init(evt:Event):void {
+				currentview = "Current View: " + currentview;
+				
+				/*
+				if ( Application.application.parameters.av == 'N'){
+					btn_views_delete.enabled = false;
+					btn_views_delete.enabled = false;
+				}
+				*/
+				
+			}
+					]]>
+	</mx:Script>
+	<mx:VBox width="100%" height="100%">
+		<mx:HBox width="100%">
+			<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'',titleviews + ' Console','BUTTON')}"
+					   
+					   />     
+			<mx:Spacer width="50%"/>
+			<mx:Label id="lbl_views" text="{titleviews}" width="100%" textAlign="center"  fontSize="19" color="#364D6A" fontWeight="bold"
+					  rollOver="{parentApplication.mbdg_mousehovering(event,event.currentTarget.text,'Current Views','CURRENT VIEWS')}"
+					  rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+					  />
+			<mx:Spacer width="100%"/>
+			
+		</mx:HBox>
+		
+		<mx:Label id="txt_current_views" text="{currentview}" width="100%" textAlign="center"  fontSize="19" color="#030303" fontWeight="bold"
+				  rollOver="{parentApplication.mbdg_mousehovering(event,event.currentTarget.text,'Current Views','CURRENT VIEWS')}"
+				  rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+				  />
+		<mx:AdvancedDataGrid id="dg_views"  dataProvider="{arr_views}" width="100%" height="100%" 
+							 variableRowHeight="true"
+							 horizontalScrollPolicy="auto">
+			<mx:columns>
+				<mx:AdvancedDataGridColumn headerText="Code" dataField="filtercode" width="170" wordWrap="true" />
+				<mx:AdvancedDataGridColumn headerText="Description" dataField="filterdescription" wordWrap="true" width="280"/>
+				<mx:AdvancedDataGridColumn headerText="Default" dataField="default_view" wordWrap="true" width="50"/>
+			</mx:columns>
+		</mx:AdvancedDataGrid>
+		<!--
+		<mx:AdvancedDataGrid id="adg1" width="100%" height="100%">
+			<mx:columns>   
+				<mx:AdvancedDataGridColumn headerText="Column 1" dataField="col1"/>
+				<mx:AdvancedDataGridColumn headerText="Column 2" dataField="col2"/>
+				<mx:AdvancedDataGridColumn headerText="Column 3" dataField="col3"/>
+			</mx:columns>
+		</mx:AdvancedDataGrid>
+		-->
+		<!-- mx:AdvancedDataGrid id="dg_rendition" width="100%" dataProvider="{RenditionCollection}" height="100%" horizontalScrollPolicy="auto" dragEnabled="false" dropEnabled="false" dragMoveEnabled="false" verticalScrollPolicy="auto">
+		<mx:columns> 
+		<mx:AdvancedDataGridColumn id="rnd_rendcode" dataField="rendcode" headerText="Code" width="200" editable="false" />
+		<mx:AdvancedDataGridColumn id="rnd_renddesc" dataField="renddesc" headerText="Description" editable="false" />
+		</mx:columns>					
+		</mx:AdvancedDataGrid --> 	
+		
+		     
+		
+		
+		<mx:HBox horizontalGap="0" width="100%">
+			<mx:Button label="Apply" id="btn_apply"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button label="Default" id="btn_views_default" 
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button label="Settings" id="btn_views_settings" 
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button label="Delete" id="btn_views_delete" 
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button label="Close" click="{titleWindow_close(event)}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Spacer width="100%"/>
+		</mx:HBox>
+	</mx:VBox>
+	
+	
+</mx:TitleWindow>

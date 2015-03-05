@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Button xmlns:mx="http://www.adobe.com/2006/mxml" toggle="true" selected="false"  
+		   downSkin="@Embed(source='image/downbuttoncolor.PNG')"
+		 
+		    icon="@Embed('image/button_spacer.png')" creationComplete="init(event)"
+		   >   
+<!-- mx:Button xmlns:mx="http://www.adobe.com/2006/mxml" toggle="true" selected="false"  
+		   downSkin="@Embed(source='image/downbuttoncolor.PNG')"  
+	
+		
+		   
+		  -->
+	<mx:Style source="css/main.css"/> 
+	 <mx:Script>
+        <![CDATA[ 
+			import mx.controls.Alert;
+            [Bindable]
+            public var custom_id:Number = 0;
+            public var custom_code:String ="";
+            public var custom_label:String = "";
+			public var dd:String = "N";
+            public var doc_id:String = "";
+			/*
+			private function mousehover(event:Event):void{
+				//	Alert.show("Over");
+				this.setStyle("color","#66FFFF"); 
+			}
+			*/
+			private function init(event:Event):void{
+				
+			}
+			private function mousehover(event:Event):void{   
+				//	Alert.show("Over");
+				this.setStyle("color","#66FFFF"); 
+			}
+			private function mousehoverout(event:Event):void{
+				//	Alert.show("Over");
+				this.setStyle("color","black"); 
+			}
+			
+			
+			
+        ]]>
+    </mx:Script>
+</mx:Button>

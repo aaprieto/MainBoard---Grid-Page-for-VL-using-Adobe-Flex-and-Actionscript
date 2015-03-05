@@ -1,0 +1,16 @@
+<root>
+<Panel>
+<code>003</code>
+<title>Equipment WiP ActionGrid</title>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="Equipment" columnstart="0"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="equipment" dataField="equipment" title_header="Equipment" width="160" datatype="S"  wordwrap="false"  />
+<column columnId="1" columnName="equip_stat" dataField="status" title_header="Status" width="160" datatype="S"  wordwrap="false" />
+<column columnId="2" columnName="location" dataField="location" title_header="Location" width="160" datatype="S"  wordwrap="false" />
+<column columnId="3" columnName="type" dataField="type" title_header="Type" width="160" datatype="S"  wordwrap="false" />
+<column columnId="4" columnName="" dataField="" title_header="" width="1500" datatype="S" wordwrap="false"  />
+</AdvancedDataGridColumn>
+</root>

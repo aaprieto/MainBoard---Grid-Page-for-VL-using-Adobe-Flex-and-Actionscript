@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+				width="1600" height="800" 
+				backgroundImage=""
+				creationComplete="init()"
+				initialize="i_init()"
+				showCloseButton="true"
+        		close="titleWindow_close(event);"
+				
+				headerHeight="20"
+        		borderAlpha="1.0"
+        		borderColor="#cccccc"
+	 >
+	
+	<mx:Script>
+	<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+
+		 	
+	
+		[Bindable]
+		private var ArrayShow:ArrayCollection = new ArrayCollection;	
+		[Bindable]
+		public var sessid:String = new String;
+		[Bindable]
+		public var dd_mainBoard:String = new String;
+		[Bindable]
+		public var dd_rendition:String = new String;
+		[Bindable]
+		public var dd_usercode:String = new String;
+		[Bindable]
+		public var dd_compcode:String = new String;
+		[Bindable]
+		public var dd_passedmainboard:String = new String;
+		[Bindable]
+		public var dd_firstcolumn:String = new String;
+		[Bindable]
+		public var dd_field:String = new String;
+		[Bindable]
+		public var button_title:String = new String;
+		[Bindable]
+		public var code_description:String = new String;
+		[Bindable]
+		public var dd_application_entry:String = new String;
+		
+	
+		
+		private function i_init():void{
+			if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+      				this.width = 1200;
+      				this.height = 575;
+      			}
+      		
+		}
+		public var newObject1:datagrid_test = new datagrid_test();
+		private function init():void{
+			//Alert.show(sessid);
+			
+				//parentApplication.mousehoverpars = "NO";
+  		 		//parentApplication.mousehoverparslabel = "OFF"
+			//Alert.show(id + " : " + dd_firstcolumn);
+			
+						
+						newObject1 = new datagrid_test();
+						newObject1.mainBoard = dd_mainBoard;
+						newObject1.rendition = dd_rendition;
+						newObject1.myName_main = dd_usercode;
+						newObject1.height = vdivbox.height; 
+                		newObject1.id = dd_usercode;
+                		newObject1.my_c_code1 = dd_compcode;
+                		newObject1.my_sid = sessid;
+                		newObject1.dd_columnone = dd_firstcolumn;
+                		newObject1.dd_field = dd_field;
+                		newObject1.rendition = dd_passedmainboard;
+						newObject1.ag_application_entry = dd_application_entry;
+						ArrayShow.addItem(newObject1);
+						vdivbox.addChild(newObject1); 
+
+
+/*
+						newObject1 = new datagrid_test();
+						newObject1.mainBoard = c_id;
+						newObject1.myName_main = myName;
+						newObject1.height = (vdivboxheight / div); 
+                		newObject1.id = c_id;
+                		newObject1.my_c_code1 = my_c_code;
+                		newObject1.my_sid = session_id;
+						ArrayShow.addItem(newObject1);
+						vdivbox.addChild(newObject1);
+*/
+
+
+
+			return
+		}
+		private function titleWindow_close(evt:Event):void {
+ 		    //	clearMyArray();
+	            PopUpManager.removePopUp(this);
+        }
+       
+         private function launchEZLearnMenu(event:Event):void{
+  		 //	Alert.show(mousehoverparslabel);
+  		 	if (parentApplication.mousehoverparslabel == "OFF")
+  		 	{
+  	           	parentApplication.mousehoverparslabel = "ON"
+  	           	parentApplication.mousehoverpars = "YES";
+  	           	/*
+  	           	popezlearnmenu = EZLearnMenu(
+                PopUpManager.createPopUp(this, EZLearnMenu, true));
+                popezlearnmenu.mh_res = mousehoverpars;
+                popezlearnmenu.ses_id = session_id;
+                popezlearnmenu.e_z_learn_link = ezlearnlink;
+         		//popezlearnmenu["hoverswitch"].addEventListener(MouseEvent.CLICK,  switchedHover);
+         		popezlearnmenu["btn_ok"].addEventListener(MouseEvent.CLICK,  switchedHover); 
+         		*/
+      			 
+      		}
+      		else
+      		//if (mousehoverparslabel = "ON")
+  		 	{
+  		 		//popezlearnmenu.hoverswitch.label = "ON";
+  		 		parentApplication.mousehoverpars = "NO";
+  		 		parentApplication.mousehoverparslabel = "OFF"
+  	   		}
+      		
+         }
+	]]>
+</mx:Script>
+	<mx:HBox width="100%">
+		<mx:Button label="e-Z Learn {parentApplication.mousehoverparslabel}" id="btn_help" icon="@Embed('image/scholar_cap.png')"
+						fontFamily="Arial" textAlign="center"  height="28"
+						click="{launchEZLearnMenu(event)}" 
+						rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+				 		rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+					 	width="252"
+					 	styleName="{'highResolutionLabel'}"
+		 />
+		<mx:Spacer width="100%"/>
+		<mx:Label id="lbl_title" text="{button_title} - {dd_firstcolumn} - {code_description}" textAlign="center"  
+			fontSize="20" fontWeight="bold" fontFamily="Arial" color="#3D5068"
+			rollOver="{parentApplication.mbdg_mousehovering(event,'',button_title,'VISUALOBJ')}"
+			rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+			useHandCursor="true" buttonMode="true"
+			mouseChildren="false"/>
+		<mx:Spacer width="100%"/>
+		<mx:Button id="Close" label="Close" click="{titleWindow_close(event)}"/>
+	</mx:HBox>
+
+
+	
+
+	<mx:VBox id="vdivbox" height="100%" width="100%" borderColor="#FEFFFF" borderStyle="none" color="#071C20">
+	</mx:VBox>
+	
+</mx:TitleWindow>

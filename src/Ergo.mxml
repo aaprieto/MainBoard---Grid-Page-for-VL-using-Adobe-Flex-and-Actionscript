@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+ 
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="280" height="304"  verticalScrollPolicy="off"
+	    layout="vertical"
+        showCloseButton="false"
+        close="titleWindow_close(event);" x="720" y="200"  
+        dropShadowEnabled="true"
+        borderAlpha=".10" 
+        backgroundAlpha=".10"
+        headerHeight="7"
+        >
+      <mx:Script>
+      	<![CDATA[ 
+      		import mx.managers.PopUpManager;
+      		private function titleWindow_close(evt:Event):void {
+                 PopUpManager.removePopUp(this);
+           }
+      	]]>
+      </mx:Script> 
+      		<mx:VBox width="231">
+      		      		<mx:Label id="label_desc" text="Database Refresh ............" fontSize="13" fontWeight="bold" width="183" color="#FDFEFE"/>
+      		</mx:VBox>   
+      		<!-- mx:Image source="image/Lightning3.png"/ -->
+      		<!-- mx:Image source="image/hourglass.jpg" height="114" width="106"/ -->
+      		
+</mx:TitleWindow>
+

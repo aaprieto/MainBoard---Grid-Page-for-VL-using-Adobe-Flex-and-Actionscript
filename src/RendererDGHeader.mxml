@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!-- itemRenderers\dataGrid\myComponents\RendererDGHeader.mxml -->
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml">
+    <mx:Script>
+        <![CDATA[
+
+            [Embed(source="image/question_mark_hover.png")]
+            [Bindable]
+            public var sale:Class;            
+        ]]>
+    </mx:Script>
+
+   
+    <mx:Image height="20" source="{sale}"/>
+
+</mx:HBox>

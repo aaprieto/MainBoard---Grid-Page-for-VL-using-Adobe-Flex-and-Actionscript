@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="624" height="244"  verticalScrollPolicy="off"
+				layout="vertical"
+				title="Save Rendition"
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				borderColor="#DAD8D8"
+				backgroundColor="#FAFBFC"
+				creationComplete="init()"
+				backgroundImage=""
+				backgroundAlpha="1.0" styleName="glass" xmlns:local="*">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+			import mx.core.Application;
+			[Bindable]
+			public var sv_r_flag_type:String = new String;
+			[Bindable]
+			public var sv_rendcode:String = new String;
+			[Bindable]
+			public var sv_renddesc:String = new String;
+			[Bindable]
+			public var sc_default:String = new String;
+			
+			
+			private function init():void {
+				// Check user permission
+				if ( Application.application.parameters.ar == 'O'){
+						gen.enabled = false;
+				}
+				
+				
+				inputcode.setFocus();
+				uoc.selected = true;
+				default_no.selected = true;
+			
+				
+				if  (sv_r_flag_type == 'Modify'){
+					inputcode.enabled=false;
+					inputcode.text = sv_rendcode;
+					inputdescription.text = sv_renddesc;
+					
+					// Rendition as
+					if (sv_rendcode.substr(0,1) == '*'){
+						uoc.selected = true;
+						gen.selected = false;
+					} else {
+						uoc.selected = false;
+						gen.selected = true;
+					}
+					// Default?
+					if (sc_default == 'Y'){
+						default_yes.selected = true;
+						default_no.selected = false;
+					}else {
+						default_no.selected = true;
+						default_yes.selected = false;
+					}
+					// Default to fault.
+					gen.enabled = false;
+					uoc.enabled = false;
+					
+					
+				}
+				
+				
+				
+			}
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:Style source="css/main.css"/>
+	
+	<mx:HBox width="100%" id="hbox2">
+		<mx:Label text="Rendition Code" width="191" id="label1" fontWeight="bold" fontSize="14"/>
+		<mx:TextInput width="232" id="inputcode" text=""  maxChars="13" fontSize="14" fontWeight="bold"/>
+	</mx:HBox>
+	<mx:HBox width="100%" height="60" id="hbox3">
+		<mx:Label text="Rendition Description" width="191" id="label2" fontWeight="bold" fontSize="14"/>
+		<mx:TextArea width="324" height="55" id="inputdescription" text="" fontSize="14" fontWeight="bold"/> 
+	</mx:HBox>
+	
+	<mx:HBox width="100%" id="hbox1">
+		<mx:RadioButtonGroup id="radiogroup4"/>
+		<mx:Label text="User Rendition as:" width="189" fontWeight="bold" fontSize="14"/>
+		<mx:RadioButton id="gen" label="Generic" groupName="radiogroup4" width="149" />
+		<mx:RadioButton id="uoc" label="User Specific" groupName="radiogroup4" width="228" />
+	</mx:HBox>
+	<mx:HBox width="100%" id="hbox4">
+		<mx:RadioButtonGroup id="radiogroup5"/>
+		<mx:Label text="Save as Default?" width="189" fontWeight="bold" fontSize="14"/>
+		<mx:RadioButton id="default_yes" label="Yes" groupName="radiogroup5" width="149" />
+		<mx:RadioButton id="default_no" label="No" groupName="radiogroup5" width="228" />
+	</mx:HBox>
+	<mx:HBox width="100%">
+		<mx:Spacer width="100%"/>
+		<local:HighViewButton doc_id="1046" label="Save" id="btn_save_current"  />
+		<local:HighViewButton label="Cancel" doc_id="1047" id="btn_cancel" click="{titleWindow_close(event)}"/>
+	</mx:HBox>
+	
+</mx:TitleWindow>
+

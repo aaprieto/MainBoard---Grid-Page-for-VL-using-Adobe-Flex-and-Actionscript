@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ActionCommand.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				layout="vertical"
+				title="Action Commands"
+				showCloseButton="true"
+				close="titleWindow_close(event);" width="812" height="578" creationComplete="init();"
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				x="10" 
+				y="10"
+				backgroundImage=""
+				>
+	
+	<mx:HTTPService
+		id="tdJobCode" 
+		url="ae_tlch_xmlreq.php" 
+		result="tdActionCommandHandler(event)" 
+		fault="faultActionCommandHandler(event)"
+		method="POST"
+		contentType="application/xml"
+		
+		
+		> 
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{cc}</company>
+				<sid>{sid}</sid>
+				<parameters>{reqP}</parameters> 
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:Script source="AlertMessageHandler.as"/>	 
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*; 
+			import mx.controls.*;
+			import mx.collections.XMLListCollection;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+			[Bindable]
+			public var cc:String;
+			[Bindable]
+			public var sid:String;
+			[Bindable]
+			public var reqP:String;	    
+			[Bindable]
+			public var mbc:String;	 
+			[Bindable]
+			public var ArrActCmd:ArrayCollection;	 
+			[Bindable]
+			public var actioncmdxml:String;
+			
+			private function init():void{
+				dg_action.setFocus(); 
+				dg_action.selectedIndex = 0; 
+				reqP = "REFRESH,RETRIEVE|ACTIONCMDS|" + mbc + "|"; 
+				tdJobCode.send();
+			} 
+			
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function tdActionCommandHandler(evt:ResultEvent):void
+			{
+				if (evt.result.ezware_response.status == "OK"){
+					
+					
+					ArrActCmd = new ArrayCollection();
+					
+					if (evt.result.ezware_response.refresh_data.actioncommands.actioncommand == null)
+					{
+						ArrActCmd=new ArrayCollection()
+					}
+					else if (evt.result.ezware_response.refresh_data.actioncommands.actioncommand is ArrayCollection)
+					{
+						ArrActCmd=evt.result.ezware_response.refresh_data.actioncommands.actioncommand;
+					}
+					else if (evt.result.ezware_response.refresh_data.actioncommands.actioncommand is ObjectProxy)
+					{
+						ArrActCmd = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.actioncommands.actioncommand)); 
+					}
+					ArrActCmd.refresh(); 
+					
+					
+				} else	{
+					var s_ret:String = resultStatusagac(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}	
+				
+				
+				
+			}            
+			private function faultActionCommandHandler(evt:FaultEvent):void
+			{
+				var faultMessage:String = "The origin of this fault is:"+ evt.message; 
+				Alert.show(faultMessage, "Action Command Error opening file");
+			}	
+			private function resultStatusagac(string_result:String, string_reason:String):String{
+				var retstr:String = new String;
+				if (string_result == "EXPIRED"){
+					retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+				} 
+				if (string_result == "FAIL"){
+					retstr = string_reason;
+				} 
+				return retstr;
+			}
+		]]>
+	</mx:Script>
+	<mx:Style source="css/main.css"/> 
+	<mx:String id="info" />
+	
+	<mx:AdvancedDataGrid id="dg_action" dataProvider="{ArrActCmd}" verticalScrollPolicy="auto" horizontalScrollPolicy="auto" width="100%" height="100%">
+		<mx:columns>
+			<mx:AdvancedDataGridColumn dataField="command" headerText="Command" width="150"/>
+			<mx:AdvancedDataGridColumn dataField="description" headerText="Description" width="290"/>
+			<mx:AdvancedDataGridColumn dataField="jobcode" headerText="Job Code" width="140"/>
+			<mx:AdvancedDataGridColumn dataField="refresh" headerText="Refresh" width="100"/>
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	<mx:HBox width="100%">
+		<mx:Spacer width="100%"/>
+		<mx:Button id="btn_close" label="Close" click="titleWindow_close(event);"/>
+	</mx:HBox>
+	
+</mx:TitleWindow>

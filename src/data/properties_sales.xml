@@ -1,0 +1,30 @@
+<root>
+<Panel>
+<code>025</code>
+<title>Sales</title>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="General" columnstart="0"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="mrsf_001" dataField="client" title_header="Client" width="100" datatype="S" docid="" />
+<column columnId="1" columnName="mrsf_002" dataField="revenue_code" title_header="Revenue" width="90" datatype="S" docid="" />
+<column columnId="2" columnName="mrsf_003" dataField="warehouse" title_header="Whse" width="90" datatype="S" docid="" />
+<column columnId="3" columnName="mrsf_004" dataField="year" title_header="Year" width="80" datatype="S" docid="" />
+<column columnId="4" columnName="mrsf_005" dataField="salesman" title_header="Salesman" width="100" datatype="S" docid="" />
+<column columnId="5" columnName="mrsf_006" dataField="salesgroup" title_header="Sales Grp" width="100" datatype="S" docid="" />
+<column columnId="6" columnName="sale_001" dataField="sales_jan" title_header="January" width="200" datatype="N" docid="" />
+<column columnId="7" columnName="sale_002" dataField="sales_feb" title_header="Feburay" width="200" datatype="N" docid="" />
+<column columnId="8" columnName="sale_003" dataField="sales_mar" title_header="March" width="200" datatype="N" docid="" />
+<column columnId="9" columnName="sale_004" dataField="sales_apr" title_header="April" width="200" datatype="N" docid="" />
+<column columnId="10" columnName="sale_005" dataField="sales_may" title_header="May" width="200" datatype="N" docid="" />
+<column columnId="11" columnName="sale_006" dataField="sales_jun" title_header="June" width="200" datatype="N" docid="" />
+<column columnId="12" columnName="sale_007" dataField="sales_jul" title_header="July" width="200" datatype="N" docid="" />
+<column columnId="13" columnName="sale_008" dataField="sales_aug" title_header="August" width="200" datatype="N" docid="" />
+<column columnId="14" columnName="sale_009" dataField="sales_sep" title_header="September" width="200" datatype="N" docid="" />
+<column columnId="15" columnName="sale_010" dataField="sales_oct" title_header="October" width="200" datatype="N" docid="" />
+<column columnId="16" columnName="sale_011" dataField="sales_nov" title_header="November" width="200" datatype="N" docid="" />
+<column columnId="17" columnName="sale_012" dataField="sales_dec" title_header="December" width="200" datatype="N" docid="" />
+<column columnId="18" columnName="" dataField="" title_header="" width="1500" datatype="S" />
+</AdvancedDataGridColumn>
+</root>

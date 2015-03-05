@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="598" height="568"  horizontalScrollPolicy="off"
+	        layout="vertical"
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="10" y="10"  
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+ backgroundImage=""
+        creationComplete="init()" 
+        >
+
+
+<mx:Script>
+	<![CDATA[
+		import mx.containers.HBox;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+	 		import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	[Bindable]
+ 		    public var xlc_xmlColumns:Object;
+			
+			private function init():void {
+				for (var i:int=0;i<xlc_xmlColumns.length;i++)  { 
+					
+						if (i != (xlc_xmlColumns.length - 1)){  
+						 	var columnId:String = (xlc_xmlColumns[i]["columnId"]);
+			 				var title_header:String = (xlc_xmlColumns[i]["title_header"]);
+			 				var width:String = (xlc_xmlColumns[i]["width"]);
+			 				var datafield:String = (xlc_xmlColumns[i]["dataField"]).toString();
+			 				var datatype:String = (xlc_xmlColumns[i]["datatype"]).toString();
+					
+							// Create HBOX container to hold the Label and TextInput.
+							var hbox_entry:HBox = new HBox;
+								hbox_entry.width = vbox_entry.width;
+    							hbox_entry.setStyle("horizontalGap",0);
+    		 					hbox_entry.horizontalScrollPolicy="off"   
+    		 					
+					
+							//  Create Label and put it into the HBOX container.
+							var title_header_entry:Label;
+    							title_header_entry = new Label;                         //create the button
+    							title_header_entry.text = title_header + " :";      //set some properties
+    							//title_header_entry.setStyle("textAlign",'center');
+    							title_header_entry.width = (hbox_entry.width / 2);
+    							
+    							hbox_entry.addChild(title_header_entry);
+    							
+    						
+    						//  Create TextInput and put it into the HBOX container.	
+    						var text_input_entry:TextInput;
+    							text_input_entry = new TextInput;                         //create the button
+    							text_input_entry.id = datafield;      //set some properties
+    							text_input_entry.width= (hbox_entry.width / 2);
+    							hbox_entry.addChild(text_input_entry);
+    						
+    						// If all else succeeds....	
+    						vbox_entry.addChild(hbox_entry);	
+    				}	
+    		
+				}
+				
+									
+				
+								var hbox_entry_footer:HBox = new HBox;
+    		 						hbox_entry_footer.width = vbox_entry.width;
+    								hbox_entry_footer.setStyle("horizontalGap",0);
+    		 						hbox_entry_footer.horizontalScrollPolicy="off"   
+    		 					
+    		 					// Put Spacer so that the succeeding buttons will be placed on the far right end of the pop-up.
+    		 					/*
+    		 					var space:Spacer;
+    		 						space.width = hbox_entry_footer.width - (buttonSave.width + buttonClose.width);
+    		 						hbox_entry_footer.addChild(space); 
+    		 					*/
+    		   					var buttonSave:Button;
+    								buttonSave = new Button;                         //create the button
+    								buttonSave.label = "Save";      //set some properties
+    								hbox_entry_footer.addChild(buttonSave); 
+    		         			
+    		         			var buttonClose:Button;
+    								buttonClose = new Button;                         //create the button
+    								buttonClose.label = "Cancel";      //set some properties
+    								buttonClose.addEventListener("click",titleWindow_close);
+    								hbox_entry_footer.addChild(buttonClose);
+    		 						vbox_entry.addChild(hbox_entry_footer);
+				
+				
+			}  
+			           
+ 		    private function titleWindow_close(evt:Event):void {
+	            PopUpManager.removePopUp(this);
+           	}
+	]]>
+</mx:Script>
+
+	<mx:VBox id="vbox_entry" height="100%" width="90%"   fontWeight="bold" fontSize="14" >
+		<!-- mx:Spacer width="100%"/ -->
+	</mx:VBox>
+	
+</mx:TitleWindow>

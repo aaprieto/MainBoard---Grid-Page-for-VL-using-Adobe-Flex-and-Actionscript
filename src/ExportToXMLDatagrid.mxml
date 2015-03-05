@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"	width="820" height="274"  verticalScrollPolicy="off"
+				layout="vertical"
+				showCloseButton="true"
+				close="titleWindow_close(event);" 
+				x="600" y="550"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				creationComplete="init()"
+				backgroundImage=""
+				xmlns:local="*" xmlns:s="library://ns.adobe.com/flex/spark" headerHeight="15">
+	
+	
+	<mx:Script>    
+		<![CDATA[    
+			import mx.managers.PopUpManager;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			[Bindable]       
+			public var Arr_mr:ArrayCollection;
+			[Bindable]   
+			public var maintain:String;
+			
+			
+			[Bindable]   
+			public var g_code:String;
+			[Bindable]   
+			public var g_description:String;
+			
+			
+			private function init():void{
+				
+		
+			}    
+			private function titleWindow_close(evt:Event):void {
+				//Alert.show("this should close");
+				PopUpManager.removePopUp(this);
+				
+				
+				
+			}
+			
+		]]>
+	</mx:Script>
+	
+	
+	<mx:AdvancedDataGrid id="adg1" width="100%" height="100%" dataProvider="{Arr_mr}" sortableColumns="false">
+		
+		
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Map Name" dataField="mapper_cd" width="160" /> 
+			<mx:AdvancedDataGridColumn headerText="Description" width="150" dataField="mapper_ds" />
+			<mx:AdvancedDataGridColumn headerText="Trading Partner" width="150" dataField="tp_code" />
+			<mx:AdvancedDataGridColumn headerText="Name" dataField="tp_name" />
+			<mx:AdvancedDataGridColumn headerText="Transaction Set" dataField="trans_set" />
+			
+		</mx:columns>
+		
+	</mx:AdvancedDataGrid>
+	
+	
+</mx:TitleWindow>

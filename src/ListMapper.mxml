@@ -1,0 +1,694 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10" width="1076" height="470" creationComplete="init(event);" 
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundImage=""
+				layout="horizontal"
+
+				
+				xmlns:local="*">
+	<mx:states>           
+		<mx:State name="createmapper">       
+			<mx:SetProperty target="{dg_mapper}" name="width" value="1127"/>
+			<mx:AddChild relativeTo="{hbox2}" position="before">
+				<mx:VBox width="100%" id="hbox3" height="351">
+					<mx:Form id="form1" width="100%" height="273">
+						<mx:FormItem label="Map Name" width="446" fontWeight="bold" fontSize="13"> 
+							<mx:HBox horizontalGap="0">
+							<mx:Label text="*" color="#FE2B01"/>
+							<mx:TextInput id="ti_mapcode" width="183" maxChars="20"/>
+								
+							</mx:HBox>
+								
+						</mx:FormItem>
+						<mx:FormItem label="Map Description" fontSize="13" fontWeight="bold" width="470">
+							<mx:HBox horizontalGap="0">
+								<mx:Label text="*" color="#FE2B01"/>
+							<mx:TextArea width="238" id="ta_mapdescription"/>
+							</mx:HBox>
+						</mx:FormItem>
+						<mx:FormItem label="Trading Partner" width="579" fontWeight="bold" fontSize="13">
+							<mx:HBox horizontalGap="0">
+								
+									<mx:Label text="*" color="#FE2B01"/>
+								<mx:TextInput width="105" id="ti_tradingpartner" editable="false" backgroundColor="#DBDEB2"/>
+								<mx:Button id="btn_browse" icon="@Embed('image/icon_lookup.png')" click="{LaunchTradingParter(event)}"  
+										 width="33"/>
+								<mx:TextInput width="231" id="ti_tradingpartner_desc" editable="false" backgroundColor="#DBDEB2"/>
+							</mx:HBox>
+							    
+						</mx:FormItem>
+						<mx:FormItem label="Transaction Set" width="371" fontWeight="bold" fontSize="13">
+							<mx:HBox horizontalGap="0">
+								<mx:Label text="*" color="#FE2B01"/>
+							<mx:TextInput width="182" id="ti_transactionset" maxChars="20"/>
+							</mx:HBox>
+								
+								
+						</mx:FormItem>
+						<mx:FormItem label="Authentication File" width="576" fontWeight="bold" fontSize="13">
+							<mx:HBox horizontalGap="0">
+								<mx:Label text="*" visible="false"/>
+								<mx:TextInput width="105" id="ti_authenticationfile" maxChars="20" 
+											  editable="true" keyUp="{kb_auth(event)}"/>
+								<mx:Button id="btn_browse_authfile" icon="@Embed('image/icon_lookup.png')"   
+										   width="33" click="{LaunchAuthenticationFile(event)}"  />
+								<mx:TextInput width="231" id="ti_authenticationfiledesc" maxChars="20" editable="false" />
+							</mx:HBox>
+						</mx:FormItem>
+						<mx:FormItem label="Root Tag" width="371" fontWeight="bold" fontSize="13">
+							<mx:HBox horizontalGap="0">
+								<mx:Label text="*" visible="false"/>
+								<mx:TextInput width="182" id="ti_roottag" maxChars="20"/>
+							</mx:HBox>
+							
+							
+						</mx:FormItem>
+						<mx:HBox width="40%">
+							<mx:Button id="btn_submit" label="Submit" />
+							<mx:Spacer width="100%"/>	
+							<mx:Button id="cancel" label="Cancel" click="retstatus(event)"/>
+						</mx:HBox>
+					</mx:Form>
+				</mx:VBox>
+			</mx:AddChild>
+			<mx:RemoveChild target="{dg_mapper}"/>
+			<mx:AddChild relativeTo="{hbox3}" position="lastChild" target="{dg_mapper}"/>
+			<mx:RemoveChild target="{form1}"/>
+			<mx:AddChild relativeTo="{hbox3}" position="lastChild" target="{form1}"/>
+			<mx:SetProperty name="height" value="478"/>
+			<mx:SetProperty name="width" value="1158"/>
+		</mx:State>
+	</mx:states>
+	
+	
+	
+	<mx:HTTPService 
+		id="getauthenticationfilelist_listmapper" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"
+		fault="getauthenticationfilefaultHandler(event)"
+		result="authenticationFileHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>REFRESH,RETRIEVE|AUTHENTICATIONS|</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="retrieve_mapper" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerMapper(event)"
+		fault="FaultMapper(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="delete_mapper" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerMapperDelete(event)"
+		fault="FaultMapperDelete(event)"     
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParmsdelete}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="update_default_rendition" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerRenditionUpdate(event)"
+		fault="FaultRenditionUpdate(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParmsupdate}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:Script source="AlertMessageHandler.as"/>
+	<mx:Script> 
+		<![CDATA[
+			import com.utilities.Utils;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.events.CloseEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+			public var c_utils:Utils = new Utils();
+			public var poptr:TradingPartnerMaintenance;
+			public var popaf:AuthenticationFileMaintenance;
+			
+			[Bindable]
+			private var loc_reqParms:String = new String();
+			[Bindable]
+			private var loc_reqParmsdelete:String = new String();
+			[Bindable]
+			private var loc_reqParmsupdate:String = new String();
+			[Bindable]
+			public var loc_mbdcode:String = new String();
+			[Bindable]
+			public var loc_user:String = new String();
+			[Bindable]
+			public var loc_ccode:String = new String();
+			[Bindable]
+			public var loc_ag_application_entry:String = new String();
+				
+			
+			
+			[Bindable]
+			public var loc_sid:String = new String();
+			[Bindable]
+			public var MapperCollection:ArrayCollection = new ArrayCollection;
+			
+			private var helpWindow:TitleWindow;
+			
+			private function titleWindow_close(evt:Event):void { 
+				PopUpManager.removePopUp(this);
+			}
+			private function init(evt:Event):void {
+				
+				//Alert.show(loc_user + " : " + loc_ag_application_entry);
+				httpRequestRenditionUrl(parentApplication.application_entry);
+				//loc_reqParms = "REFRESH,RETRIEVE|GRIDRENDITIONS|" +  loc_user + "|" + loc_mbdcode + "|";
+				//loc_reqParms = "REFRESH,RETRIEVE|XMLMAPPINGS|" + loc_mbdcode + "|"  + loc_ccode + "|";
+				//Alert.show(parentApplication.application_entry);
+				if (loc_ag_application_entry == 'ml'){
+					
+					var s:String = "";
+					s = loc_user.substr(2,2);
+					loc_reqParms = "REFRESH,RETRIEVE|XMLMAPPERS|" + s + "|";
+					
+				}else {
+					loc_reqParms = "REFRESH,RETRIEVE|XMLMAPPERS||";
+				}
+				//Alert.show(loc_reqParms);
+				retrieve_mapper.send();   
+				
+			}    
+			
+			private function ResultHandlerMapper(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == 'OK' ) {
+					
+					MapperCollection = new ArrayCollection();
+					
+					if (evt.result.ezware_response.refresh_data.mappers != null){
+					
+						if (evt.result.ezware_response.refresh_data.mappers.data == null)
+						{
+							MapperCollection=new ArrayCollection();
+						}
+						else if (evt.result.ezware_response.refresh_data.mappers.data is ArrayCollection)
+						{
+							MapperCollection=evt.result.ezware_response.refresh_data.mappers.data;
+						}
+						else if (evt.result.ezware_response.refresh_data.mappers.data is ObjectProxy)
+						{
+							MapperCollection = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.mappers.data)); 
+						}
+						MapperCollection.refresh();
+					}	
+					
+				} else	{
+					
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}				
+				
+				
+				getauthenticationfilelist_listmapper.send();
+			}
+			
+			
+			private function ResultHandlerMapperDelete(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == "OK"){
+					
+					retrieve_mapper.send(); 
+					
+					
+				} else	{
+					
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}	
+				
+				
+			}
+			private function ResultHandlerRenditionUpdate(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == "OK"){
+					AlertMessageShow("Default will take effect the next time you enter the HighView. Otherwise, re-select the record and click on 'Apply' for the rendition to take effect without reloading. ");
+					retrieve_mapper.send(); 
+				} else	{
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}		
+				
+			}
+			private function FaultMapper(evt:FaultEvent):void
+			{
+				//var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow("Mapper Error");
+			}
+			private function FaultMapperDelete(evt:FaultEvent):void
+			{
+				AlertMessageShow("Delete Mapper Error");
+			}
+			private function FaultRenditionUpdate(evt:FaultEvent):void
+			{
+				AlertMessageShow("Update Default Mapper Error");
+			}
+			import mx.core.Application;
+			
+			private function RefreshPage(evt:Event):void{
+				/*
+				var urlRequest:URLRequest = new URLRequest(Application.application.url);
+				
+				navigateToURL(urlRequest,"_self");
+				PopUpManager.removePopUp(this);
+				*/	
+			}     
+			private function deleteMapper(evt:Event):void{
+				//loc_reqParmsdelete = "REFRESH,DELETE|RENDITION|" +  loc_user + "|" + loc_mbdcode + "|" + dg_rendition.selectedItem.rendcode + "|";
+				//loc_reqParmsdelete = "REFRESH,DELETE|XMLMAPPING|" + loc_mbdcode + "|" + dg_mapper.selectedItem.gdmappercd + "|";
+				loc_reqParmsdelete = "REFRESH,DELETE|XMLMAPPER|" + dg_mapper.selectedItem.mapper_cd+ "|";
+				delete_mapper.send();
+			}
+			private var pop_deleteconfirm:DeleteConfirm;
+			private function validateRendition(evt:Event):void{
+				if (dg_mapper.selectedItems.length == 0){
+					AlertMessageShow("Please select a row to delete.");
+					return;
+				}     
+				
+				/*
+				if (  (inputcode.text.toUpperCase()).substr(0,4) == "BASE"){
+				AlertMessageShow("'BASE' Code is not allowed");
+				return;
+				}
+				*/
+				/*
+				if (loc_user.toUpperCase() !=  'MAVES'){
+					
+					if (((dg_rendition.selectedItem.rendcode).toUpperCase()).substr(0,4) == 'BASE'){
+						AlertMessageShow("'BASE' delete not allowed.");
+						return;
+					}
+					
+				}
+				
+				if (dg_rendition.selectedItem.rendcode == 'MASTER'){
+					AlertMessageShow("'MASTER' delete not allowed.");
+					return;
+				}
+				
+				
+				
+				// Check user Permission.
+				if ( Application.application.parameters.ar == 'O'){
+					if((dg_rendition.selectedItem.rendcode).substr(0,1) != '*'){
+						AlertMessageShow("You are not allowed to delete a Generic Rendition");
+						return;
+					}
+				}
+				
+				*/
+				pop_deleteconfirm = DeleteConfirm(
+					PopUpManager.createPopUp(this, DeleteConfirm, true));
+				pop_deleteconfirm.del_filtercode = dg_mapper.selectedItem.mapper_cd;  
+				pop_deleteconfirm["btn_ok"].addEventListener("click",  handleDeleteConfirm);
+				pop_deleteconfirm["inputcode"].addEventListener("enter", handleDeleteConfirm);
+				
+			}
+			
+			public function handleDeleteConfirm( event:Event ) : void
+			{
+				if (pop_deleteconfirm.inputcode.text == "YES"){
+					PopUpManager.removePopUp(pop_deleteconfirm);	
+					deleteMapper(event);
+				}	
+				if (pop_deleteconfirm.inputcode.text != "YES"){
+					
+					pop_deleteconfirm.inputcode.setFocus();
+					pop_deleteconfirm.inputcode.drawFocus(true);
+					return;
+					
+				}
+			}	
+			public function updateDefaultRendition( event:Event ) : void
+			{
+				if (dg_mapper.selectedItems.length == 0){
+					AlertMessageShow("Please select a row to change default.");
+					return;
+				}
+				loc_reqParmsupdate = "REFRESH,UPDATE|DFLTRENDITION|" +  loc_user + "|" + loc_mbdcode + "|" + dg_mapper.selectedItem.rendcode + "|";
+				update_default_rendition.send();
+			}
+			public function httpRequestRenditionUrl(str_app:String):void{
+				if (str_app == 'ml'){
+					//retrieve_rendition.url = 'ae_tlch_ml_req.php'; 
+					delete_mapper.url = 'ae_tlch_ml_req.php'; 
+					update_default_rendition.url = 'ae_tlch_ml_req.php'; 
+					
+					retrieve_mapper.url = 'ae_tlch_ml_req.php'; 
+					getauthenticationfilelist_listmapper.url = 'ae_tlch_ml_req.php'; 
+					
+				} 
+			}
+			
+			private function resultStatusRendition(string_result:String, string_reason:String):String{
+				var retstr:String = new String;    
+				if (string_result == "EXPIRED"){
+					retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+				} 
+				if (string_result == "FAIL"){
+					retstr = string_reason;
+				} 
+				return retstr;       
+			}
+			
+			
+			private function retstatus(event:Event){
+				currentState = '';
+				btn_mapper_create.visible = true;
+				btn_mapper_modify.visible = true;
+				btn_mapper_copy.visible = true;
+				btn_mapper_delete.visible = true;
+				btn_mapper_close.visible = true;
+				dg_mapper.enabled = true;
+			}
+			
+			
+			
+			
+			
+		
+			private function LaunchTradingParter(event:Event):void{
+				
+				poptr = TradingPartnerMaintenance(
+					PopUpManager.createPopUp(this, TradingPartnerMaintenance, true)); 
+				
+				
+				poptr.tp_user_code = loc_user;
+				poptr.tp_sessid = loc_sid;
+				poptr.tp_company_code = loc_ccode;
+				
+				
+				poptr["adg_tp"].addEventListener(MouseEvent.CLICK, ClickDatagridViews_tp);
+				poptr["adg_tp"].addEventListener(KeyboardEvent.KEY_DOWN, EnterDatagridViews_tp);
+				
+				
+			}
+			
+			
+			private function LaunchAuthenticationFile(event:Event):void{
+				
+				popaf = AuthenticationFileMaintenance(
+					PopUpManager.createPopUp(this, AuthenticationFileMaintenance, true)); 
+				
+				
+				popaf.af_user_code = loc_user;
+				popaf.af_sessid = loc_sid;
+				popaf.af_company_code = loc_ccode;
+				
+				
+				popaf["adg_af"].addEventListener(MouseEvent.CLICK, ClickDatagridViews_af);
+				popaf["adg_af"].addEventListener(KeyboardEvent.KEY_DOWN, EnterDatagridViews_af);
+				
+				
+			}
+			
+			
+			
+			private function ClickDatagridViews_af(event:Event):void{
+				GetChosenDataViews_af(event);
+				
+				
+			}
+			private function EnterDatagridViews_af(event:KeyboardEvent):void{     
+				
+				if (event.keyCode == 27){
+					PopUpManager.removePopUp(popaf);
+					
+				}
+				if (event.keyCode == 13){
+					GetChosenDataViews_af(event);
+				}
+			}    
+			
+			
+			private function ClickDatagridViews_tp(event:Event):void{
+				GetChosenDataViews_tp(event);
+				
+				
+			}
+			private function EnterDatagridViews_tp(event:KeyboardEvent):void{     
+				
+				if (event.keyCode == 27){
+					PopUpManager.removePopUp(poptr);
+					
+				}
+				if (event.keyCode == 13){
+					GetChosenDataViews_tp(event);
+				}
+			}    
+			
+			private function GetChosenDataViews_tp(event:Event):void{
+				
+				ti_tradingpartner.text = poptr.adg_tp.selectedItem.tp_code;
+				ti_tradingpartner_desc.text = poptr.adg_tp.selectedItem.tp_desc;				
+				PopUpManager.removePopUp(poptr);
+				
+			}     
+			
+			private function GetChosenDataViews_af(event:Event):void{
+				if (popaf.adg_af.selectedItem.auth_code == "Clear"){
+					ti_authenticationfile.text = "";
+					ti_authenticationfiledesc.text = "";
+				} else {    
+				ti_authenticationfile.text = popaf.adg_af.selectedItem.auth_code;
+				ti_authenticationfiledesc.text = popaf.adg_af.selectedItem.auth_desc;				
+				}
+				
+				PopUpManager.removePopUp(popaf);
+				
+			}   
+			
+			
+			private function getauthenticationfilefaultHandler(evt:FaultEvent):void
+			{
+			
+				AlertMessageShow(evt.message.toString());
+			}
+			
+			[Bindable] private var Arr_af:ArrayCollection = new ArrayCollection;
+			private function authenticationFileHandler(event:ResultEvent):void
+			{   
+				if (event.result.ezware_response.status == 'OK' ) {
+					Arr_af = new ArrayCollection();
+					if (event.result.ezware_response.refresh_data.authentications.authentication == null)
+					{ 
+						Arr_af=new ArrayCollection()
+					}
+					else if (event.result.ezware_response.refresh_data.authentications.authentication is ArrayCollection)
+					{
+						Arr_af=event.result.ezware_response.refresh_data.authentications.authentication;
+					}
+					else if (event.result.ezware_response.refresh_data.authentications.authentication is ObjectProxy)
+					{
+						Arr_af = new ArrayCollection(ArrayUtil.toArray(event.result.ezware_response.refresh_data.authentications.authentication)); 
+					}
+					
+				} else	{    
+					
+					var retstr:String = new String();
+					if (event.result.ezware_response.status == "EXPIRED"){
+						retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+					} 
+					if (event.result.ezware_response.status == "FAIL"){
+						retstr = event.result.ezware_response.reason;
+					} 
+					AlertMessageShow(retstr);
+					return;
+				}	
+				//Alert.show(Arr_af.length.toString());
+				
+			}
+			private function kb_auth(event:Event):void{
+			
+				ti_authenticationfile.text = ti_authenticationfile.text.toUpperCase();
+				
+				var res_bool:String = "nothing";
+				
+				res_bool = checkIfExist(ti_authenticationfile.text);
+				if (res_bool == "nothing"){
+					
+					ti_authenticationfiledesc.text = "";
+				} 
+				if (res_bool != "nothing"){
+				
+					ti_authenticationfiledesc.text = res_bool;
+				}
+				
+			}
+			
+			public function checkIfExist(str:String):String{
+				str = c_utils.trim(str);
+				var str_ret:String = "nothing";
+				for(var i:int = 0;i<Arr_af.length;i++) {
+					
+					if (str == Arr_af[i]["auth_code"]){
+						str_ret =  Arr_af[i]["auth_desc"];
+						
+						break;
+					} 
+					
+				}
+				return str_ret;
+			}
+			
+			
+		]]>
+	</mx:Script>
+	<mx:VBox width="100%" height="100%">
+		<mx:HBox width="100%">
+			<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'','XML Data Map Console','BUTTON')}"
+					   
+					   />     
+			<mx:Spacer width="100%"/>
+			<mx:Label text="XML Data Mapper"  textAlign="center"  fontSize="19" color="#364D6A" fontWeight="bold"
+					  rollOver="{parentApplication.mbdg_mousehovering(event,event.currentTarget.text,'Renditions','RENDITIONS')}"
+					  rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+					  />
+			<mx:Spacer width="100%"/>
+			<mx:Spacer width="78"/>
+			
+		</mx:HBox>
+		
+		<!-- mx:Label id="txt_current" text="CurrentRendition" width="100%" textAlign="center"  fontSize="19" color="#030303" fontWeight="bold"
+				  rollOver="{parentApplication.mbdg_mousehovering(event,event.currentTarget.text,'Current Rendition','CURRENT RENDITION')}"
+				  rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+				  / -->
+		
+		
+		<local:ActionGridADGRendition
+			id="dg_mapper"
+			width="100%"
+			height="100%"
+			rowHeight="22"   
+			dataProvider="{MapperCollection}"
+			dragEnabled="false"
+			dropEnabled="false" dragMoveEnabled="false"
+			verticalScrollPolicy="auto"
+			allowMultipleSelection="false"
+			variableRowHeight="true"
+			headerStyleName="centerAlignDataGridCol"
+			horizontalGridLines="true"
+			verticalGridLines="true"
+			horizontalGridLineColor="black"
+			verticalGridLineColor="black" borderColor="#010101" borderThickness="1"
+			
+			        
+			   
+			>          
+			<local:columns>
+				<mx:AdvancedDataGridColumn id="mpr_code" dataField="mapper_cd" headerText="Map Name" width="150" wordWrap="true"  editable="false" />
+				<mx:AdvancedDataGridColumn id="mpr_desc" dataField="mapper_ds" headerText="Description" width="160"  editable="false" wordWrap="true" />
+				<mx:AdvancedDataGridColumn id="mpr_tradingpartner" dataField="tp_code" headerText="Trading Partner"  width="150" editable="false" wordWrap="true" />
+				<mx:AdvancedDataGridColumn id="mpr_tradingpartnerdesc" dataField="tp_name" headerText="Trading Partner Name"  width="200" editable="false" wordWrap="true" />
+				<mx:AdvancedDataGridColumn id="mpr_transactionset" dataField="trans_set" headerText="Transaction Set"  width="150" editable="false" wordWrap="true" />
+				<mx:AdvancedDataGridColumn id="mpr_authenticationfile" dataField="auth_file" headerText="Authentication File"  width="150" editable="false" wordWrap="true" />
+				<mx:AdvancedDataGridColumn id="mpr_roottag" dataField="root_tag" headerText="Root Tag"  width="100" editable="false" wordWrap="true" />
+				     
+			</local:columns>
+		</local:ActionGridADGRendition>     
+		
+		
+		
+		<mx:HBox horizontalGap="0" id="hbox2" width="100%">
+			<!--
+			<mx:Button id="btn_rendition_switch" label="Apply" click="{RefreshPage(event);}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button id="btn_rendition_default" label="Default" click="{updateDefaultRendition(event)}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			-->
+			<mx:Button id="btn_mapper_create" label="Create"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button id="btn_mapper_modify" label="Modify"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button id="btn_mapper_copy" label="Copy"  
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button id="btn_mapper_delete" label="Delete"  click="{validateRendition(event)}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<!--mx:Button id="btn_export_to_xml" label="Export to XML" 
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/ -->
+			<mx:Spacer width="100%"/>
+			<mx:Button id="btn_mapper_close" label="Close" click="{titleWindow_close(event)}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			
+		</mx:HBox>
+	</mx:VBox>
+	
+	
+</mx:TitleWindow>

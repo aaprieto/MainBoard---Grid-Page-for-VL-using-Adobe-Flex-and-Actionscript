@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml" 
+			  width="85" height="25"
+			  fontSize="14" fontWeight="bold" color="#010101"
+			  fontFamily="Verdana"
+			  cornerRadius="10" 
+			  borderStyle="solid"
+			  textAlign="center" backgroundColor="#DFF1F1" backgroundAlpha="1.0" editable="false"
+			  focusOut="{BtnFocusOut(event)}" 
+			  focusIn="{BtnFocusIn(event) }" 
+			  
+			  mouseOver="{BtnFocusIn(event) }"
+			  mouseOut="{BtnFocusOut(event)}" 
+			  
+			  useHandCursor="true" buttonMode="true"
+			  mouseChildren="false"   
+			  
+			  creationComplete="init()"
+			  
+			  dropShadowEnabled="true"
+			  shadowDirection= "right"
+			  shadowDistance= "10"
+			  >
+	
+	<mx:Script>
+		<![CDATA[ 
+			
+			//btn_cancel.addEventListener(MouseEvent.MOUSE_DOWN, BtnCancelChangeStyleDown);
+			//	btn_cancel.addEventListener(MouseEvent.MOUSE_UP, BtnCancelChangeStyleUp);
+			private function BtnFocusOut(event:Event):void{
+				this.drawFocus(false);
+				this.styleDeclaration.setStyle("backgroundColor","#DFF1F1");
+			}
+			
+			private function BtnFocusIn(event:Event):void{
+				this.setFocus();
+				this.drawFocus(true);
+				this.setStyle("backgroundColor","#85e7ff");
+			}    
+			private function init():void{
+				this.addEventListener(MouseEvent.MOUSE_DOWN, BtnCancelChangeStyleDown);
+				this.addEventListener(MouseEvent.MOUSE_UP, BtnCancelChangeStyleUp);
+			}
+			
+			private function BtnCancelChangeStyleDown(event:Event):void{
+					this.setStyle("backgroundColor","green");
+					this.setStyle("shadowDistance", "0");
+			}
+			
+			private function BtnCancelChangeStyleUp(event:Event):void{
+					this.setStyle("backgroundColor","#66FFFF");
+					this.setStyle("shadowDistance", "10");
+			   
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:TextInput>

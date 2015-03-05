@@ -1,0 +1,961 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+				width="1098" height="800" 
+				backgroundImage=""
+				creationComplete="init()"
+				initialize="i_init()"
+				showCloseButton="true"
+        	
+				headerHeight="20"
+        		borderAlpha="1.0"
+        		borderColor="#cccccc"
+        		xmlns:local="*" 
+	 >
+	    
+	<mx:states>
+		<mx:State name="SaveRendition">
+			<mx:AddChild relativeTo="{dataGrid2}" position="before">
+				<mx:HBox width="100%" id="hbox2">
+					<mx:Label text="Workflow Code" width="191" id="label1" fontWeight="bold" fontSize="14"/>
+					<mx:TextInput  backgroundColor="#85E7FF"  width="232" id="inputcode" text=""  maxChars="13" fontSize="14" fontWeight="bold" keyUp="{validateBase(event)}"/>
+				</mx:HBox>
+			</mx:AddChild>
+				<mx:AddChild relativeTo="{dataGrid2}" position="before">
+					<mx:HBox width="100%" height="60" id="hbox3">  
+					<mx:Label text="Workflow Description" width="191" id="label2" fontWeight="bold" fontSize="14"/>
+					<mx:TextArea   backgroundColor="#85E7FF"  width="324" height="55" id="inputdescription" text="" fontSize="14" fontWeight="bold"/> 
+				</mx:HBox>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{dataGrid2}" position="before">
+				<mx:HBox width="100%">
+					<mx:Spacer width="100%"/>
+					<local:HighViewButton doc_id="1046" label="Submit" id="btn_save_current" click="{saveRendition(event)}"  />
+					<local:HighViewButton label="Cancel" doc_id="1047" id="btn_cancel" click="{currentState	= ''}"/>
+				</mx:HBox>
+			</mx:AddChild>	
+		</mx:State>
+		
+		
+	</mx:states>
+
+	<mx:HTTPService 
+		id="retrieverendition" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="ListHandler(event)" 
+		method="POST" 
+		fault="faultListHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{r_company_code}</company>
+				<sid>{r_sessid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="retrievemodifyrendition" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="ModifyListHandler(event)" 
+		method="POST" 
+		fault="ModifyfaultListHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{r_company_code}</company>
+				<sid>{r_sessid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="saverenditionbycreate" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		result="CreateResultHandlerRendition(event)"
+		fault="CreatefaultListHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{r_company_code}</company>
+				<sid>{r_sessid}</sid>
+				<parameters>{finalRenditionXML}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:Script source="AlertMessageHandler.as"/>
+	
+	
+	<mx:Script>
+	<![CDATA[
+		import com.utilities.Utils;
+		
+		import mx.collections.ArrayCollection;
+		import mx.controls.*;
+		import mx.controls.Alert;
+		import mx.core.Application;
+		import mx.events.CloseEvent;
+		import mx.events.DragEvent;
+		import mx.managers.DragManager;
+		import mx.managers.PopUpManager;
+		import mx.rpc.events.*;
+		import mx.utils.ArrayUtil;
+		import mx.utils.ObjectProxy;
+
+		 	[Bindable]
+				public var r_sessid:String = new String;
+			[Bindable]
+				public var r_company_code:String = new String;
+			[Bindable]
+				public var r_user_code:String = new String;
+			[Bindable]
+				public var r_passed_mainboard:String = new String;
+			[Bindable]
+				public var r_passed_mainboardtitle:String = new String;
+			[Bindable]
+				public var r_passed_eventtitle:String = new String;
+			[Bindable]
+				public var r_file_passed:String = new String;	
+			[Bindable]
+				public var r_file_modify:String = new String;	
+			[Bindable]
+				public var r_description_modify:String = new String;	
+			[Bindable]
+				public var r_default_modify:String = new String;	
+			[Bindable]
+				private var reqParms:String = new String;
+			[Bindable]
+				private var RenditiontdObjectCollection:ArrayCollection = new ArrayCollection;
+			[Bindable]	
+				private var UserRenditiontdObjectCollection:ArrayCollection = new ArrayCollection;
+			[Bindable]
+				private var finalRenditionXML:String = new String;
+			[Bindable]
+				private var default_flag:String = new String;
+			[Bindable]
+				public var r_flag_type:String = new String; 
+			[Bindable]
+				public var r_lock_columns:int = new int;
+		[Bindable]
+		public var r_array_1:ArrayCollection = new ArrayCollection;
+		
+				public var c_utils:Utils = new Utils();
+		
+				private var TempRenditiontdObjectCollection:ArrayCollection = new ArrayCollection;
+		
+		private function i_init():void{
+			if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+      				this.width = 1200;
+      				this.height = 575;
+      			}
+      		
+		}
+		private function validateBase(event:KeyboardEvent):void{
+			
+			//if ((inputcode.text).toUpperCase() == 'BASE'){
+				/*
+			if(((inputcode.text).toUpperCase()).substr(0,4) == 'BASE'){	
+				
+				
+				hbox1.enabled = false;
+				uoc.selected = false;
+				gen.selected = true;
+			} else {
+				hbox1.enabled = true;
+				uoc.selected = true;
+				gen.selected = false;
+			}
+			*/
+		}
+		private function init():void{
+			//dataGrid2.addEventListener( DragEvent.DRAG_OVER, handlerDragOver);
+			
+			httpRequestUrlReditionCM(parentApplication.application_entry);
+			reqParms = "REFRESH,RENDITION," + r_passed_mainboard + "," + r_user_code + "," + r_file_passed;
+      	//	retrieverendition.send();
+		}
+		public function handlerDragOver(event:DragEvent):void{
+			var dropIndex:int        = dataGrid2.calculateDropIndex(event);
+			var rowsDisplayed:Number = dataGrid2.rowCount;
+			var topvisibleIndex:int  = dataGrid2.verticalScrollPosition;
+			var botvisibleIndex:int  = topvisibleIndex + rowsDisplayed;
+			
+			
+			if ( dropIndex <= topvisibleIndex) {
+				
+				dataGrid2.verticalScrollPosition = Math.max( dataGrid2.verticalScrollPosition- 1, 0 );
+				
+			} else if( dropIndex >= botvisibleIndex - 1 ){
+				
+				dataGrid2.verticalScrollPosition += 1;
+			}
+		}	
+			
+		private function titleWindow_close(evt:Event):void {
+ 		        PopUpManager.removePopUp(this);
+        }
+       private function ListHandler(evt:ResultEvent):void{
+       	
+			
+			if (evt.result.ezware_response.status == 'OK' ) {
+				
+				RenditiontdObjectCollection=new ArrayCollection()
+				var suf:String = "data";
+				var mainBoard:String = "RENDITION";
+				if (evt.result.ezware_response.refresh_data[mainBoard][suf] == null)
+            	{
+                	RenditiontdObjectCollection=new ArrayCollection()
+            	}
+            	else if (evt.result.ezware_response.refresh_data[mainBoard][suf] is ArrayCollection)
+            	{
+              		RenditiontdObjectCollection=evt.result.ezware_response.refresh_data[mainBoard][suf];
+            	}
+            	else if (evt.result.ezware_response.refresh_data[mainBoard][suf] is ObjectProxy)
+            	{
+               		RenditiontdObjectCollection = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data[mainBoard][suf])); 
+            	}
+					RenditiontdObjectCollection.refresh();
+					 
+					
+					UserRenditiontdObjectCollection = new ArrayCollection();
+					
+					if (r_flag_type == 'Create'){
+						// Work on the lock columns	
+						for (var i:int=0;i<r_lock_columns;i++){
+							var obj:Object = new Object;
+							obj.type = RenditiontdObjectCollection[i].type;
+							obj.columnname = RenditiontdObjectCollection[i].columnname;
+							obj.headertext = RenditiontdObjectCollection[i].headertext;
+							obj.bgcolor = RenditiontdObjectCollection[i].bgcolor;
+							UserRenditiontdObjectCollection.addItem(obj);
+						} 
+					}
+					if (r_flag_type == 'Modify'){
+						reqParms = "REFRESH,RENDITION," + r_passed_mainboard + "," + r_user_code + "," + r_file_modify;
+						retrievemodifyrendition.send();
+					}
+					
+					
+					//  Now time to remove the locked columns on the left datagrid.
+					var arr_remove:Array = new Array();
+					for (var x:uint=0;x<RenditiontdObjectCollection.length;x++){
+						if(x < r_lock_columns){ 
+							arr_remove.push(x);
+						}			
+						
+					}
+					arr_remove.sort(Array.NUMERIC | Array.DESCENDING);
+					for (var b:uint=0;b<arr_remove.length;b++){
+						RenditiontdObjectCollection.removeItemAt(arr_remove[b]);
+					}  
+					
+					
+					
+			} else	{
+				
+				var s_ret:String = resultStatusRenditionCM(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+				AlertMessageShow(s_ret);
+				return;
+			}			
+					
+				
+					
+					
+ 		}
+		
+		private function ModifyListHandler(evt:ResultEvent):void{
+			
+			
+			
+			if (evt.result.ezware_response.status == "OK"){
+			
+		
+			
+			
+					UserRenditiontdObjectCollection=new ArrayCollection()
+					var suf:String = "data";
+					var mainBoard:String = "RENDITION";
+					if (evt.result.ezware_response.refresh_data[mainBoard][suf] == null)
+					{
+						UserRenditiontdObjectCollection=new ArrayCollection()
+					}
+					else if (evt.result.ezware_response.refresh_data[mainBoard][suf] is ArrayCollection)
+					{
+						UserRenditiontdObjectCollection=evt.result.ezware_response.refresh_data[mainBoard][suf];
+					}
+					else if (evt.result.ezware_response.refresh_data[mainBoard][suf] is ObjectProxy)
+					{
+						UserRenditiontdObjectCollection = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data[mainBoard][suf])); 
+					}
+					UserRenditiontdObjectCollection.refresh();
+					
+					
+					
+			} else	{
+				
+				var s_ret:String = resultStatusRenditionCM(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+				AlertMessageShow(s_ret);
+				return;
+			}	
+			
+			
+			
+		}
+		
+		private var popcmrendition:RenditionCM
+		private function CreateResultHandlerRendition(evt:ResultEvent):void{
+			if (evt.result.ezware_response.status == 'OK'){
+				PopUpManager.removePopUp(popsaverendition);
+				PopUpManager.removePopUp(this);
+				_callbackFunction(null); 
+			} else	{
+				var s_ret:String = resultStatusRenditionCM(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+				AlertMessageShow(s_ret);
+				return;
+			}	
+		}
+		private function CreatefaultListHandler(evt:FaultEvent):void
+		{
+			
+			var faultMessage:String = "The origin of this fault is: " + evt.message;
+			AlertMessageShow("Error in saving XML to Database");
+		}
+		private function faultListHandler(evt:FaultEvent):void
+		{
+			
+			var faultMessage:String = "The origin of this fault is: " + evt.message;
+			AlertMessageShow("Error opening file for Retrieving Rendition");
+		}
+		private function ModifyfaultListHandler(evt:FaultEvent):void
+		{
+			
+			var faultMessage:String = "The origin of this fault is: " + evt.message;
+			AlertMessageShow("Error opening file for Modified Rendition");
+		}
+		 private function selectAlldg1(event:Event):void {
+           			var arr:Array = new Array();
+       					for (var a:uint=dataGrid1.dataProvider.length -1 ;a>0;a--){	
+         					arr.push(a);
+       					}
+       					arr.push(0);
+						arr = AscendingSortArray(arr);
+						dataGrid1.selectedIndices = arr;
+		 }
+		 private function selectAlldg2(event:Event):void {
+           				var arr:Array = new Array();
+       					for (var a:uint=dataGrid2.dataProvider.length -1 ;a>0;a--){	
+         				arr.push(a);
+       					}
+       					arr.push(0);
+						arr = AscendingSortArray(arr);
+       					dataGrid2.selectedIndices = arr;
+         }
+ 	
+        private function clearall(event:Event):void {
+  	        		
+			var arr:Array = new Array();
+			for (var a:uint=dataGrid2.dataProvider.length - 1;a>0;a--){	
+				arr.push(a);
+			}
+			arr.push(0);
+			arr = AscendingSortArray(arr);
+			dataGrid2.selectedIndices = arr;
+			removeItem(event);
+       }
+         private function datagrid1Click(event:Event):void {
+  	        	var arrclick:Array = new Array();
+       					for(var a:uint=0;a<dataGrid1.selectedItems.length;a++){
+       					arrclick.push(dataGrid1.selectedIndices[a]);
+       					}
+       					arrclick = AscendingSortArray(arrclick);
+						dataGrid1.selectedIndices = arrclick;
+       }
+        private function datagrid2Click(event:DragEvent):void {
+		    	var arrclick:Array = new Array();
+       					for(var a:uint=0;a<dataGrid2.selectedItems.length;a++){
+       					arrclick.push(dataGrid2.selectedIndices[a]);
+       					}
+						arrclick = SortArray(arrclick);
+						for(var b:uint=0;b<arrclick.length;b++){
+							if (arrclick[b] < r_lock_columns){
+								AlertMessageShow('Moving of locked columns are not allowed');
+								event.preventDefault();
+								break;
+							}
+						}
+						dataGrid2.selectedIndices = arrclick;
+	   }
+       	private function removeItem(evt:Event):void {
+              
+			var arr_rem:Array = new Array();
+               var idx:int = new int;
+               for(var a:uint=0;a<dataGrid2.selectedItems.length;a++){
+       					idx = dataGrid2.selectedIndices[a];
+       						arr_rem.push(idx);
+               } 
+              arr_rem.sort(Array.NUMERIC | Array.DESCENDING);
+              for (var b:uint=0;b<arr_rem.length;b++){
+				  
+				//  if(arr_rem[b] >= r_lock_columns){ 
+               		   UserRenditiontdObjectCollection.removeItemAt(arr_rem[b]);
+				  // }			
+					 
+				}               
+			
+        } 
+        private var popaddpanel:PanelName;
+        private function addPanelItem(evt:Event):void {
+			
+				var si:int = dataGrid2.selectedItems.length
+				if (si > 1){
+					AlertMessageShow("Select only 1 row.");
+					return;
+				}
+				if (si < 1){
+					AlertMessageShow("Select Menu Item to insert a Group.");
+					return;
+				}
+				// In order to compensate the 0 array indexing.
+				/*
+				var sel_in:int = dataGrid2.selectedIndex + 1;
+				if (sel_in <= r_lock_columns){
+					AlertMessageShow("Adding of panels on Locked Columns are not allowed");
+					return;
+				} 
+				*/
+				if (si == 1){
+					
+					if (dataGrid2.selectedItem.job_cd == "Group"){
+						AlertMessageShow("Please select a 'Non Group Row'.")
+						return; 
+					}
+					if (dataGrid2.selectedItem.job_cd != "Group"){
+						popaddpanel = PanelName(
+                		PopUpManager.createPopUp(this, PanelName, true));
+                		popaddpanel["btn_submit"].addEventListener("click", addnewPanel);
+                		popaddpanel["ti_panelname"].addEventListener(KeyboardEvent.KEY_DOWN, addnewPanelkeyboard);
+					}
+					
+				}
+			
+        }
+        
+		 private function addnewPanelkeyboard(event:KeyboardEvent):void {   
+		 	if (event.keyCode == 13){
+		 		popaddpanel.btn_submit.setFocus();
+		 		popaddpanel.btn_submit.drawFocus(true);
+		 		addnewPanel(event)
+		 	}
+		 }
+         public function addnewPanel(event:Event):void {    
+
+            
+            if (popaddpanel.ti_panelname.text.length == 0){
+            	AlertMessageShow("Name should not be blank.");
+            	return;
+            }
+            
+            if (popaddpanel.ti_panelname.text.length > 0){
+            	popaddpanel.ti_panelname.text = c_utils.trim(popaddpanel.ti_panelname.text);
+            	var flag:Boolean = true;
+            	for( var i:int = 0; i < UserRenditiontdObjectCollection.length; i++ )
+					{
+						if (((UserRenditiontdObjectCollection[i].job_desc).toUpperCase() == (popaddpanel.ti_panelname.text).toUpperCase())&&(UserRenditiontdObjectCollection[i].job_cd == "Group")){
+							AlertMessageShow("Group name '" + popaddpanel.ti_panelname.text + "' already exists in the current WorkFlow." ); 
+							flag = false;
+							break;
+						}
+					}
+				if (flag == false){
+					return;
+				}
+				if (flag == true){
+					
+					// Continue to add item to datagrid 2
+					 var obj:Object = new Object();
+                		 obj.job_cd = 'Group';
+                		 //obj.columnname = '';
+                		 obj.job_desc = popaddpanel.ti_panelname.text;
+						 obj.bgcolor = 'green';
+                		 UserRenditiontdObjectCollection.addItemAt(obj, dataGrid2.selectedIndex); 
+				}
+            }
+            	PopUpManager.removePopUp(popaddpanel);
+                
+         }
+
+         private function dragDropHandler(event:DragEvent):void {    
+
+             // This prevents inserting a row automatically.
+           //                    event.preventDefault();
+                
+            } 
+         private function AscendingSortArray(myArray:Array):Array
+			{ 
+				var tempValue:String; 
+				var done:String = "no"; 
+				var swap:String = "no"; 
+				var i:int; 
+				var fileTemp1:int; 
+				var fileTemp2:int; 
+				while (done == "no") { 
+					for (i = 0; i < (myArray.length - 1); i++) {
+					 
+						fileTemp1 = myArray[i]; 
+						fileTemp2 = myArray[i+1]; 
+						if (fileTemp1 > fileTemp2) { 
+							tempValue = myArray[i]; 
+							myArray[i] = myArray[i+1]; 
+							myArray[i+1] = tempValue; 
+							swap = "yes"; 
+						}
+						 
+						
+			
+					} 
+					
+					if (swap == "no") { 
+						done = "yes"; 
+					} 
+						swap = "no"; 
+				 
+				  
+				} 
+				return myArray; 
+			}          
+         private function SortArray(myArray:Array):Array
+			{ 
+				var tempValue:String; 
+				var done:String = "no"; 
+				var swap:String = "no"; 
+				var i:int; 
+				var fileTemp1:int; 
+				var fileTemp2:int; 
+				while (done == "no") { 
+					for (i = 0; i < (myArray.length - 1); i++) {
+						fileTemp1 = myArray[i]; 
+						fileTemp2 = myArray[i+1]; 
+						if (fileTemp1 < fileTemp2) { 
+							tempValue = myArray[i]; 
+							myArray[i] = myArray[i+1]; 
+							myArray[i+1] = tempValue; 
+							swap = "yes"; 
+						}
+					} 
+					if (swap == "no") { 
+						done = "yes"; 
+					} 
+						swap = "no"; 
+				} 
+				return myArray; 
+			} 
+			  private function launchEZLearnMenu(event:Event):void{
+  		 	if (parentApplication.mousehoverparslabel == "OFF")
+  		 	{
+  	           	parentApplication.mousehoverparslabel = "ON"
+  	           	parentApplication.mousehoverpars = "YES";
+  	           	/*
+  	           	popezlearnmenu = EZLearnMenu(
+                PopUpManager.createPopUp(this, EZLearnMenu, true));
+                popezlearnmenu.mh_res = mousehoverpars;
+                popezlearnmenu.ses_id = session_id;
+                popezlearnmenu.e_z_learn_link = ezlearnlink;
+         		//popezlearnmenu["hoverswitch"].addEventListener(MouseEvent.CLICK,  switchedHover);
+         		popezlearnmenu["btn_ok"].addEventListener(MouseEvent.CLICK,  switchedHover); 
+         		*/
+      			 
+      		}
+      		else
+       	{
+  		 		parentApplication.mousehoverpars = "NO"; 
+  		 		parentApplication.mousehoverparslabel = "OFF"
+  	   		}
+      		
+         }
+		private function validateSaveRendition(event:Event):void {
+			currentState	= 'SaveRendition';
+			
+			
+//			if ( Application.application.parameters.ar == 'O'){
+//				gen.enabled = false;
+//			}
+//			inputcode.setFocus();
+//			uoc.selected = true;
+//			default_no.selected = true;
+//			
+//			if  (r_flag_type == 'Modify'){
+//				inputcode.enabled=false;
+//				inputcode.text = r_file_modify;
+//				inputdescription.text = r_description_modify;
+//				
+//				// Rendition as
+//				if (r_file_modify.substr(0,1) == '*'){
+//					uoc.selected = true;
+//					gen.selected = false;
+//				} else {
+//					uoc.selected = false;
+//					gen.selected = true;
+//				}
+//				// Default?
+//				if (r_default_modify == 'Y'){
+//					default_yes.selected = true;
+//					default_no.selected = false;
+//				}else {
+//					default_no.selected = true;
+//					default_yes.selected = false;
+//				}
+//				// Default to fault.
+//				gen.enabled = false;
+//				uoc.enabled = false;
+				
+				
+	//		}
+			/*
+			if (UserRenditiontdObjectCollection.length == 0){
+				AlertMessageShow("Please Create Columns for Rendition");
+				return;
+			}
+			
+			launchSaveRendition(event);
+			*/
+		}
+		public var popsaverendition:SaveRendition;
+		private function launchSaveRendition(event:Event):void {
+			
+			
+			popsaverendition = SaveRendition(
+				PopUpManager.createPopUp(this, SaveRendition, true));
+			popsaverendition.sv_r_flag_type = r_flag_type;
+			popsaverendition.sv_rendcode = r_file_modify;
+			popsaverendition.sv_renddesc = r_description_modify;
+			popsaverendition.sc_default = r_default_modify;
+			popsaverendition["btn_save_current"].addEventListener("click", saveRendition); 
+			popsaverendition["btn_save_current"].addEventListener( MouseEvent.ROLL_OVER,parentApplication.passMouseHoverfromComponents);
+			popsaverendition["btn_save_current"].addEventListener( MouseEvent.ROLL_OUT,parentApplication.closepassMouseHoverfromComponents);
+			
+			
+		}	
+		
+		private function saveRendition(event:Event):void {
+			/*
+			if ( Application.application.parameters.ar == 'O'){
+				if (gen.selected == true){
+					AlertMessageShow("You do not have permission to save a Generic Rendition");
+					return;
+				}
+			}     
+			*/
+			if (inputcode.text == ""){
+				AlertMessageShow("Please Enter Code.");
+				inputcode.setFocus();
+				inputcode.setStyle("backgroundColor", "#C7CECC");    
+				inputdescription.setStyle("backgroundColor", "#ffffff");
+				return;
+				
+			}
+			
+			/*
+			if (r_user_code.toUpperCase() != 'MAVES'){
+			
+					if (  (inputcode.text.toUpperCase()).substr(0,4) == "BASE"){
+						AlertMessageShow("'BASE' Code is not allowed");
+						return;
+					}
+			}
+			
+			if (inputcode.text.toUpperCase() == "MASTER"){
+				AlertMessageShow("'MASTER' Code is not allowed");
+				return;
+			}
+				
+			*/
+			    
+			if (inputdescription.text == ""){
+				AlertMessageShow("Please Enter Description.");
+				inputdescription.setFocus();
+				inputcode.setStyle("backgroundColor", "#ffffff"); 	
+				inputdescription.setStyle("backgroundColor", "#C7CECC");
+				return;
+			}
+			
+			/*
+			if (uoc.selected == true){
+				if (inputcode.text.substr(0,1) != '*'){
+					inputcode.text = '*' + inputcode.text
+				}
+			}
+			if (gen.selected == true){
+				if (inputcode.text.substr(0,1) == '*'){
+					inputcode.text = inputcode.text.substr(1,inputcode.text.length);
+				}
+			}
+			default_flag = new String();      
+			if (default_yes.selected == true){       
+				default_flag = 'Y'
+			}
+			if (default_no.selected == true){
+				default_flag = 'N'
+			}
+			*/
+			AlertMessageShow("Work In Process");        
+			
+			//createRenditionXML(event);
+
+		}
+		
+		private function createRenditionXML(event:Event):void {
+			
+			var rendition_head:String = '<rendition>'
+			var rendition_tail:String = '</rendition>'
+			var rendition_body:String = new String;
+			var string_detail:String = new String;	
+			var string_final:String = new String();	
+			finalRenditionXML = new XML;
+				
+				
+			// Select everything first to get indexing... 
+			
+			var arr:Array = new Array();
+			for (var a:uint=dataGrid1.dataProvider.length -1 ;a>0;a--){	
+				arr.push(a);
+			}
+			arr.push(0);
+			
+			arr = AscendingSortArray(arr);
+			dataGrid2.selectedIndices = arr;
+			
+			for(var i:int = 0; i < dataGrid2.dataProvider.length; i++){
+				var dg_type:String = dataGrid2.dataProvider[i].type;
+				var dg_cn:String = dataGrid2.dataProvider[i].columnname;
+				var dg_ht:String = dataGrid2.dataProvider[i].headertext;
+				if ((dg_ht == null) || (dg_ht == 'null')|| (dg_ht == '')){
+					dg_ht = '';
+				}
+				
+				
+				string_detail = string_detail + '<data>' +
+														'<type>' + dg_type + '</type>' +
+														'<columnname>' + dg_cn + '</columnname>' +
+														'<headertext>' + dg_ht + '</headertext>' +
+												'</data>'
+			}
+			
+			finalRenditionXML = ('REFRESH,UPD_RENDITION,' + rendition_head +
+				'<mbdcode>' + r_passed_mainboard + '</mbdcode>' +
+				'<usercode>' + r_user_code + '</usercode>' +
+				'<rendcode>' + inputcode.text + '</rendcode>' +
+				'<renddesc>' + inputdescription.text + '</renddesc>' +
+				'<default_rendition>' + default_flag + '</default_rendition>' +
+				string_detail +
+				rendition_tail);
+			saverenditionbycreate.send();
+		}
+		private function datagrid2Drop(event:DragEvent):void{
+			/*
+				var dropTarget:DataGrid = DataGrid(event.currentTarget);  
+				var dropLoc:int = dropTarget.calculateDropIndex(event); 
+					if 	(dropLoc < r_lock_columns){
+						AlertMessageShow('Dropping of items on Locked Columns are not allowed');
+						event.preventDefault(); 
+					}
+			*/
+					//UserRenditiontdObjectCollection.refresh();
+		}
+
+		 
+		private var _callbackFunction:Function;
+		
+		public function set callbackFunction( value:Function ):void {
+			_callbackFunction = value;
+		}
+		
+		protected function buttonClickedInpopup():void {
+			_callbackFunction(null);
+		}
+		private function httpRequestUrlReditionCM(str_app:String):void{
+			/*  I will just leave this for vl and ml for now.  I believe there will be another one coming for the mobileweb */
+			if (str_app == 'ml'){
+				
+				
+			
+				retrieverendition.url = 'ae_tlch_ml_req.php'; 
+				retrievemodifyrendition.url = 'ae_tlch_ml_req.php'; 
+				saverenditionbycreate.url = 'ae_tlch_ml_req.php'; 
+				
+				
+			} else {
+				
+				
+			
+				retrieverendition.url = 'ae_tlch_xmlreq.php';
+				retrievemodifyrendition.url = 'ae_tlch_xmlreq.php';
+				saverenditionbycreate.url = 'ae_tlch_xmlreq.php';
+			}
+			
+		}
+		
+		private function resultStatusRenditionCM(string_result:String, string_reason:String):String{
+			var retstr:String = new String;
+			if (string_result == "EXPIRED"){
+				retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+			} 
+			if (string_result == "FAIL"){
+				retstr = string_reason;
+			} 
+			return retstr;
+		}
+
+	]]> 
+</mx:Script>
+	<mx:ApplicationControlBar dock="true" width="100%">
+	<!-- mx:Button label="e-Z Learn {parentApplication.mousehoverparslabel}"  id="btn_help" icon="@Embed('image/scholar_cap.png')"
+						fontFamily="Arial" textAlign="center"  height="28"
+						click="{launchEZLearnMenu(event)}" 
+						rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+				 		rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+					 	width="252"
+					 	styleName="{'highResolutionLabel'}"    
+					 	
+					 / -->
+	
+		<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+				   height="27"
+				   width="78"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   click="{parentApplication.scholarcap_mousehovering(event,'',lbl_titlerend.text,'BUTTON')}"
+				   
+				   /> 
+		<mx:Spacer width="100%"/>
+		<mx:Label id="lbl_titlerend" text="Workflow Editor" fontSize="15" fontWeight="bold" useHandCursor="true" buttonMode="true"
+			/>
+        <mx:Spacer width="100%"/>
+        <mx:Button id="btn_close_window" icon="@Embed('image/icon_logoff.png')"
+						fontFamily="Arial" textAlign="center" fontSize="12"
+						
+						
+					/>		
+    </mx:ApplicationControlBar>
+
+<mx:HBox width="100%" height="100%">
+
+    <mx:VBox width="100%" height="100%">
+        <mx:Label text="{r_passed_mainboardtitle}"  fontSize="15" fontWeight="bold"/>
+           <mx:Button id="btn_dg1_select_all" label="Select All" fontSize="15" click="{selectAlldg1(event)}"
+           	rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+			rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+           	/>
+     
+		<local:ActionGridADGRendition id="dataGrid1"
+                width="100%"
+                height="100%"
+                rowHeight="22"
+                dataProvider="{r_array_1}"
+                dragEnabled="true"
+                verticalScrollPolicy="on"
+                allowMultipleSelection="true"
+                variableRowHeight="true"
+				headerStyleName="centerAlignDataGridCol"
+				horizontalGridLines="true"
+            	verticalGridLines="true"
+            	horizontalGridLineColor="black"
+            	verticalGridLineColor="black" borderColor="#010101" borderThickness="1"
+            	sortableColumns="false"
+				dragStart="{datagrid1Click(event)}"
+              >
+            <local:columns>
+                <mx:AdvancedDataGridColumn dataField="job_cd" 
+                        headerText="Menu Item"  width="20" itemRenderer="NameLabel" >
+				</mx:AdvancedDataGridColumn>
+				<!-- mx:AdvancedDataGridColumn dataField="columnname"
+				headerText="Column Name" / -->
+                <mx:AdvancedDataGridColumn dataField="job_desc"
+                        headerText="Description" width="60" itemRenderer="NameLabel"/>
+            </local:columns>    
+        </local:ActionGridADGRendition>
+    
+		
+
+		
+		<mx:Label text="{dataGrid1.dataProvider.length} items"  fontSize="15" fontWeight="bold"/>
+
+		
+    </mx:VBox>
+ 	<mx:VBox height="100%">
+ 		<mx:Spacer height="100%"/>	
+ 		<mx:Spacer width="20%"/>
+ 		<!-- mx:Button id="btn_transfer" label=">" height="41" fontSize="23" color="#3868A3"/ -->
+ 		<mx:Spacer height="100%"/>
+ 	</mx:VBox>
+    <mx:VBox width="100%" height="100%">
+        <mx:Label text="{r_passed_eventtitle}"  fontSize="15" fontWeight="bold"/>
+           <mx:HBox horizontalGap="0">
+         	<mx:Button id="btn_dg2_remove" label="Remove" fontSize="15" click="{removeItem(event)}"
+         			rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+         	<mx:Button id="btn_dg2_addpanel" label="Add Group" fontSize="15" click="{addPanelItem(event)}"
+         			rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+         	<mx:Button id="btn_dg2_clear" label="Clear All" fontSize="15" click="{clearall(event)}"
+         				rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+						rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+         	<mx:Button id="btn_dg2_saverendition" label="Save" fontSize="15"
+         					rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+							rollOut="{ parentApplication.mbdg_stopHoverTimer()}" click="{validateSaveRendition(event)}"/>
+         </mx:HBox>
+		
+		
+		
+		<mx:DataGrid        id="dataGrid2"
+									  width="100%"
+									  height="100%"
+									  rowHeight="22"
+									  dataProvider="{UserRenditiontdObjectCollection}"
+									  dragEnabled="true"
+									  dragMoveEnabled="true"
+									  dropEnabled="true"
+									  verticalScrollPolicy="on"
+									  allowMultipleSelection="true"
+									  variableRowHeight="true"
+									  headerStyleName="centerAlignDataGridCol"
+									  horizontalGridLines="true"
+									  verticalGridLines="true"
+									  horizontalGridLineColor="black"
+									  verticalGridLineColor="black"  borderThickness="1"
+									  sortableColumns="false"
+									  dragStart="{datagrid2Click(event)}"
+									  editable="false"
+									  dragDrop="datagrid2Drop(event)"
+									  
+									  >
+			<mx:columns>
+				
+				
+				<mx:DataGridColumn  dataField="job_cd" headerText="Menu Item" width="20"  itemRenderer="NameLabel" >
+				</mx:DataGridColumn>	
+				<!-- mx:AdvancedDataGridColumn dataField="columnname"
+				headerText="Column Name" / -->
+				<mx:DataGridColumn dataField="job_desc"
+								   headerText="Description" width="60" itemRenderer="NameLabel" >
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:Label text="{dataGrid2.dataProvider.length} items"  fontSize="15" fontWeight="bold" />
+    </mx:VBox>
+</mx:HBox>
+</mx:TitleWindow>

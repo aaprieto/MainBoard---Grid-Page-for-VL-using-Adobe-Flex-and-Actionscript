@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"	width="558" height="176"  verticalScrollPolicy="off"
+				layout="vertical"
+				showCloseButton="true"
+				close="titleWindow_close(event);" 
+				x="600" y="550"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				creationComplete="init()"
+				backgroundImage=""
+				xmlns:local="*" xmlns:s="library://ns.adobe.com/flex/spark" headerHeight="15">
+	
+	
+	<mx:Script>
+		<![CDATA[    
+			import mx.managers.PopUpManager;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			[Bindable]   
+			public var Arr_mr:ArrayCollection;
+			[Bindable]   
+			public var maintain:String;
+			  
+			
+			[Bindable]   
+			public var g_code:String;
+			[Bindable]   
+			public var g_description:String;
+			
+			
+			private function init():void{
+								
+				adg1.setFocus();
+				if (g_code.length < 1){
+					adg1.selectedIndex = 0;
+				} else {
+					for( var i:int = 0; i < Arr_mr.length; i++ ){
+						if (g_code == Arr_mr[i]['code']){
+							adg1.selectedIndex = i;
+							break;
+						}
+					}
+				
+				}
+				
+			}    
+			private function titleWindow_close(evt:Event):void {
+				//Alert.show("this should close");
+				PopUpManager.removePopUp(this);
+				
+				
+				
+			}
+			
+		]]>
+	</mx:Script>
+	
+	
+	<mx:AdvancedDataGrid id="adg1" width="100%" height="100%" dataProvider="{Arr_mr}" sortableColumns="false">
+		
+		
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="{maintain}" dataField="description" />
+			
+		</mx:columns>
+		
+	</mx:AdvancedDataGrid>
+
+
+</mx:TitleWindow>

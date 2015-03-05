@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"	width="548" height="308"  verticalScrollPolicy="off"
+				layout="vertical"
+				showCloseButton="true"
+				close="titleWindow_close(event);" 
+				x="380" y="250"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				creationComplete="init()"
+				backgroundImage=""
+				xmlns:local="*" xmlns:s="library://ns.adobe.com/flex/spark" headerHeight="15">
+	
+	<mx:HTTPService 
+		id="gettranslatelist" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"
+		fault="gettranslatefilefaultHandler(event)"
+		result="translateFileHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{tf_company_code}</company>
+				<sid>{tf_sessid}</sid>
+				<parameters>REFRESH,RETRIEVE|DATATRANSLATES|</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	
+	<mx:Script source="AlertMessageHandler.as"/>
+	
+	<mx:Script>    
+		<![CDATA[    
+			
+			
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+			import mx.managers.PopUpManager;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			import flash.events.Event;
+			import mx.rpc.events.FaultEvent;
+			[Bindable]       
+			private var Arr_tf:ArrayCollection;
+			[Bindable]   
+			public var maintain:String;
+			
+			   
+			[Bindable]   
+			public var tf_user_code:String;
+			[Bindable]   
+			public var tf_sessid:String;
+			[Bindable]   
+			public var tf_company_code:String;
+			
+			
+			private function init():void{
+				httpRequestUrlReditionCM(parentApplication.application_entry);
+				gettranslatelist.send();    
+				
+			}    
+			private function titleWindow_close(evt:Event):void {
+				//Alert.show("this should close");
+				PopUpManager.removePopUp(this);
+			}
+			private function gettranslatefilefaultHandler(evt:FaultEvent):void
+			{
+				
+				AlertMessageShow(evt.message.toString());
+			}
+			
+			
+			private function translateFileHandler(event:ResultEvent):void
+			{   
+				if (event.result.ezware_response.status == 'OK' ) {
+					Arr_tf = new ArrayCollection();  
+					if (event.result.ezware_response.refresh_data.datatranslates.datatranslate == null)
+					{ 
+						Arr_tf=new ArrayCollection()
+					}
+					else if (event.result.ezware_response.refresh_data.datatranslates.datatranslate is ArrayCollection)
+					{
+						Arr_tf=event.result.ezware_response.refresh_data.datatranslates.datatranslate;
+					}
+					else if (event.result.ezware_response.refresh_data.datatranslates.datatranslate is ObjectProxy)
+					{
+						Arr_tf = new ArrayCollection(ArrayUtil.toArray(event.result.ezware_response.refresh_data.datatranslates.datatranslate)); 
+					}
+					
+					
+					
+					var newObject:Object = new Object;
+					newObject.trans_code = "Clear";
+					newObject.trans_desc = "* Clear Translate Code *";
+					Arr_tf.addItemAt(newObject, 0);
+					
+					
+					
+				
+					
+				} else	{    
+					
+					var retstr:String = new String();
+					if (event.result.ezware_response.status == "EXPIRED"){
+						retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+					} 
+					if (event.result.ezware_response.status == "FAIL"){
+						retstr = event.result.ezware_response.reason;
+					} 
+					AlertMessageShow(retstr);
+					return;
+				}	
+				   
+				
+			
+				adg_tf.setFocus();
+				
+			}
+			private function httpRequestUrlReditionCM(str_app:String):void{
+				
+				if (str_app == 'ml'){
+					gettranslatelist.url = 'ae_tlch_ml_req.php'; 
+				} else {
+					gettranslatelist.url = 'ae_tlch_xmlreq.php';
+				}
+				
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:AdvancedDataGrid id="adg_tf" width="100%" height="100%" dataProvider="{Arr_tf}" sortableColumns="false">    
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Code" dataField="trans_code" width="100" /> 
+			<mx:AdvancedDataGridColumn headerText="Description" dataField="trans_desc" />
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+</mx:TitleWindow>

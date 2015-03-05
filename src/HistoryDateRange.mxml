@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ActionCommand.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="700" y="100" width="388" height="188" creationComplete="init(event);btn_submit.setFocus();btn_submit.drawFocus(true);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+      
+  		backgroundImage=""
+        layout="horizontal"
+>
+ <mx:Script>
+ 	<![CDATA[
+ 			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*;  
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	private var helpWindow:TitleWindow;
+		 	[Bindable]
+			private var date_str:String = new String;
+			
+			[Bindable]
+ 		    public var daterange_fromdate:String = new String;
+ 		    [Bindable]
+ 		    public var daterange_todate:String = new String;
+ 		    
+ 		    
+ 		    private function titleWindow_close(evt:Event):void {
+                PopUpManager.removePopUp(this);    
+			}
+            
+            private function init(evt:Event):void {
+            	btn_submit.setFocus();
+            	
+            	var today_date:Date = new Date();
+				var date_month:String = (today_date.getMonth()+1).toString();
+				var date_day:String = (today_date.getDate()).toString();
+				var int_length_date_month:int = date_month.length;
+					if (int_length_date_month == 1){
+						date_month = "0" + date_month.toString();
+					}
+				var int_length_date_day:int = date_day.length;
+					if (int_length_date_day == 1){
+						date_day = "0" + date_day.toString();
+					}	
+					
+					
+				date_str = (today_date.getFullYear()) + "-" + (date_month) + "-" + (date_day);
+				if ((daterange_fromdate == null) || (daterange_fromdate == "")){
+					daterange_fromdate = date_str;
+				}
+				if ((daterange_todate == null) || (daterange_todate == "")){
+					daterange_todate = date_str;
+				}
+				
+				
+			}
+
+ 	]]>
+ </mx:Script>
+ <mx:Style source="css/main.css"/>
+    <mx:VBox id="vb" width="100%">
+         <mx:HBox id="hb0" width="100%" >
+    <mx:Spacer width="100%" />
+    	<mx:Label text="History Date Range" fontSize="20" fontWeight="bold" color="#050505"/>
+    	<mx:Spacer width="100%" />
+    </mx:HBox>
+        <mx:HBox width="100%">
+        <mx:Spacer width="100%" />
+        	<mx:Label text="From Date" width="85" fontFamily="Verdana" fontSize="14" color="#000203" fontWeight="bold"/>
+        	  <mx:DateField yearNavigationEnabled="true" width="135" id="from_dateField" text="{daterange_fromdate}" formatString="YYYY-MM-DD" fontFamily="Verdana" fontSize="14" fontWeight="bold" color="#000506"/>
+        <mx:Spacer width="100%" />
+        </mx:HBox>	
+        
+        
+        <mx:HBox width="100%">
+        <mx:Spacer width="100%" />
+        	<mx:Label text="To Date" width="85" fontFamily="Verdana" fontSize="14" color="#000404" fontWeight="bold"/>
+        	  <mx:DateField yearNavigationEnabled="true" width="135" id="to_dateField"  text="{daterange_todate}" formatString="YYYY-MM-DD" fontFamily="Verdana" fontSize="14" color="#000202" fontWeight="bold"/>
+        <mx:Spacer width="100%" />
+        </mx:HBox>
+        <mx:HBox>
+        <mx:Spacer width="100" />
+        </mx:HBox>
+        	
+        <mx:HBox width="100%">
+     <mx:Spacer width="100%" />
+            <mx:Button id="btn_submit" label="Submit"/>
+            <mx:Button id="btn_cancel" label="Cancel" click="{titleWindow_close(event)}"/>
+            <mx:Spacer width="100%" />
+        
+        </mx:HBox>	
+        
+    </mx:VBox>
+
+</mx:TitleWindow>

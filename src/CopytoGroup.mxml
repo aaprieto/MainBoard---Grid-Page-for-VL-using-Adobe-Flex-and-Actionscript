@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="500" y="180" width="480"  creationComplete="init(event);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        layout="horizontal"
+        color="#B6B9BA" height="237"
+        backgroundImage=""
+        
+        > 
+        
+	<mx:HTTPService 
+		id="gettogroup" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="rgo_getgrouphandler(event)" 
+		method="POST" 
+		fault="rgo_getgroupfault(event)"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{dd_compcode}</company>
+				<sid>{parentApplication.parameters.sid}</sid>
+				<parameters>{parms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="gettocompany" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="rgo_getcompanyhandler(event)" 
+		method="POST" 
+		fault="rgo_getcompanyfault(event)"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{dd_compcode}</company>
+				<sid>{parentApplication.parameters.sid}</sid>
+				<parameters>{parms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="submitcopytogroup" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		result="submit_copytogrouphandler(event)"
+		contentType="application/xml"  
+		fault="submit_copytogroupfault(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{dd_compcode}</company>
+				<sid>{parentApplication.parameters.sid}</sid>
+				<parameters>{parms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+<mx:Script source="AlertMessageHandler.as"/>	        
+ <mx:Script> 
+ 	<![CDATA[
+ 			import mx.collections.ArrayCollection; 
+ 			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+		 	import mx.events.ItemClickEvent;
+		 	[Bindable]
+		 	public var dd_compcode:String;	
+		[Bindable]
+		public var dd_type:String;
+		 	[Bindable]
+			private var parms:String = new String;
+			[Bindable]
+		 	public var fromgroup:String;	
+			[Bindable]
+			private var Arr_ToGroup:ArrayCollection = new ArrayCollection;
+			[Bindable]
+			private var Arr_ToCompany:ArrayCollection = new ArrayCollection;
+ 		    private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+            }
+            private function init(evt:Event):void {
+				if (dd_type == 'ml'){
+					tocomp.text = 'To Campus';
+				}
+				httpRequestUrlctg(parentApplication.application_entry);
+            	//parms = "REFRESH,RETRIEVE|OPR_GROUP|";
+            	parms = "REFRESH,COPYGROUP,GET_GRP_TO," + fromgroup;
+            	gettogroup.send();
+            	
+            	//Alert.show(parentApplication.parameters.sid);
+            }
+            private function rgo_getgrouphandler(evt:ResultEvent):void
+			{
+				if (evt.result.ezware_response.status == "OK"){
+					
+					
+					if (evt.result.ezware_response.refresh_data.root.data == null)
+					{
+						Arr_ToGroup=new ArrayCollection()
+					}
+					else if (evt.result.ezware_response.refresh_data.root.data  is ArrayCollection)
+					{
+						Arr_ToGroup=evt.result.ezware_response.refresh_data.root.data ;
+					}
+					else if (evt.result.ezware_response.refresh_data.root.data  is ObjectProxy)
+					{
+						Arr_ToGroup = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.root.data )); 
+					}
+					
+					Arr_ToGroup.refresh();
+					
+				} else	{
+					var s_ret:String = resultStatusctg(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}	
+				   
+				
+			}
+			  private function rgo_getcompanyhandler(evt:ResultEvent):void
+			{
+				
+ 			 		if (evt.result.ezware_response.refresh_data.root.data == null)
+            		{
+                		Arr_ToCompany=new ArrayCollection()
+            		}
+            		else if (evt.result.ezware_response.refresh_data.root.data  is ArrayCollection)
+            		{
+              			Arr_ToCompany=evt.result.ezware_response.refresh_data.root.data ;
+            		}
+            		else if (evt.result.ezware_response.refresh_data.root.data  is ObjectProxy)
+            		{
+               			Arr_ToCompany = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.root.data )); 
+            		}
+ 			 	
+ 					Arr_ToCompany.refresh();
+ 					
+			 
+			}
+			private function submit_copytogrouphandler(event:ResultEvent):void
+			{
+				//Alert.show(event.result.ezware_response.status);
+				if (event.result.ezware_response.status == 'OK'){
+					AlertMessageShow('Record(s) succesfully updated.');
+				}
+				if (event.result.ezware_response.status == 'FAIL' ) {
+        			AlertMessageShow(event.result.ezware_response.reason);
+        			return;
+        		}
+				
+				
+			}
+			private function rgo_getgroupfault(evt:FaultEvent):void
+			{
+				var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow(faultMessage);
+			}	
+			private function rgo_getcompanyfault(evt:FaultEvent):void
+			{
+				var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow(faultMessage);
+			}	
+			private function submit_copytogroupfault(evt:FaultEvent):void
+			{
+				var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow(faultMessage);
+			}
+			
+		   private function get_tocompany(event:Event):void
+			{
+				parms = "REFRESH,COPYGROUP,GET_CMP_TO," + fromgroup + ',' +cb_togroup.selectedLabel;
+				gettocompany.send();
+			}		
+			private function submit_copytogroup(event:Event):void
+			{
+				//Alert.show(cb_togroup.selectedIndex.toString());
+				//Alert.show(cb_tocompany.selectedIndex.toString());
+				
+				if (cb_togroup.selectedIndex == -1){
+					AlertMessageShow("Please select value TO GROUP");
+					return;
+				}
+				if (cb_tocompany.selectedIndex == -1){
+					AlertMessageShow("Please select value TO COMPANY");
+					return;
+				}
+				
+				titleWindow_close(event);
+				parms = "REFRESH,COPYGROUP,COPY_GROUP," + fromgroup + ',' +cb_togroup.selectedLabel + ',' + cb_tocompany.selectedLabel;
+				submitcopytogroup.send();
+				
+			}
+		private function httpRequestUrlctg(str_app:String):void{
+			
+			/*  I will just leave this for vl and ml for now.  I believe there will be another one coming for the mobileweb */
+			if (str_app == 'ml'){
+				
+				gettogroup.url = 'ae_tlch_ml_req.php'; 
+				gettocompany.url = 'ae_tlch_ml_req.php'; 
+				submitcopytogroup.url = 'ae_tlch_ml_req.php'; 
+			} else {
+				
+				gettogroup.url = 'ae_tlch_xmlreq.php'; 
+				gettocompany.url = 'ae_tlch_xmlreq.php'; 
+				submitcopytogroup.url = 'ae_tlch_xmlreq.php'; 
+			}
+		}
+		private function resultStatusctg(string_result:String, string_reason:String):String{
+			var retstr:String = new String;
+			if (string_result == "EXPIRED"){
+				retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+			} 
+			if (string_result == "FAIL"){
+				retstr = string_reason;
+			} 
+			return retstr;
+		}
+ 	]]>
+ </mx:Script>
+    <mx:VBox id="vb" width="100%"> 
+    <mx:HBox id="hb0" width="100%" >
+    <mx:Spacer width="100%" />
+    	<mx:Label text="Copy Menu Items to Another Group" fontSize="20" fontWeight="bold" color="#050505"/>
+    	<mx:Spacer width="100%" />
+    </mx:HBox>
+     <mx:HBox id="hb02" width="100%" >
+    
+    	<mx:Label text="From Group:" fontSize="18" width="50%" fontWeight="bold" color="#050505" textAlign="right"/>
+    	<mx:Label text="  " fontSize="18"  fontWeight="bold" color="#050505" textAlign="right"/>
+    	<mx:Label id="from_group" text="{fromgroup}" fontSize="18" width="50%" fontWeight="bold" color="#050505" textAlign="left"/>
+    
+    </mx:HBox>
+    	<mx:HBox id="hblabels" width="100%" >
+    			
+    
+    			<mx:Label text="To Group:" fontSize="18" width="50%" fontWeight="bold" color="#050505" textAlign="right"/>
+    			<mx:Label text="  " fontSize="18"  fontWeight="bold" color="#050505" textAlign="right"/>
+    			<mx:ComboBox
+					width="50%"
+					id="cb_togroup"
+					color="#162F52" dataProvider="{Arr_ToGroup}" prompt="No selection"
+					fontSize="14"
+			 		mouseOver="{parentApplication.mousehovering(event,'To Group','BUTTON')}"
+		   	 		mouseOut="{parentApplication.stopHoverTimer()}"
+		   	 		labelField="group"
+		   	 		change="{get_tocompany(event)}"
+		   	 	/>		
+    			
+    			
+    	</mx:HBox>
+    	<mx:HBox id="hblabels2" width="100%" >
+    			
+    
+    			<mx:Label id="tocomp" text="To Company:" fontSize="18" width="50%" fontWeight="bold" color="#050505" textAlign="right"/>
+    			<mx:Label text="  " fontSize="18"  fontWeight="bold" color="#050505" textAlign="right"/>
+    			<mx:ComboBox
+					width="50%"
+					id="cb_tocompany"
+					color="#162F52" dataProvider="{Arr_ToCompany}"   prompt="No selection"
+					labelField="company"
+					fontSize="14"
+			 		mouseOver="{parentApplication.mousehovering(event,'To Company','BUTTON')}"
+		   	 		mouseOut="{parentApplication.stopHoverTimer()}"
+		   	 	/>		
+    			
+    			
+    	</mx:HBox>
+    	<mx:HBox id="isnow" width="100%" >
+    			<mx:Spacer width="100%" />
+    			
+    	</mx:HBox>
+    	<mx:HBox id="hb3" width="100%" >
+    		<mx:Spacer width="100%" />
+    		<mx:Button id="btn_submit" label="Submit" width="126"
+    			click="{submit_copytogroup(event)}"
+    			 />
+    		<mx:Button id="btn_cancel" label="Cancel" width="126"
+    			 click="{titleWindow_close(event)}"/>	 
+    		<mx:Spacer width="100%" />
+    	</mx:HBox>
+    </mx:VBox>
+</mx:TitleWindow>

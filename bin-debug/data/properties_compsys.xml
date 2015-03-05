@@ -1,0 +1,19 @@
+<root>
+<Panel>
+<code>019</code>
+<title>Operation Company System Setup</title>
+<type>DDLevel1</type>
+<refreshall>Y</refreshall>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="Profiles" columnstart="0"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="mnu_access" dataField="flag" title_header="Access" width="150" datatype="S" />
+<column columnId="1" columnName="company" dataField="company" title_header="Company" width="150" datatype="S" />
+<column columnId="2" columnName="chain" dataField="chain" title_header="Chain" width="150" datatype="S" />
+<column columnId="3" columnName="system_cd" dataField="sys_code" title_header="System Code" width="200" datatype="S" />
+<column columnId="4" columnName="sys_desc" dataField="sys_desc" title_header="System Description" width="300" datatype="S" />
+<column columnId="5" columnName="" dataField="" title_header="" width="1500" datatype="S" />
+</AdvancedDataGridColumn>
+</root>

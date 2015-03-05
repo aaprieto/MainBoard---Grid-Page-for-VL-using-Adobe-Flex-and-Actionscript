@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" width="598" height="534" x="10" y="10" >
+
+<!-- mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="598" height="634"  verticalScrollPolicy="off"
+	        layout="vertical"
+        title="Chart Window" 
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="600" y="100"  
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        borderColor="haloSilver"
+        backgroundColor="haloSilver"
+        creationComplete="init()"
+        -->
+<!-- mx:Style source="css/main.css"/ -->
+<mx:Script>
+	<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+	 		import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	 import mx.charts.chartClasses.ChartBase;
+        import mx.charts.HitData;
+		import mx.events.FlexEvent;
+		 	[Bindable]
+ 		    public var myArray:Array;
+
+
+ 	/*
+
+ 		   private function clickUndo(evt:Event):void {
+           
+           				myArray.splice(1.1);
+           
+           }
+    */       
+ 		    private function titleWindow_close(evt:Event):void {
+                 PopUpManager.removePopUp(this);	
+           }
+            private function init():void {
+                 dg_1.selectedIndex = myArray.length;
+                
+                 //dg_1.setFocus();
+           }
+           // Create a bindable Array of explode radii.
+		private function thisMonthChange (item:Object):void {
+			Alert.show("hg");
+			var index:int = -1;
+        	index = myArray.indexOf(item);
+            //we only want to explode the selected region
+            var explodeData:Array = [];
+            explodeData[index] = 0.15;
+            //series[0].perWedgeExplodeRadius = explodeData
+            
+		//	monthChange(item);
+		}
+	]]>
+</mx:Script>
+   <!-- Define custom colors for use as pie wedge fills. -->
+    <mx:SolidColor id="sc1" color="blue" alpha=".3"/>
+    <mx:SolidColor id="sc2" color="red" alpha=".3"/>
+    <mx:SolidColor id="sc3" color="green" alpha=".3"/>
+    <mx:SolidColor id="sc4" color="gray" alpha=".3"/>
+    <mx:SolidColor id="sc5" color="black" alpha=".3"/>
+    <mx:SolidColor id="sc6" color="yellow" alpha=".3"/>
+<mx:ViewStack id="vs" width="100%" height="100%">
+  <mx:VBox id="chartVBox2" width="100%" height="100%" icon="@Embed('image/icon_chart.png')" toolTip="View in Chart" hideEffect="Fade" showEffect="Fade">
+	 <mx:BarChart id="myChart1" dataProvider="{myArray}" showDataTips="true" width="100%">
+        <mx:verticalAxis>
+           <mx:CategoryAxis 
+                dataProvider="{myArray}" 
+                categoryField="group"
+           />
+        </mx:verticalAxis>
+        <mx:series>
+           <mx:BarSeries 
+                yField="group" 
+                xField="noofrec" 
+                displayName="Number of Records"
+           />
+           <!-- mx:BarSeries 
+                yField="Month" 
+                xField="Expenses" 
+                displayName="Expenses"
+           / -->
+        </mx:series>
+     </mx:BarChart>
+     <mx:Legend dataProvider="{myChart1}"/>
+
+
+
+</mx:VBox>
+
+  <mx:VBox width="100%" icon="@Embed('image/icon_grid.png')" height="100%" toolTip="View in Grid" hideEffect="Fade" showEffect="Fade">
+
+        <mx:DataGrid id="dg_1" dataProvider="{myArray}" draggableColumns="false" editable="true" allowMultipleSelection="true"
+						width="100%" height="100%" horizontalScrollPolicy="auto" verticalScrollPolicy="on" sortableColumns="false" variableRowHeight="true">
+						<mx:columns> 
+							<mx:DataGridColumn id="group" dataField="group" width="120" headerText="Group" wordWrap="true" editable="false" />
+							<mx:DataGridColumn id="numberofrec" dataField="noofrec" width="60" headerText="Number of Rec." editable="false" />
+		 				</mx:columns>
+		</mx:DataGrid> 	
+  </mx:VBox>
+	      	
+ </mx:ViewStack>       	
+     <mx:ControlBar>
+        <mx:ToggleButtonBar dataProvider="{vs}" id="toggle"/>
+        <mx:Spacer width="100%" />
+         <mx:Button label="Close" click="{titleWindow_close(event)}"/>
+    </mx:ControlBar>
+   
+</mx:Panel>        	
+<!-- /mx:TitleWindow -->

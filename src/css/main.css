@@ -1,0 +1,614 @@
+/*
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
+// All Rights Reserved.
+// The following is Sample Code and is subject to all restrictions on such code
+// as contained in the End User License Agreement accompanying this product.
+// If you have received this file from a source other than Adobe,
+// then your use, modification, or distribution of it requires
+// the prior written permission of Adobe.
+//
+////////////////////////////////////////////////////////////////////////////////
+*/
+@namespace mx "http://www.adobe.com/2006/mxml";
+/*  
+//----------------------------
+//  Global styles
+//----------------------------
+*/
+mx|global{
+		modalTransparency: 0;
+		modalTransparencyBlur: 0;
+		modalTransparencyColor: #DDDDDD;
+		modalTransparencyDuration: 0;
+	}
+
+
+
+mx|Application
+{
+
+	
+/*
+  backgroundColor:        #3282D9;
+  backgroundGradientColors: #2172A6, #B2D7ED; 
+*/
+}
+/*
+//----------------------------
+// Type selectors
+//----------------------------
+*/
+
+mx|HRule
+{
+    color:                  #666666;
+}
+
+mx|.glass {
+    borderColor:		    #767473;
+    fillAlphas: 		    .60, .60, .60, .60;
+    fillColors: 		    #888888, #F3F3F3, #9E9E9E, #FCFCFC;
+    highlightAlphas:	    .07, .45;
+}
+
+mx|.glassSlider
+{
+    fillAlphas: 		    .80, .80, .80, .80;
+    fillColors: 		    #F3F3F3, #BBBBBB, #FCFCFC, #CCCCCC;
+}
+
+.listItem
+{
+    paddingLeft:            4;
+    paddingRight:           4;
+    horizontalGap:          5;
+    verticalAlign:          "middle";
+    backgroundColor:        #FFFFFF;
+    backgroundAlpha:        .5;
+    borderStyle:            "outset";
+}
+
+.sectionHeader
+{
+    fontWeight:             "bold";
+    fontSize:               11;
+}
+
+.homeSection
+{
+    cornerRadius:           4;
+    borderStyle:            "solid";
+}
+
+mx|ToolTip {
+   cornerRadius: 8;
+   paddingLeft: 5;
+   paddingRight: 5;
+   backgroundColor: #FFFF99;
+   color: #000000;
+   textAlign: center;
+   fontFamily: Arial;
+   fontSize: 15;
+   fontWeight: bold;
+}
+
+mx|Tree
+{
+	defaultLeafIcon: Embed(source="blue_plastic.swf",symbol="Tree_defaultLeafIcon");
+	folderClosedIcon: Embed(source="blue_plastic.swf",symbol="folder_closed3");
+	folderOpenIcon: Embed(source="blue_plastic.swf",symbol="folder_open3");
+	focusSkin: Embed(source="blue_plastic.swf", symbol="focus");
+	 selectionColor: #6699AA;
+    rollOverColor: #99AACC;
+}
+
+
+/* new css */
+mx|AccordionHeader
+{
+	
+	disabledSkin: Embed(source="blue_plastic.swf", symbol="Button_disabledSkin");
+	downSkin: Embed(source="blue_plastic.swf", symbol="Button_downSkin");
+	overSkin: Embed(source="blue_plastic.swf", symbol="Button_overSkin");
+	selectedDisabledSkin: Embed(source="blue_plastic.swf", symbol="Button_disabledSkin");
+	selectedDownSkin: Embed(source="blue_plastic.swf", symbol="Button_downSkin");
+	selectedOverSkin: Embed(source="blue_plastic.swf", symbol="Button_overSkin");
+	selectedUpSkin: Embed(source="blue_plastic.swf", symbol="Button_upSkin");
+	upSkin: Embed(source="blue_plastic.swf", symbol="Button_upSkin");
+	/*focusSkin: Embed(source="blue_plastic.swf", symbol="focus");*/
+	/*focusSkin: Embed(source="Skin.swf", symbol="focus");*/
+	
+	fontFamily: franci;
+	fontWeight: normal;
+	fontSize: 12;
+	fontAntiAliasType: advanced;
+    fontSharpness: -100;
+    fontgridFitType: subpixel;
+    /*flashType: true;*/
+
+
+}
+
+
+mx|ToggleButtonBar 
+{ 
+        buttonStyleName: "buttonBarButton"; 
+        firstButtonStyleName: "firstButtonBarButton"; 
+        lastButtonStyleName: "lastButtonBarButton";
+}
+
+
+
+mx|TitleWindow
+{
+	backgroundImage: Embed(source="image/Blue1.png");
+}
+
+.highResolutionSystemMenu
+{
+	fontSize: 20;
+	rollOverColor: #66ffff;
+	selectionColor: #ffffff;
+}   
+
+/* 
+//------------------------------ 
+//  ButtonBarButtons 
+//------------------------------ 
+*/ 
+
+.firstButtonBarButton 
+{ 
+        disabledSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_firstDisabledSkin"); 
+        downSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_firstDownSkin"); 
+        overSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_firstOverSkin"); 
+        selectedDisabledSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_firstSelectedDisabledSkin"); 
+        selectedDownSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_firstSelectedUpSkin"); 
+        selectedOverSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_firstSelectedUpSkin");
+        selectedUpSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_firstSelectedUpSkin");
+        upSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_firstUpSkin"); 
+}
+
+.buttonBarButton 
+{ 
+        disabledSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_buttonDisabledSkin"); 
+        downSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_buttonDownSkin"); 
+        overSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_buttonOverSkin"); 
+        selectedDisabledSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_buttonSelectedDisabledSkin"); 
+        selectedDownSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_buttonSelectedUpSkin"); 
+        selectedOverSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_buttonSelectedUpSkin");
+        selectedUpSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_buttonSelectedUpSkin");
+        upSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_buttonUpSkin"); 
+}
+
+.lastButtonBarButton 
+{ 
+        disabledSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_lastDisabledSkin"); 
+        downSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_lastDownSkin"); 
+        overSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_lastOverSkin"); 
+        selectedDisabledSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_lastSelectedDisabledSkin"); 
+        selectedDownSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_lastSelectedUpSkin"); 
+        selectedOverSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_lastSelectedUpSkin");
+        selectedUpSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_lastSelectedUpSkin");
+        upSkin: Embed(source="blue_plastic.swf", symbol="ButtonBar_lastUpSkin"); 
+}
+
+mx|TabNavigator
+{
+	/*
+	firstButtonStyleName: "tabStyle";
+	tabStyleName: "tabStyle";
+	lastButtonStyleName: "tabStyle";
+	horizontalGap: 0;	
+	*/
+}
+
+.tabStyle {
+	disabledSkin: Embed(source="blue_plastic.swf", symbol="Tab_disabledSkin");
+	downSkin: Embed(source="blue_plastic.swf", symbol="Tab_downSkin");
+	overSkin: Embed(source="blue_plastic.swf", symbol="Tab_overSkin");
+	selectedDisabledSkin: Embed(source="blue_plastic.swf", symbol="TabSelected_disabledSkin");
+	selectedDownSkin: Embed(source="blue_plastic.swf", symbol="TabSelected_upSkin");
+	selectedOverSkin: Embed(source="blue_plastic.swf", symbol="TabSelected_upSkin");
+	selectedUpSkin: Embed(source="blue_plastic.swf", symbol="TabSelected_upSkin");
+	upSkin: Embed(source="blue_plastic.swf", symbol="Tab_upSkin");
+
+}
+
+/*
+//------------------------------
+//  RadioButton
+//------------------------------
+*/
+mx|RadioButton
+{
+
+	disabledIcon: Embed(source="blue_plastic.swf", symbol="RadioButton_disabledIcon");
+	downIcon: Embed(source="blue_plastic.swf", symbol="RadioButton_upIcon");
+	overIcon: Embed(source="blue_plastic.swf", symbol="RadioButton_upIcon");
+	selectedDisabledIcon: Embed(source="blue_plastic.swf", symbol="RadioButtonSelected_disabledIcon");
+	selectedDownIcon: Embed(source="blue_plastic.swf", symbol="RadioButtonSelected_upIcon");
+	selectedOverIcon: Embed(source="blue_plastic.swf", symbol="RadioButtonSelected_upIcon");
+	selectedUpIcon: Embed(source="blue_plastic.swf", symbol="RadioButtonSelected_upIcon");
+	upIcon: Embed(source="blue_plastic.swf", symbol="RadioButton_upIcon");
+
+}
+mx|textInput {
+	borderSkin: Embed(source="blue_plastic.swf", symbol="layout one");
+	fontSize: 14;
+	focusAlpha: 0;
+	textIndent: 8;fontFamily: franci;
+	fontWeight: normal;
+	fontSize: 10;
+	 fontAntiAliasType: advanced;
+    fontSharpness: -100;
+    fontgridFitType: subpixel;
+	/*flashType: true;*/	
+	
+
+}
+
+mx|PopUpButton
+{
+
+	disabledSkin: Embed(source="blue_plastic.swf", symbol="PopUpButton_disabledSkin");
+	downSkin: Embed(source="blue_plastic.swf", symbol="PopUpButton_upSkin");
+	overSkin: Embed(source="blue_plastic.swf", symbol="PopUpButton_upSkin");	
+	popUpDownSkin: Embed(source="blue_plastic.swf", symbol="PopUpButton_upSkin");
+	popUpOverSkin: Embed(source="blue_plastic.swf", symbol="PopUpButton_upSkin");
+	upSkin: Embed(source="blue_plastic.swf", symbol="PopUpButton_upSkin");
+}
+
+mx|DataGrid
+{
+ 
+	/* borderSkin: Embed(source="blue_plastic.swf", symbol="layout two"); */
+	backgroundAlpha: 0.2;
+   	headerColors: #e1e6eb, #bec8d2; 
+   	selectionColor: #85e7ff; 
+	rollOverColor: #99AACC;
+	alternatingItemColors: #77FFDD, #FFFFFF; 
+    /*alternatingItemColors: #6699AA, #AACCDD; */
+    fontFamily: Verdana;
+   	fontSize: 14;  
+   	fontWeight: bold;
+   	color: #000000;
+   	headerColors: #E0FFFF, #E0FFFF;
+	  
+}
+
+   
+
+mx|AdvancedDataGrid
+{
+	
+	borderSkin: Embed(source="blue_plastic.swf", symbol="layout two");
+	backgroundAlpha: 0.2;
+ 	headerColors: #e1e6eb, #bec8d2; 
+   	selectionColor: #85e7ff;
+	rollOverColor: #99AACC; 
+	alternatingItemColors: #77FFDD, #FFFFFF;
+ 	fontFamily: Verdana; 
+   	fontSize: 14;
+   	fontWeight: bold;
+   	color: #000000;
+	headerColors: #E0FFFF, #C2DFFF;     
+
+	  
+}
+
+mx|ComboBox
+{
+
+	disabledSkin: Embed(source="blue_plastic.swf", symbol="ComboBoxArrow_disabledSkin");
+	downSkin: Embed(source="blue_plastic.swf", symbol="ComboBoxArrow_upSkin");
+	editableDisabledSkin: Embed(source="blue_plastic.swf", symbol="ComboBoxArrow_editableDisabledSkin");
+	editableDownSkin: Embed(source="blue_plastic.swf", symbol="ComboBoxArrow_editableUpSkin");
+	editableOverSkin: Embed(source="blue_plastic.swf", symbol="ComboBoxArrow_editableUpSkin");
+	editableUpSkin: Embed(source="blue_plastic.swf", symbol="ComboBoxArrow_editableUpSkin");
+	overSkin: Embed(source="blue_plastic.swf", symbol="ComboBoxArrow_upSkin");
+	upSkin: Embed(source="blue_plastic.swf", symbol="PopUpButton_upSkin");
+	dropDownStyleName: "myComboBoxDropDowns"; 
+	textAlign: left;
+}
+
+.myComboBoxDropDowns {
+     borderSkin: Embed(source="blue_plastic.swf", symbol="dropDown");
+     selectionColor: #6699AA;
+     rollOverColor: #99AACC;
+}		
+
+ 
+mx|CursorManager
+{
+	busyCursor: Embed(source="blue_plastic.swf", symbol="BusyCursor");
+	busyCursorBackground: Embed(source="blue_plastic.swf",symbol="BusyCursor");
+}
+
+mx|Panel {
+   roundedBottomCorners: true;
+   cornerRadius: 6;
+   backgroundAlpha: 1;
+   shadowDistance: 7;
+   shadowDirection: left;
+   titleStyleName: "mypanelTitle";
+}
+
+.mypanelTitle {
+   textAlign: left;
+   fontFamily: Arial;
+   fontSize: 15;
+   fontWeight: bold;
+   color: black
+}
+   
+mx|ChartStyle {
+   fontFamily: Arial;
+   fontSize: 12;
+   fontWeight: bold;
+}
+
+
+mx|Button
+{
+	 
+	disabledSkin: Embed(source="blue_plastic.swf", symbol="Button_disabledSkin");
+	downSkin: Embed(source="blue_plastic.swf", symbol="Button_downSkin");
+	/*overSkin: Embed(source="blue_plastic.swf", symbol="Button_overSkin"); */
+	upSkin: Embed(source="blue_plastic.swf", symbol="Button_upSkin");
+
+	
+	
+		overSkin: Embed(source="Skin.swf", symbol="MyButton_Over");
+		focus-thickness: 7;
+		selectedDown: Embed(source="Skin.swf", symbol="MyButton_Over");
+		
+		
+	
+	
+	/*fillColors: #FBFCFC, #2F4A66, #F9FAFB, #152F49;*/ 
+	
+	color: #000000;
+	fontFamily: Verdana;   
+   	fontSize: 14;
+   	fontWeight: bold;
+
+}
+
+.btnog{
+	
+	disabledSkin: Embed(source="blue_plastic.swf", symbol="Button_disabledSkin");
+	downSkin: Embed(source="blue_plastic.swf", symbol="Button_downSkin");
+	overSkin: Embed(source="blue_plastic.swf", symbol="Button_overSkin");
+	/* upSkin: Embed(source="blue_plastic.swf", symbol="Button_upSkin"); Removing Up skin so I can make the FillColor Work */
+		color: #000000;
+	fontFamily: Verdana;   
+	fontSize: 14;
+	fontWeight: bold;
+	
+}
+
+
+.ExtendedDividerBox{
+	barBorderColor:			#2172A6;
+	barFillColors: 			#B2D7ED,#2172A6;
+	dividerThickness: 		10; 
+	dividerSkin: 			Embed(source="/assets/NavGrip.png");
+	
+	   
+}
+
+.ExtendedDividerBoxButtonH{
+	buttonWidth:			30;
+	barBorderColor:			#2172A6;
+	barFillColors: 			#B2D7ED,#2172A6;
+	dividerThickness: 		10;
+	dividerSkin:			Embed(source="/assets/NavGrip.png");
+	downSkin:				Embed(source="/assets/SkinSet001.swf#H_Slider_Button_2");
+	overSkin:				Embed(source="/assets/SkinSet001.swf#H_Slider_Button_2");
+	upSkin:					Embed(source="/assets/SkinSet001.swf#H_Slider_Button_2");
+	selectedDownSkin:		Embed(source="/assets/SkinSet001.swf#H_Slider_Button_2");
+	selectedOverSkin:		Embed(source="/assets/SkinSet001.swf#H_Slider_Button_2");
+	selectedUpSkin:			Embed(source="/assets/SkinSet001.swf#H_Slider_Button_2");
+	cornerRadius:			0;
+}
+
+.ExtendedDividerBoxButtonV{
+	buttonWidth:			30;
+	barBorderColor:			#2172A6;
+	barFillColors: 			#B2D7ED,#2172A6;
+	dividerThickness: 		10;
+	dividerSkin:			Embed(source="/assets/NavGrip.png"); 
+	downSkin:				Embed(source="/assets/SkinSet001.swf#V_Slider_Button_2");
+	overSkin:				Embed(source="/assets/SkinSet001.swf#V_Slider_Button_2");
+	upSkin:					Embed(source="/assets/SkinSet001.swf#V_Slider_Button_2");
+	selectedDownSkin:		Embed(source="/assets/SkinSet001.swf#V_Slider_Button_2");
+	selectedOverSkin:		Embed(source="/assets/SkinSet001.swf#V_Slider_Button_2");
+	selectedUpSkin:			Embed(source="/assets/SkinSet001.swf#V_Slider_Button_2");
+	cornerRadius:			0;
+}
+
+
+.ExtendedDividerBox{
+	barBorderColor:			#006633;
+	barFillColors: 			#B2D7ED,#2172A6;
+	dividerThickness: 		10; 
+	dividerSkin:			Embed(source="/assets/NavGrip.png");
+	
+}
+
+.ExtendedDividedBoxButtonH{
+	buttonWidth:			30;
+	barBorderColor:			#006633;
+	barFillColors: 			#B2D7ED,#2172A6;
+	dividerThickness: 		10;
+	dividerSkin:			Embed(source="/assets/NavGrip.png");
+	downSkin:				Embed(source="/assets/SkinSet001.swf#H_Slider_Button_2");
+	overSkin:				Embed(source="/assets/SkinSet001.swf#H_Slider_Button_2");
+	upSkin:					Embed(source="/assets/SkinSet001.swf#H_Slider_Button_2");
+	selectedDownSkin:		Embed(source="/assets/SkinSet001.swf#H_Slider_Button_2");
+	selectedOverSkin:		Embed(source="/assets/SkinSet001.swf#H_Slider_Button_2");
+	selectedUpSkin:			Embed(source="/assets/SkinSet001.swf#H_Slider_Button_2");
+	cornerRadius:			0;
+}
+
+.ExtendedDividedBoxButtonV{
+	buttonWidth:			30;
+	barBorderColor:			#006633;
+	barFillColors: 			#B2D7ED,#2172A6;
+	dividerThickness: 		10;
+	dividerSkin:			Embed(source="/assets/NavGrip.png"); 
+	downSkin:				Embed(source="/assets/SkinSet001.swf#V_Slider_Button_2");
+	overSkin:				Embed(source="/assets/SkinSet001.swf#V_Slider_Button_2");
+	upSkin:					Embed(source="/assets/SkinSet001.swf#V_Slider_Button_2");
+	selectedDownSkin:		Embed(source="/assets/SkinSet001.swf#V_Slider_Button_2");
+	selectedOverSkin:		Embed(source="/assets/SkinSet001.swf#V_Slider_Button_2");
+	selectedUpSkin:			Embed(source="/assets/SkinSet001.swf#V_Slider_Button_2");
+	cornerRadius:			0;
+}
+
+
+
+mx|HAccordion
+		{
+			backgroundColor: #FFFFFF;
+			borderStyle: "solid";
+			
+			paddingBottom: -1;
+			paddingLeft: -1;
+			paddingRight: -1;
+			paddingTop: -1;
+			verticalGap: -1;
+			horizontalGap: -1;
+			textAlign: "left";
+		}
+		
+mx|VAccordion
+		{
+			backgroundColor: #FFFFFF;
+			borderStyle: "solid";
+			
+			paddingBottom: -1;
+			paddingLeft: -1;
+			paddingRight: -1;
+			paddingTop: -1;
+			verticalGap: -1;
+			horizontalGap: -1;
+			textAlign: "left";
+		}
+		
+		/*
+		//------------------------------
+		//  AccordionHeader
+		//------------------------------
+		*/
+		
+mx|AccordionHeader
+		{
+		/*	selectedFillColors: #FFFFFF, #FFFFFF; */ /* overrides the calculated fillcolors */
+			
+		/*	disabledIcon: null; */
+			disabledSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+		/*	downIcon: null; */
+			downSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+			horizontalGap: 5;
+		/*	overIcon: null; */
+			overSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+			paddingTop: 5;
+			paddingBottom: 5;
+		/*	selectedDisabledIcon: null; */
+			selectedDisabledSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+		/*	selectedDownIcon: null; */
+			selectedDownSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+		/*	selectedOverIcon: null; */
+			selectedOverSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+		/*	selectedUpIcon: null; */
+			selectedUpSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+			
+		/*	upIcon: null; */
+			upSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+			
+			fontFamily: accordionHeader; 
+			fontWeight:bold;
+			fontSize:11;
+			fontSharpness:-200;
+			fontThickness:-100;
+			fontGridFitType: none;
+			
+			
+		}
+
+mx|ApplicationControlBar {
+}
+.highResolutionLabel{
+			fontSize:20; 
+		}
+.lowResolutionLabel{
+			fontSize:16;  
+		}
+.jobButton101
+{
+                fillAlphas: 1, 1, 1, 1;
+   fillColors: #66FFFF, #66FFFF, #66FFFF, #66FFFF;
+}
+.jobButton10
+{
+                fillAlphas: 1, 1, 1, 1;
+   
+}  
+
+
+.lowResolutionSize{
+			fontSize:10;
+		} 
+
+
+.customTitleStyle{
+	font-size: 19;
+	font-weight: bold;
+	text-align:center;
+}
+
+.ribbonLabel{
+	fontSize:16;  
+	color: #010101;
+	fontWeight:bold;
+	/* fontSize="16"  fontWeight="normal"   color="#020202" */
+}
+
+.actiongridStandard{
+	borderSkin: Embed(source="blue_plastic.swf", symbol="layout two");
+	backgroundAlpha: 0.2;
+	headerColors: #e1e6eb, #bec8d2;
+	selectionColor: #66FFFF;
+	rollOverColor: #99AACC; 
+	alternatingItemColors: #77FFDD, #FFFFFF; 
+	fontFamily: Verdana; 
+	fontSize: 14;
+	fontWeight: bold;
+	color: #000000;
+	headerColors: #E0FFFF, #C2DFFF; 
+	
+	headerStyleName: "centerAlignDataGridCol";
+	horizontalGridLines: true;
+	verticalGridLines:true;
+	horizontalGridLineColor:black;
+	verticalGridLineColor:black;
+	borderColor: #010101;
+	borderThickness: 3;
+	
+}
+
+.actiongridBasic{
+
+	headerColors:white, white;
+	headerStyleName: "";
+	horizontalGridLines: false;
+	verticalGridLines:false;
+	horizontalGridLineColor:white;
+	verticalGridLineColor:white;
+	borderColor: "";
+	borderThickness: 0;
+}

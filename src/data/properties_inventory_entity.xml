@@ -1,0 +1,32 @@
+
+
+ <root>
+ 	<Panel>
+		<code>022</code>
+ 		<title>Inventory Entity</title>
+ 	</Panel>
+	<AdvancedDataGridColumnGroup>
+		<columngroup headerText="General" columnstart="0"/>
+		<columngroup headerText="Spare" columnstart="29"/>
+	</AdvancedDataGridColumnGroup>
+	<AdvancedDataGridColumn>
+ 	    <column columnId="0"  dataField="entity" title_header="Entity" width="100" datatype="S"/>
+ 	    <column columnId="1"  dataField="entity_page" title_header="Entity Page" width="100" datatype="S" />
+        <column columnId="2" dataField="module" title_header="Module" width="100" datatype="S"/> 
+ 	<column columnId="3"  dataField="logical_file" title_header="Logical File" width="150" datatype="S" />
+        <column columnId="4"  dataField="databox_type" title_header="Databox Type" width="150" datatype="S"/> 
+        <column columnId="5" dataField="databox_id" title_header="Databox Id" width="150" datatype="S"/> 
+        <column columnId="6"  dataField="colour" title_header="Colour" width="100" datatype="S"/> 
+        <column columnId="7"  dataField="databox_label" title_header="Databox Label" width="400" datatype="S"/> 
+        <column columnId="8"  dataField="rowpos" title_header="Row" width="80" datatype="N"/> 
+        <column columnId="9"  dataField="colpos" title_header="Column" width="80" datatype="N"/> 
+        <column columnId="10"  dataField="databox_desc_eng" title_header="Data Box Desc" width="400" datatype="S"/> 
+        <column columnId="11"  dataField="setup_link" title_header="Setup Link" width="80" datatype="S"/> 
+        <column columnId="12"  dataField="setup_job_seq" title_header="Setup Job Seq" width="150" datatype="S"/> 
+        <column columnId="13" dataField="advance_detail_programmer" title_header="Adv Det Pgm'r" width="150" datatype="S"/> 
+        <column columnId="14" dataField="advance_detail_instance" title_header="Adv Det Instance" width="150" datatype="S"/>
+
+	</AdvancedDataGridColumn>
+
+ </root>
+ 

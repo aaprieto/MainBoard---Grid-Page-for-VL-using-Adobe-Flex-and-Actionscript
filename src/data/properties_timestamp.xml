@@ -1,0 +1,45 @@
+<root>
+<Panel>
+<code>027</code>
+<title>Labor Tracking</title>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="General" columnstart="0"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="ts_seq" dataField="ts_seq" title_header="Seq. No" width="160" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="1" columnName="ts_manual" dataField="ts_manual" title_header="Man/Auto" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="2" columnName="ts_process" dataField="ts_process" title_header="Process" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="3" columnName="ts_client" dataField="ts_client" title_header="Client" width="80" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="4" columnName="ts_whouse" dataField="ts_whouse" title_header="Whse" width="80" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="5" columnName="ts_opid" dataField="ts_opid" title_header="Floor Opr" width="100" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="6" columnName="ts_equip" dataField="ts_equip" title_header="Equip Type" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="7" columnName="ts_docnum" dataField="ts_docnum" title_header="Document" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="8" columnName="ts_docline" dataField="ts_docline" title_header="Line Id" width="90" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="9" columnName="ts_product" dataField="ts_product" title_header="Product Code" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="10" columnName="ts_convid" dataField="ts_convid" title_header="Conveyance Id's" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="11" columnName="ts_wv_type" dataField="ts_wv_type" title_header="Work Event Type" width="130" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="12" columnName="ts_pv_code" dataField="ts_pv_code" title_header="Primary Event Code" width="130" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="13" columnName="ts_wv_code" dataField="ts_wv_code" title_header="Work Event Code" width="130" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="14" columnName="ts_clntpfx" dataField="ts_clntpfx" title_header="Event Client Prefix" width="100" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="15" columnName="ts_str_dat" dataField="ts_str_dat" title_header="Event Start Date" width="120" datatype="D" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="16" columnName="ts_str_tim" dataField="ts_str_tim" title_header="Event Start Time" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="17" columnName="ts_end_dat" dataField="ts_end_dat" title_header="Event End Date" width="120" datatype="D" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="18" columnName="ts_end_tim" dataField="ts_end_tim" title_header="Event End Time" width="130" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="19" columnName="ts_tim_elp" dataField="ts_tim_elp" title_header="Event Elapsed Time" width="150" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="20" columnName="ts_tim_act" dataField="ts_tim_act" title_header="Event Actual Time" width="120" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="21" columnName="ts_jobno" dataField="ts_jobno" title_header="Job Id" width="90" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="22" columnName="ts_rev_cal" dataField="ts_rev_cal" title_header="Revenue Calculation" width="130" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="23" columnName="ts_cst_bgt" dataField="ts_cst_bgt" title_header="Budget Cost" width="120" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="24" columnName="ts_cst_act" dataField="ts_cst_act" title_header="Actual Cost" width="120" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="25" columnName="ts_tim_std" dataField="ts_tim_std" title_header="Standard Time (Calculated)" width="130" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="26" columnName="ts_comment" dataField="ts_comment" title_header="Comments" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="27" columnName="ts_convnum" dataField="ts_convnum" title_header="# Conveyances" width="140" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="28" columnName="ts_e_conv" dataField="ts_e_conv" title_header="Convs per Hour" width="130" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="ts_convnum;*;3600;/;ts_tim_act" />
+<column columnId="29" columnName="ts_casesm" dataField="ts_casesm" title_header="Cases on Conveyance" width="120" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="30" columnName="ts_e_casem" dataField="ts_e_casem" title_header="Conv Cases per Hour" width="130" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="31" columnName="ts_cases" dataField="ts_cases" title_header="# Loose Cases" width="100" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="32" columnName="ts_e_case" dataField="ts_e_case" title_header="Loose Cases per Hour" width="130" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="33" columnName="" dataField="" title_header="" width="1500" datatype="S" />
+</AdvancedDataGridColumn>
+</root>

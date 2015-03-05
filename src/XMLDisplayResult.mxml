@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="450" y="100"   width="896"  creationComplete="init(event);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        layout="horizontal"
+        color="#B6B9BA" height="637"
+        backgroundImage=""
+        
+        xmlns:local="*" xmlns:s="library://ns.adobe.com/flex/spark"> 
+ <mx:Script> 
+ 	<![CDATA[
+ 			import mx.collections.ArrayCollection;
+ 			import mx.controls.*;
+ 			import mx.events.CloseEvent;
+ 			import mx.events.FlexMouseEvent;
+ 			import mx.events.ItemClickEvent;
+ 			import mx.managers.PopUpManager;
+ 			import mx.rpc.events.*;
+ 			import mx.utils.ArrayUtil;
+ 			import mx.utils.ObjectProxy;
+		 	
+		 	
+		 	[Bindable]
+		 	public var str_message:String;
+		[Bindable]
+		    public var xml_str_message:String;
+		 	      
+ 		    private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+            }
+            private function init(evt:Event):void {
+				//Alert.show(xml_str_message);
+				//str_xml.text = xml_str_message;
+				btn_ok.addEventListener(KeyboardEvent.KEY_DOWN,keydown)
+				btn_ok.setFocus();
+            }
+			private function keydown(evt:KeyboardEvent):void {
+				if (evt.keyCode == 13){
+					titleWindow_close(evt);
+				}
+			}  
+ 	]]>
+ </mx:Script>
+    <mx:VBox id="vb" width="100%"> 
+    <mx:VBox id="hb0" width="100%"  height="547">
+    <mx:Spacer width="100%" />
+		<mx:Label text="Error Description:" fontSize="16" fontWeight="bold" color="#0A404E" width="100%"/>
+    	<mx:TextArea text="{str_message}"  fontSize="16" fontWeight="bold" color="#0A404E" width="100%" textAlign="left" wordWrap="true" height="101"/>
+		<mx:Label text="XML Result:" fontSize="16" fontWeight="bold" color="#0A404E" width="100%"/>
+		
+		<mx:TextArea text="{xml_str_message}"  fontSize="12"  color="#050505" width="100%" height="100%" textAlign="left" wordWrap="false"/> 
+		<mx:Spacer width="100%" />
+			
+    </mx:VBox>
+    	<mx:HBox id="hb3" width="100%" >    
+    		<mx:Spacer width="100%" />
+    		<!-- mx:Button id="btn_autorefreshtimer" label="OFF" width="126"
+    			 icon="@Embed('image/button_icon_off.png')"/ -->
+    			 <local:HighViewButton doc_id="1058" id="btn_ok" click="{titleWindow_close(event)}" label="OK" width="126"/>
+    		<mx:Spacer width="100%" />
+    	</mx:HBox>
+    </mx:VBox>
+</mx:TitleWindow>

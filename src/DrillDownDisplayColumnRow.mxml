@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="644" height="606"  verticalScrollPolicy="off"
+				layout="vertical"
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundImage=""
+				creationComplete="init()"
+				xmlns:local="*"
+				>
+	<!-- mx:Style source="css/main.css"/ -->
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*; 
+			import mx.controls.*;
+			
+			[Bindable]
+			public var myArray:Array;
+			[Bindable]
+			public var loc_coltitle:String;
+			[Bindable]
+			public var loc_coldatafield:String;
+			[Bindable]
+			public var loc_datavalue:String;
+			
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);	
+			}
+			private function init():void {
+			}
+			
+		]]> 
+	</mx:Script>
+	<mx:Style source="css/main.css"/>
+	<mx:VBox width="100%" height="100%">
+		<mx:Label text="{loc_coltitle + ' : ' + loc_datavalue}" width="100%" textAlign="center"  fontSize="19" color="#010101" fontWeight="bold"/>
+		<mx:Panel width="100%" height="100%" layout="vertical" textAlign="left"> 	 
+			<mx:DataGrid id="dg_1" dataProvider="{myArray}" draggableColumns="false" editable="true" allowMultipleSelection="true"
+						 width="100%" height="100%" horizontalScrollPolicy="auto" verticalScrollPolicy="on" sortableColumns="false" variableRowHeight="true">
+				<mx:columns> 
+					<mx:DataGridColumn id="dg_title" dataField="title" headerText="Title" width="200"  editable="false" />
+					<mx:DataGridColumn id="dg_data" dataField="data" headerText="Data" width="200"  editable="true" />
+				</mx:columns>
+			</mx:DataGrid> 	
+			<mx:HBox horizontalGap="0" width="100%">
+				<!-- mx:Button label="DB Refresh" / -->
+				<mx:Spacer width="100%"/>
+				<local:HighViewButton id="btn_close" doc_id="1045" label="Close" click="titleWindow_close(event);" />
+			</mx:HBox>
+		</mx:Panel>	 
+	</mx:VBox>   	
+</mx:TitleWindow>

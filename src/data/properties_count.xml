@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+ <root>
+ 	<Panel>
+		<code>015</code>
+ 		<title>Counts WiP ActionGrid</title>
+ 	</Panel>
+	<AdvancedDataGridColumnGroup>
+		<columngroup headerText="General" columnstart="0"/>
+	</AdvancedDataGridColumnGroup>
+	<AdvancedDataGridColumn>
+ 	    <column columnId="0"  dataField="count_num" title_header="Counts" width="80" datatype="S"/>
+	</AdvancedDataGridColumn>
+
+ </root>
+ 

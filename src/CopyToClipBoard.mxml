@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="382" height="568"  verticalScrollPolicy="off"
+				layout="vertical"
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundImage=""
+				creationComplete="init()" 
+				xmlns:local="*">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*; 
+			import mx.controls.*;
+			[Bindable]
+			public var mfArray:Array;
+			private function init():void {
+				dg_2.setFocus();
+				clearMyArray();
+			}    
+			
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);
+			}
+			private function clearMyArray():void{
+				for (var i:int=0;i<mfArray.length;i++){ 
+					mfArray[i].value = " ";
+				}
+				mfArray.refresh();
+				dg_2.setFocus();
+			}
+			/*
+			private function dateCheck(event:Event):void{
+				
+				var str_tar_array:Array = [];
+				var tar:String = event.target.toString();
+				str_tar_array = tar.split(".");	
+				//tar = str_tar_array[7].toString();
+				tar = str_tar_array[3].toString();
+				//tar = tar.substr(0,15);
+				tar = tar.substr(0,10);
+				
+				if (tar != "VScrollBar"){
+					if (dg_2.selectedItem.datatype == "D"){
+						launchMultiFilterDateRange(event);
+					}
+					
+				}
+				
+				
+			}
+			*/
+			//  private var popmfdr:MultiFilterDateRange;
+			private var popmfdr:MultiFilterDR;
+			private function launchMultiFilterDateRange(event:Event):void {
+				
+				popmfdr = MultiFilterDR(
+					PopUpManager.createPopUp(this, MultiFilterDR, true));
+				popmfdr.daterange_fromdate = "";
+				popmfdr.daterange_todate = ""; 
+				
+				popmfdr["btn_submit"].addEventListener("click",  MultiFilterDateRangeSubmit); 
+				popmfdr["btn_submit"].addEventListener(KeyboardEvent.KEY_DOWN,  hdr_esckey);
+				popmfdr["btn_cancel"].addEventListener(KeyboardEvent.KEY_DOWN,  hdr_esckey);
+				popmfdr["from_dateField"].addEventListener(KeyboardEvent.KEY_DOWN,  hdr_esckey);
+				popmfdr["to_dateField"].addEventListener(KeyboardEvent.KEY_DOWN,  hdr_esckey);
+			}
+			private function hdr_esckey(event :KeyboardEvent):void{
+				
+				if (event.keyCode == Keyboard.ESCAPE)
+				{
+					PopUpManager.removePopUp(popmfdr);
+				}
+			}
+			private function MultiFilterDateRangeSubmit(event :Event):void{
+				
+				
+				var from_int:int = (popmfdr.from_dateField.text).length;
+				var to_int:int = (popmfdr.to_dateField.text).length;
+				
+				if ((from_int > 0)&&(to_int == 0)){ 
+					//custom_text = ">= " + popmfdr.from_dateField.text;
+					dg_2.selectedItem.value = ">= " + popmfdr.from_dateField.text;
+					PopUpManager.removePopUp(popmfdr);
+					//FilterHistoryLog(event);
+				}
+				
+				if ((from_int > 0)&& (to_int > 0)){
+					
+					if (popmfdr.from_dateField.text > popmfdr.to_dateField.text){
+						AlertMessageShow("From Date should not be greater than To Date.");
+						return;
+					}
+					//custom_text = ">= " + popfdr.from_dateField.text + " + " + "<= " + popfdr.to_dateField.text;
+					dg_2.selectedItem.value = ">= " + popmfdr.from_dateField.text + " + " + "<= " + popmfdr.to_dateField.text;
+					PopUpManager.removePopUp(popmfdr);
+					//removeMe_fdr(event);
+					//FilterHistoryLog(event);
+				}
+				
+				if ((from_int == 0)&&(to_int > 0)){
+					AlertMessageShow("Please Enter From Date Field");
+					return;
+				}
+				if ((from_int == 0)&&(to_int == 0)){
+					AlertMessageShow("Please Enter From Date Field.");
+					return;
+				}
+				
+			}
+		]]>
+	</mx:Script>
+	<mx:Script source="AlertMessageHandler.as"/>
+	<mx:Style source="css/main.css"/>
+	<mx:VBox width="100%">
+		
+		<mx:HBox width="100%">
+			<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'','Multiple Filter Console','BUTTON')}"
+					   
+					   />     
+			<mx:Spacer width="50%"/>
+			<mx:Label text="Copy To ClipBoard" width="100%" textAlign="center"  fontSize="19" color="#030303" fontWeight="bold"/>
+			<mx:Spacer width="100%"/>
+			
+		</mx:HBox>
+		
+		
+		<mx:DataGrid id="dg_2" dataProvider="{mfArray}" draggableColumns="false" editable="true" 
+					 width="100%" height="450" horizontalScrollPolicy="auto" verticalScrollPolicy="auto" 
+					 allowMultipleSelection="true"    
+					 sortableColumns="true" variableRowHeight="true">
+			<mx:columns> 
+				<mx:DataGridColumn id="mf_datafield" dataField="dataField" headerText="dataField" width="80" editable="false" visible="false"/>
+				<mx:DataGridColumn id="mf_datatype" dataField="datatype" headerText="datatype" width="80" editable="false" visible="false"/>
+				
+				<mx:DataGridColumn id="mf_title" dataField="title_header" headerText="Field" width="110" editable="false" />
+				
+				
+			</mx:columns>
+		</mx:DataGrid> 	
+		<mx:HBox>
+			<!-- mx:Button label="DB Refresh" / -->
+			<!--
+			<local:HighViewButton id="mf_btn_keep" doc_id="1048" label="Keep" />
+			<local:HighViewButton id="mf_btn_discard" doc_id="1049" label="Discard" />
+			<local:HighViewButton id="mf_add" doc_id="150" label="Add" />
+			-->
+			<!-- mx:Button id="mf_clear" label="Clear" click="clearMyArray()" / -->
+			<local:HighViewButton id="mf_btn_submit" doc_id="1048" label="Submit" />
+			<local:HighViewButton id="btn_close" doc_id="1051" label="Close" click="titleWindow_close(event);" />
+		</mx:HBox>
+		
+	</mx:VBox>
+	
+</mx:TitleWindow>

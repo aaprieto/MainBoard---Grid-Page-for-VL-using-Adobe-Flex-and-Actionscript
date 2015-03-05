@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="1010" height="598"  verticalScrollPolicy="off"
+				layout="vertical"
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="160" y="120"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundImage=""
+				creationComplete="init(event)"
+				
+				xmlns:local="*"
+				xmlns:components="components.*">
+	
+	
+	
+	<mx:HTTPService 
+		id="SubmitQuery" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="SubmitQueryListHandler(event)"   
+		method="POST" 
+		fault="SubmitQueryfaultListHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>refreshData</action>  
+				<company>{cc_sq}</company>
+				<sid>{sid_sq}</sid>
+				<parameters>{req_sq}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>   
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import com.utilities.Utils;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.DataGridEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			[Bindable]
+			public var mfArray:Array;
+			[Bindable]
+			public var mb_title:String;
+			[Bindable]
+			public var filluphistoryParameters:ArrayCollection;
+			[Bindable]
+			public var dynamicindicator:String;
+			[Bindable] 
+			public var myDPColl:ArrayCollection;
+			
+			[Bindable] 
+			public var lot_req_sq:String;
+			[Bindable] 
+			public var save_str_lotquerydetl:String;
+			[Bindable] 
+			public var pageType:String;
+			
+			
+			[Bindable] 
+			public var lotquerycode:String;
+			[Bindable] 
+			public var lotquerydescription:String;
+			
+			
+			[Bindable]
+			public var mb_sq:String;  // Mainboard Code
+			[Bindable]
+			public var cc_sq:String;   // Company Code
+			[Bindable]
+			public var sid_sq:String;  //  Session Id
+			[Bindable] 
+			public var user_sq:String; // User Code.
+			
+			
+			[Bindable]
+			private var req_sq:String = new String; 
+			
+			public var loc_query_code:String = new String;
+			public var loc_query_description:String = new String;
+			private var mymfArray:ArrayCollection;
+			private var sortByFilter:SortField;
+			private var sortA:Sort;
+			private var c_utils:Utils = new Utils();
+			
+			private var finalQueryXML:String = new String;
+			public function httpRequestRenditionUrl(str_app:String):void{
+				if (str_app == 'ml'){
+					SubmitQuery.url = 'ae_tlch_ml_req.php'; 
+				} 
+			}
+			
+			private function pre_init(event:Event):void {
+					/*  Clears up the value column */    
+					clearMyArray(); 
+			}
+			
+			private function init(event:Event):void {
+				
+				
+				
+				httpRequestRenditionUrl(parentApplication.application_entry);
+				
+				//Alert.show(mb_title);
+				myDPColl = new ArrayCollection;
+				mymfArray = new ArrayCollection(mfArray);
+				for (var i:int=0;i<mymfArray.length;i++){ 
+					var obj:Object = new Object;
+					obj.dataField = mymfArray[i].dataField;
+					obj.datatype = mymfArray[i].datatype;
+					obj.filter_seq = mymfArray[i].filter_seq;
+					obj.title_header = mymfArray[i].title_header;
+					obj.value = " ";
+					myDPColl.addItem(obj);
+				}
+				myDPColl = new ArrayCollection(mfArray);
+				sortA = new Sort();
+				sortByFilter = new SortField("filter_seq", true, false, true);
+				sortA.fields=[sortByFilter];
+				myDPColl.sort=sortA;
+				/*  Clears up the value column */
+				
+				           
+				clearMyArray(); 
+				
+				for (var i:int=0;i<myDPColl.length;i++){ 
+					for (var x:int=0;x<filluphistoryParameters.length;x++){ 
+						//Alert.show(filluphistoryParameters[x].hp_value);
+						if (myDPColl[i].dataField == filluphistoryParameters[x].hp_dataField){
+							
+							myDPColl[i].value = filluphistoryParameters[x].hp_value;
+							
+						}
+					}
+				} 
+				
+				
+				/*  Set the Client Restriction for Client Code */
+				/*  might have to remove this as per Anthony as the security doesn't makes sense.  Will need to let Walter know that
+					we are removing this functionality  
+				*/
+				/*
+				if (parentApplication.application_entry == 'ml'){
+				setClientRestriction();
+				} 
+				*/
+				//Alert.show(parentApplication.client_restriction);
+				/*
+				for (var i:int=0;i<myDPColl.length;i++){ 
+				if (myDPColl[i].dataField == 'client'){
+				myDPColl[i].value = parentApplication.client_restriction;
+				break;
+				}
+				}    
+				*/
+				 
+				
+				
+				
+				/* Set the ArrayCollection as the DataGrid data provider. */
+				
+				//Alert.show(dynamicindicator);
+				if (dynamicindicator == '1'){
+					btn_nr.visible = false;
+					btn_atc.visible = false;
+					btn_clearall.visible = false;
+					btn_cmv1.visible = false;
+					btn_close.visible = false;
+					
+					btn_dmc.visible = true;
+					btn_dls.visible = true;
+					btn_ecs.visible = true;  
+					btn_cmv2.visible = true;
+					btn_clearall2.visible = true;
+					btn_close2.visible = true;
+					//title_id.text = mb_title + ' Extensible Data Query'
+					
+					//Alert.show("check 1 ");
+					//retrieve_componentsearch.send();
+					//Alert.show("check 2 ");
+					//	btn_queries.visible = false;
+					
+					
+				}else{       
+					btn_nr.visible = true;
+					btn_atc.visible = true;
+					btn_cmv1.visible = true;
+					btn_clearall.visible = true;
+					btn_close.visible = true;
+					
+					btn_dmc.visible = false;
+					btn_dls.visible = false;
+					btn_ecs.visible = false;
+					btn_cmv2.visible = false;
+					btn_clearall2.visible = false;
+					btn_close2.visible = false;
+					//title_id.text = mb_title + ' Query'
+					
+				}
+				dg_2.dataProvider=myDPColl;
+				
+				if(pageType == 'lot'){
+					//btn_queries.visible = false;
+					//lbl_querycode.text = lotquerycode;
+					////////////////////////////////////////  Arnold you are working here
+					if (save_str_lotquerydetl.length > 0){
+						var lot_str_segmentquery_array:Array = save_str_lotquerydetl.split(";");
+						
+						var str_len:int = lot_str_segmentquery_array.length;
+						
+						for (var i:int=0; i<str_len;i++){
+							var str_query:String = lot_str_segmentquery_array[i].toString();
+							var str_query_array:Array = [];
+							str_query_array = str_query.split(",");
+							var str_arraycol:ArrayCollection = new ArrayCollection;
+							var  loc_type:String =  new String();
+							var  loc_col:String =  new String();
+							var  loc_value:String =  new String();
+							
+							loc_type = str_query_array[0].substr(str_query_array[0].lastIndexOf(":") + 1,str_query_array[0].length);
+							loc_col = str_query_array[1].substr(str_query_array[1].lastIndexOf(":") + 1,str_query_array[1].length);
+							loc_value = str_query_array[2].substr(str_query_array[2].lastIndexOf(":") + 1,str_query_array[2].length);
+							
+							for (var x:int=0; x<dg_2.dataProvider.length;x++){
+								
+								if (dg_2.dataProvider[x].dataField == loc_col){
+									dg_2.dataProvider[x].value = loc_value;
+									break
+								}				
+							}
+							
+							
+						}
+					}			
+					
+					////////////////////////////////////////////////////////////////////////////
+					
+					
+					
+					
+				}
+				
+				dg_2.setFocus();
+			}    
+			private function setClientRestriction():void {
+				
+				for (var a:int=0;a<myDPColl.length;a++){ 
+					if (myDPColl[a].dataField == 'client'){
+						var pacr:String = new String;
+						if (parentApplication.client_restriction == null){
+							pacr = " ";
+						} else {
+							pacr = parentApplication.client_restriction;
+						} 
+						
+						myDPColl[a].value = pacr;
+					} 
+				}    
+			}			
+			
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);
+			}
+			private function clearMyArray():void{  
+				loc_query_code = "";
+				loc_query_description = "";
+				//str_querydetl = ""; 
+				str_lotquerydetl =  "";
+				currentState = "";
+				//lbl_querycode.text = "";
+				
+				for (var i:int=0;i<myDPColl.length;i++){ 
+					myDPColl[i].value = " ";
+				}
+				
+				/*  set back the Client Restriction */
+				
+				setClientRestriction();
+				myDPColl.refresh();
+				dg_2.setFocus();    
+			}
+			private function dateCheck(event:Event):void{
+				var str_tar_array:Array = [];
+				var tar:String = event.target.toString();
+				str_tar_array = tar.split(".");	
+				tar = str_tar_array[3].toString();
+				tar = tar.substr(0,10);
+				if (tar != "VScrollBar"){
+					if (dg_2.selectedItem.datatype == "D"){
+						launchMultiFilterDateRange(event);
+					}
+				}
+			}
+			   
+			
+			private var popmfdr:MultiFilterDateRange;
+			private function launchMultiFilterDateRange(event:Event):void {
+				popmfdr = MultiFilterDateRange(
+					PopUpManager.createPopUp(this, MultiFilterDateRange, true));
+				
+				
+				
+				
+				popmfdr.daterange_fromdate = "";
+				popmfdr.daterange_todate = ""; 
+				popmfdr.user_sq = user_sq;   
+				popmfdr.cc_sq = cc_sq;
+				popmfdr.sid_sq = sid_sq;
+				
+				  
+				popmfdr["btn_submit"].addEventListener("click",  MultiFilterDateRangeSubmit); 
+				popmfdr["btn_submit"].addEventListener(KeyboardEvent.KEY_DOWN,  hdr_esckey);
+				popmfdr["btn_cancel"].addEventListener(KeyboardEvent.KEY_DOWN,  hdr_esckey);
+				popmfdr["from_dateField"].addEventListener(KeyboardEvent.KEY_DOWN,  hdr_esckey);
+				popmfdr["to_dateField"].addEventListener(KeyboardEvent.KEY_DOWN,  hdr_esckey);
+				
+				if (pageType == 'lot'){
+					popmfdr.datevalue_from.enabled = false;
+					popmfdr.datevalue_to.enabled = false;
+				}
+				
+			}   
+			
+			
+			/////////////////////////////////////////////////////////////////////
+			/*
+			private var popmfdr:MultiFilterDR;
+			private function launchMultiFilterDateRange(event:Event):void {
+				
+				popmfdr = MultiFilterDR(
+					PopUpManager.createPopUp(this, MultiFilterDR, true));
+				popmfdr.daterange_fromdate = "";
+				popmfdr.daterange_todate = ""; 
+				
+				popmfdr["btn_submit"].addEventListener("click",  MultiFilterDateRangeSubmit); 
+				popmfdr["btn_submit"].addEventListener(KeyboardEvent.KEY_DOWN,  hdr_esckey);
+				popmfdr["btn_cancel"].addEventListener(KeyboardEvent.KEY_DOWN,  hdr_esckey);
+				popmfdr["from_dateField"].addEventListener(KeyboardEvent.KEY_DOWN,  hdr_esckey);
+				popmfdr["to_dateField"].addEventListener(KeyboardEvent.KEY_DOWN,  hdr_esckey);
+			}
+			
+			*/
+			/////////////////////////////////////////////////////////////////////////
+			
+			
+			
+			private function hdr_esckey(event :KeyboardEvent):void{
+				if (event.keyCode == Keyboard.ESCAPE)
+				{
+					PopUpManager.removePopUp(popmfdr);    
+				}
+			}
+			private function MultiFilterDateRangeSubmit(event :Event):void{
+				var from_int:int = (popmfdr.from_dateField.text).length;
+				var to_int:int = (popmfdr.to_dateField.text).length;
+				if ((from_int > 0)&&(to_int == 0)){
+					
+					
+					if (popmfdr.datevalue_from.selectedIndex == -1){
+						dg_2.selectedItem.value = ">= " + "(" + popmfdr.from_dateField.text +")";
+					}
+					else {
+					
+						dg_2.selectedItem.value = ">= " + popmfdr.datevalue_from.selectedItem.code + "(" + popmfdr.from_dateField.text + ")";
+					
+					}
+					
+					PopUpManager.removePopUp(popmfdr);
+				}
+				
+				if ((from_int > 0)&& (to_int > 0)){
+					if (popmfdr.from_dateField.text > popmfdr.to_dateField.text){
+						AlertMessageShow("From Date should not be greater than To Date.");
+						return;
+					}
+					
+					
+					if ((popmfdr.datevalue_from.selectedIndex == -1)&&(popmfdr.datevalue_to.selectedIndex == -1))  {
+						dg_2.selectedItem.value = ">= " + "(" + popmfdr.from_dateField.text + ")" + " + " + "<= " + "(" + popmfdr.to_dateField.text + ")";
+					} else if ((popmfdr.datevalue_from.selectedIndex != -1)&&(popmfdr.datevalue_to.selectedIndex == -1)){
+						dg_2.selectedItem.value = ">= " + popmfdr.datevalue_from.selectedItem.code +  "(" + popmfdr.from_dateField.text + ")" + " + " + "<= " + "(" +popmfdr.to_dateField.text + ")";	
+					} else if ((popmfdr.datevalue_from.selectedIndex == -1)&&(popmfdr.datevalue_to.selectedIndex != -1)){
+						dg_2.selectedItem.value = ">= " + "(" + popmfdr.from_dateField.text + ")" + " + " + "<= " + popmfdr.datevalue_to.selectedItem.code + "(" +popmfdr.to_dateField.text + ")";
+					} else if ((popmfdr.datevalue_from.selectedIndex != -1)&&(popmfdr.datevalue_to.selectedIndex != -1)){
+						dg_2.selectedItem.value = ">= " + popmfdr.datevalue_from.selectedItem.code +  "(" + popmfdr.from_dateField.text + ")" + " + " + "<= " + popmfdr.datevalue_to.selectedItem.code + "(" +popmfdr.to_dateField.text + ")";	
+					}
+					
+					//dg_2.selectedItem.value = ">= " + popmfdr.from_dateField.text + " + " + "<= " + popmfdr.to_dateField.text;
+					PopUpManager.removePopUp(popmfdr);
+				}
+				if ((from_int == 0)&&(to_int > 0)){
+					AlertMessageShow("Please Enter From Date Field");
+					return;
+				}
+				if ((from_int == 0)&&(to_int == 0)){
+					AlertMessageShow("Please Enter From Date Field.");
+					return;
+				}
+			}   
+			
+			
+			private function CS_SaveQuery(event:Event):void {
+				currentState	= 'SaveQuery';
+				
+				
+				
+				
+				query_code.text = loc_query_code;
+				query_description.text = loc_query_description;
+				
+				
+				
+				if (pageType == 'lot'){
+					
+					query_code.text = lotquerycode;
+					query_description.text = lotquerydescription;
+					
+				} 
+				
+				
+			}
+			private function closeSaveQuery(event:Event):void {
+				currentState	= '';
+			}	
+			
+			private function submitQuery(event:Event):void{   
+					
+				
+				if (c_utils.trim(query_code.text).length < 1 ){
+					AlertMessageShow("Please Enter Query Code");
+					return;
+				}
+				
+				if (c_utils.trim(query_description.text).length < 1 ){
+					AlertMessageShow("Please Enter Query Description");
+					return;
+				}     
+				
+				
+				//Alert.show(lot_req_sq);
+				if(pageType == 'lot'){
+					
+					
+					var pre_req_sq:String = "REFRESH,UPDATE|GDQUERY|" + user_sq + "|" +  mb_sq + "|" + c_utils.trim(query_code.text) + "|" + 
+						c_utils.trim(query_description.text) + "|"; 
+					
+					pre_req_sq = pre_req_sq + lot_req_sq;
+					var lot_final_sq:String = new String;
+					for(var x:int = 0; x < dg_2.dataProvider.length; x++){
+						var det_sq:String = new String;
+						var dg_type:String = dg_2.dataProvider[x].datatype;
+						var dg_cn:String = dg_2.dataProvider[x].dataField;
+						var dg_ht:String = dg_2.dataProvider[x].value;
+						dg_ht = c_utils.trim(dg_ht);
+						//Alert.show(dg_ht.length.toString());
+						//Alert.show("Arnold:  " + dg_ht + ":" + dg_cn + ":" + dg_type);
+						if (dg_ht.length >0 ){
+							det_sq = "type:" + dg_type +"," +
+								"col:" + dg_cn +"," +
+								"val:" + dg_ht +";";
+							//Alert.show(det_sq);
+						}    
+						lot_final_sq = lot_final_sq + det_sq;
+					}
+					lot_final_sq = lot_final_sq.substr(0, lot_final_sq.length - 1);   
+					// req_sq = req_sq + query_sg_header + final_sq + query_sg_footer + "|";
+					//req_sq = req_sq + lot_final_sq  + "|"
+					pre_req_sq = pre_req_sq + lot_final_sq  + "|";
+					req_sq = pre_req_sq;
+					
+					SubmitQuery.send();
+					
+				} else{
+					
+					req_sq = new String;
+					
+					req_sq = "REFRESH,UPDATE|GDQUERY|" + user_sq + "|" +  mb_sq + "|" + c_utils.trim(query_code.text) + "|" + 
+						c_utils.trim(query_description.text) + "|"; 
+					var query_sg_header:String =  "<query2>";
+					var query_sg_footer:String =  "</query2>";
+					var final_sq:String = new String;
+					for(var i:int = 0; i < dg_2.dataProvider.length; i++){
+						var det_sq:String = new String;
+						var dg_type:String = dg_2.dataProvider[i].datatype;
+						var dg_cn:String = dg_2.dataProvider[i].dataField;
+						var dg_ht:String = dg_2.dataProvider[i].value;
+						dg_ht = c_utils.trim(dg_ht);
+						//if (dg_ht.length >1 ){
+						if (dg_ht.length >0 ){
+							det_sq = "type:" + dg_type +"," +
+								"col:" + dg_cn +"," +
+								"val:" + dg_ht +";";
+						}
+						final_sq = final_sq + det_sq;      
+					}
+					final_sq = final_sq.substr(0, final_sq.length - 1);
+					// req_sq = req_sq + query_sg_header + final_sq + query_sg_footer + "|";
+					req_sq = req_sq + final_sq  + "||";
+					
+					SubmitQuery.send();
+					
+					
+				}
+				
+				
+				
+			}
+			
+			
+			
+			private var _callbackFunction:Function;
+			
+			public function set callbackFunction( value:Function ):void {
+				_callbackFunction = value;
+			}
+			
+			protected function buttonClickedInpopup():void {
+				_callbackFunction(null);
+			}
+			
+			private function SubmitQueryListHandler(evt:ResultEvent):void{
+				if (evt.result.ezware_response.status == "OK"){		
+					query_code.text = "";
+					query_description.text = "";
+					loc_query_code = "";
+					loc_query_description = "";
+					clearMyArray();
+					closeSaveQuery(evt);
+					titleWindow_close(evt);
+					_callbackFunction(null); 
+					
+					
+					
+				} else	{
+					
+					var s_ret:String = resultStatussq(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}
+			}
+			
+			private function resultStatussq(string_result:String, string_reason:String):String{
+				var retstr:String = string_reason;
+				
+				if (string_result == "EXPIRED"){
+					retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+				} 
+				if (string_result == "FAIL"){
+					retstr = string_reason;
+				} 
+				
+				return retstr;
+			}
+			private function SubmitQueryfaultListHandler(evt:FaultEvent):void
+			{     
+				var faultMessage:String = "Submit Query Problem: " + evt.message;
+				AlertMessageShow(faultMessage);
+			}
+			
+			private function openQueries(event:Event):void {
+				queryList(event);
+				
+			}	
+			
+			
+			public var popquerylist:QueryList;
+			
+			public function queryList(event:Event):void {
+				closeSaveQuery(event);
+				
+				popquerylist = QueryList(
+					PopUpManager.createPopUp(this, QueryList, true));
+				
+				popquerylist.loc_mbdcode = mb_sq;
+				popquerylist.loc_user = user_sq;
+				popquerylist.loc_sid = sid_sq;
+				popquerylist.loc_ccode = cc_sq;
+				popquerylist.txt_current.text = "Current Query: Test";
+				
+				
+				
+				
+				popquerylist["btn_query_switch"].addEventListener("click", applyQuery);
+				//popquerylist["btn_query_switch"].addEventListener( MouseEvent.ROLL_OVER,passMouseHoverfromComponents);
+				//popquerylist["btn_query_switch"].addEventListener( MouseEvent.ROLL_OUT,closepassMouseHoverfromComponents);
+				
+				
+				
+				
+				
+				//pop11.txt_current.text = "Current Query: " + _xlcRenditionCode;
+				
+				/*
+				if ( Application.application.parameters.ar == 'N'){
+				pop11.btn_rendition_create.enabled = false;
+				pop11.btn_rendition_modify.enabled = false;
+				pop11.btn_rendition_delete.enabled = false;
+				
+				}
+				pop11["btn_rendition_create"].addEventListener("click", createRendition);
+				pop11["btn_rendition_create"].addEventListener( MouseEvent.ROLL_OVER,passMouseHoverfromComponents);
+				pop11["btn_rendition_create"].addEventListener( MouseEvent.ROLL_OUT,closepassMouseHoverfromComponents);
+				pop11["btn_rendition_modify"].addEventListener("click", modifyRendition);
+				pop11["btn_rendition_modify"].addEventListener( MouseEvent.ROLL_OVER,passMouseHoverfromComponents);
+				pop11["btn_rendition_modify"].addEventListener( MouseEvent.ROLL_OUT,closepassMouseHoverfromComponents);
+				pop11["btn_rendition_switch"].addEventListener("click", switchRendition);
+				pop11["btn_rendition_switch"].addEventListener( MouseEvent.ROLL_OVER,passMouseHoverfromComponents);
+				pop11["btn_rendition_switch"].addEventListener( MouseEvent.ROLL_OUT,closepassMouseHoverfromComponents);
+				*/
+				
+				
+			}
+			public var str_lotquerydetl:String;
+			private function applyQuery(event:Event):void {     
+				/*  Clear all values */
+				
+				
+				//			
+				for (var x:int=0; x<dg_2.dataProvider.length;x++){
+					dg_2.dataProvider[x].value = '';   
+				}
+				
+				var str_segmentquery_array:Array = [];
+				
+				var str_query_array:Array = [];
+				var str_arraycol:ArrayCollection = new ArrayCollection;
+				
+				var str_querydetl:String = new String;
+				var str_len:int;
+				var str_query:String = new String;
+				
+				str_querydetl = popquerylist.dg_query.selectedItem.querydetl; 
+				str_lotquerydetl =  popquerylist.dg_query.selectedItem.lotquerydetl;
+				if (str_querydetl != null){   
+					str_segmentquery_array = str_querydetl.split(";");
+					str_len = str_segmentquery_array.length;
+					
+					for (var i:int=0; i<str_len;i++){
+						str_query = str_segmentquery_array[i].toString();
+						str_query_array = [];
+						str_query_array = str_query.split(",");
+						str_arraycol = new ArrayCollection;
+						var  loc_type:String =  new String();
+						var  loc_col:String =  new String();
+						var  loc_value:String =  new String();
+						
+						loc_type = str_query_array[0].substr(str_query_array[0].lastIndexOf(":") + 1,str_query_array[0].length);
+						loc_col = str_query_array[1].substr(str_query_array[1].lastIndexOf(":") + 1,str_query_array[1].length);
+						loc_value = str_query_array[2].substr(str_query_array[2].lastIndexOf(":") + 1,str_query_array[2].length);
+						
+						for (var x:int=0; x<dg_2.dataProvider.length;x++){
+							
+							if (dg_2.dataProvider[x].dataField == loc_col){
+								dg_2.dataProvider[x].value = loc_value;
+								break
+							}				
+						}
+						
+						
+					}
+					
+				} 
+				
+				
+				/////////////////////////////////////////////////////////
+				///  Check for lotquerydetl ///////////////////////////////
+				
+				/////////////////////////////////////////////////////////////
+				
+				
+				
+				
+				loc_query_code = popquerylist.dg_query.selectedItem.querycode;
+				loc_query_description = popquerylist.dg_query.selectedItem.querydesc;
+				
+				//lbl_querycode.text = loc_query_code;
+				PopUpManager.removePopUp(popquerylist);
+				
+			}	
+			
+		]]>
+		
+	</mx:Script>
+	<mx:Script source="AlertMessageHandler.as"/>
+	<mx:Style source="css/main.css"/>
+	<mx:states>
+		<mx:State name="SaveQuery">
+			<mx:SetProperty target="{dg_2}" name="width" value="435"/>
+			<mx:AddChild relativeTo="{hbox3}" position="before">
+				<mx:HBox width="100%" height="446" id="hbox2">
+					<mx:VBox height="438" id="vbox1" width="428">
+						<mx:HBox width="100%">
+							<mx:Label text="Code           " fontSize="14" fontWeight="bold"/>
+							<mx:TextInput id="query_code" fontSize="14" fontWeight="bold" backgroundColor="#85E7FF" maxChars="30" width="316"/>
+						</mx:HBox>
+						<mx:HBox width="100%" height="103">
+							<mx:Label text="Description  " fontSize="14" fontWeight="bold"/>
+							<mx:TextInput id="query_description" height="97" width="314" fontSize="14" fontWeight="bold" backgroundColor="#85E7FF"/>
+						</mx:HBox>
+						<mx:HBox width="100%">
+							<mx:Spacer width="100%"/>
+							<local:HighViewButton id="btn_submitquery" doc_id="" label="Submit Query" click="submitQuery(event)"/>
+							<local:HighViewButton id="btn_cancelquery" doc_id="" label="Cancel" click="closeSaveQuery(event)"/>
+						</mx:HBox>
+					</mx:VBox>
+				</mx:HBox>
+			</mx:AddChild>
+			<mx:RemoveChild target="{dg_2}"/>
+			<mx:AddChild relativeTo="{hbox2}" position="lastChild" target="{dg_2}"/>
+			<mx:RemoveChild target="{vbox1}"/>
+			<mx:AddChild relativeTo="{hbox2}" position="lastChild" target="{vbox1}"/>
+			<mx:SetProperty target="{dg_2}" name="height" value="439"/>
+		</mx:State>
+	</mx:states>
+	<mx:VBox width="100%">
+		<mx:HBox width="100%">	       
+			<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'','Query Console','BUTTON')}"
+					   
+					   />       
+			<mx:Spacer width="100%"/>
+			<mx:Label id="title_id" text="{mb_title}" width="100%" textAlign="center"  fontSize="19" color="#030303" fontWeight="bold"/>	
+			<mx:Spacer width="100%"/>
+			<mx:Spacer width="78"/>
+			
+			<!--  Remove this for now // Saving of Query.
+			<local:HighViewButton id="btn_queries" doc_id="" label="Retrieve Query" click="openQueries(event)"/>   
+			<mx:Spacer width="100%"/>
+			
+			
+			<mx:TextInput backgroundColor="#85E7FF" color="#000606" id="lbl_querycode" fontWeight="bold" fontSize="15"
+						  textAlign="center" width="147"  height="28" editable="false"
+						  cornerRadius="4" 
+						  
+						  borderStyle="inset"
+						  
+						  useHandCursor="true" buttonMode="true"
+						  mouseChildren="false"
+						  />
+			
+			<mx:Spacer width="100%"/>	
+			<local:HighViewButton id="btn_savequery" doc_id="" label="Save Query" click="CS_SaveQuery(event)"/>
+			-->
+		</mx:HBox> 
+		
+		
+		
+		
+		<components:DatagridBackground id="dg_2" dataProvider="{myDPColl}" draggableColumns="false" editable="true" 
+									   width="100%" height="445" horizontalScrollPolicy="auto" verticalScrollPolicy="auto" 
+									   click="dateCheck(event)" 
+									   sortableColumns="false" variableRowHeight="true"
+									   horizontalGridLines="true"
+									   verticalGridLines="true"
+									   horizontalGridLineColor="blue"
+									   verticalGridLineColor="blue">
+			
+			<components:columns> 
+				<mx:DataGridColumn id="mf_datafield" dataField="dataField" headerText="dataField" width="80" editable="false" visible="false"/>
+				<mx:DataGridColumn id="mf_datatype" dataField="datatype" headerText="datatype" width="80" editable="false" visible="false"/>
+				<mx:DataGridColumn id="mf_fs" dataField="filter_seq" headerText="Sequence" width="120" editable="false"  visible="false"/>
+				
+				
+				<mx:DataGridColumn id="mf_title" dataField="title_header" headerText="Field" width="120" editable="false" />
+				
+				
+				<mx:DataGridColumn id="mf_value" dataField="value"   headerText="Value" width="80" editable="true" wordWrap="true"  />
+			</components:columns>
+		</components:DatagridBackground> 
+		<mx:Spacer id="hbox_spacer" width="100%" height="0"/>
+		<mx:HBox horizontalGap="0" id="hbox3" width="100%">
+			<local:HighViewButton id="btn_nr" doc_id="" label="New Retrieval" />
+			<local:HighViewButton id="btn_atc" doc_id="" label="Add to Current" />
+			<local:HighViewButton id="btn_cmv1" doc_id="" label="Create MyView" />
+			
+			<local:HighViewButton id="btn_clearall" doc_id="1051" label="Clear All" click="clearMyArray();" />
+			<mx:Spacer width="100%"/>
+			<local:HighViewButton id="btn_close" doc_id="1051" label="Cancel" click="{titleWindow_close(event)}"/>
+		</mx:HBox>
+		<mx:HBox  horizontalGap="0" id="hbox1" width="100%">
+			
+			<local:HighViewButton id="btn_dmc" doc_id="" label="Display Merged Components" />
+			<local:HighViewButton id="btn_dls" doc_id="" label="Display by Lot Set" />
+			
+			<!--  removed as per sox ticket 322400
+			<local:HighViewButton id="btn_dls" doc_id="" label="Display By Ext Set" />
+			<local:HighViewButton id="btn_dmc" doc_id="" label="Display Merged Components" />
+			-->
+			
+			<local:HighViewButton id="btn_ecs" doc_id="" label="Enter Component Searches" />
+	
+			<local:HighViewButton id="btn_cmv2" doc_id="" label="Create MyView" />
+			<local:HighViewButton id="btn_clearall2" doc_id="1051" label="Clear All" click="clearMyArray();" />
+			<mx:Spacer width="100%"/>
+			<local:HighViewButton id="btn_close2" doc_id="1051" label="Cancel" click="{titleWindow_close(event)}" />
+		</mx:HBox>
+	</mx:VBox>
+</mx:TitleWindow>

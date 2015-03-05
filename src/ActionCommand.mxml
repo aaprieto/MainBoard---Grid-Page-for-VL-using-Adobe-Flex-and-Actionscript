@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ActionCommand.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="50" y="250" width="256" height="316" creationComplete="init(event);" 
+        dropShadowEnabled="true"
+        
+        backgroundColor="white"
+  		backgroundImage=""
+        layout="horizontal"
+       xmlns:local="*" borderStyle="outset">
+<!-- mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="700" y="100" width="138" height="146" creationComplete="init(event);btn_keep.setFocus();btn_keep.drawFocus(true);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        borderColor="haloSilver"
+        backgroundColor="white"
+  		backgroundImage=""
+        layout="horizontal"
+       xmlns:local="*" -->
+ <mx:Script>
+ 	<![CDATA[
+ 			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	private var helpWindow:TitleWindow;
+		 	public var inUse:Boolean = false;
+
+ 		    private function titleWindow_close(evt:Event):void {
+ 		    	inUse = false;
+                PopUpManager.removePopUp(this);
+           }
+            private function init(evt:Event):void {
+          				//btn_keep.setFocus();
+          				btn_keep.drawFocus(true);
+          				//parentApplication.parent.setfocus();
+          				//drawFocusTo(parent.parentApplication.evt.currentTarget); 
+          				//Alert.show(parentApplication.evt.currentTarget);
+           }
+		
+ 	]]>
+ </mx:Script>
+    <mx:VBox id="vb" width="100%" height="256">
+        <!-- mx:Button id="btn_ok" label="OK" / -->
+		
+		
+		
+		<mx:Text width="100%"  text="Select an option to apply column-specific filter." height="50" fontSize="16" fontWeight="bold"/>
+		
+		
+        <local:HighViewButton  id="btn_discard" doc_id="1053" label="Discard"  
+        	width="100%" 
+        	toolTip="Discards matching data &#13; that is currently displayed in the panel.  &#13; Retains non-matching data that &#13; is currently displayed in the panel." 
+        	cornerRadius="4" alpha="1.0" textSelectedColor="#1051A2"/>
+        <local:HighViewButton id="btn_keep" doc_id="1052" label="Keep"  width="100%" toolTip="Keeps the matching data &#13; that is currently displayed in the panel. &#13;  Removes non-matching data."  textSelectedColor="#1051A2"/>  
+        <local:HighViewButton id="btn_add" doc_id="1054" label="Add"  width="100%" toolTip="Retrieves matching data from the database; i.e., after a Clear command. &#13; Add does not retrieve data that has been removed due to an existing filter." textSelectedColor="#1051A2"/>
+		<!-- mx:Button id="btn_clear" label="Clear"  width="81"/ -->
+		<!-- mx:Button id="btn_ok" label="OK" click="sendCommand(event)"/ -->
+        <!-- mx:Button id="btn_close" label="Close" click="titleWindow_close(event);"/ -->
+		<mx:HBox width="100%">
+			<mx:Spacer width="100%"/>
+			<mx:Label  text="- OR -"  fontSize="16" fontWeight="bold"/>
+			<mx:Spacer width="100%"/>
+		</mx:HBox>
+		<local:HighViewButton id="btn_multifilter" doc_id="1054" label="Multi-Column Filter"  width="100%" toolTip="Switches to simultaneous multi-column filtering." textSelectedColor="#1051A2"/>
+		<mx:HBox width="100%" height="37">
+			<mx:Spacer width="100%"/>
+			<mx:LinkButton id="lb_filteroperators" label="Filter operators" color="#0000FF" fontSize="16" fontWeight="bold" />
+			<mx:Spacer width="100%"/>
+		</mx:HBox>
+	</mx:VBox>
+
+</mx:TitleWindow>

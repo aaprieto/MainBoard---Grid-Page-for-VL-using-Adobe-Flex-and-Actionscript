@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ActionCommand.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="200" y="100" width="640" height="188" creationComplete="init(event);btn_submit.setFocus();btn_submit.drawFocus(true);" 
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				
+				backgroundImage=""
+				layout="horizontal"
+				>
+	
+	
+	
+	
+	
+	<mx:HTTPService 
+		id="SubmitDateValue" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="ValueDateListHandler(event)"
+		method="POST" 
+		fault="getValueDatefaultListHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request>      
+			<ezware_request>
+				<action>refreshData</action>  
+				<company>{cc_sq}</company>
+				<sid>{sid_sq}</sid>
+				<parameters>{req_sq}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>   
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:Script source="AlertMessageHandler.as"/>
+	<mx:Script>
+		<![CDATA[
+			import com.adobe.utils.ArrayUtil;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.events.CloseEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+			private var helpWindow:TitleWindow;
+			[Bindable]
+			private var date_str:String = new String;
+			
+			[Bindable]   
+			public var daterange_fromdate:String = new String;
+			[Bindable]
+			public var daterange_todate:String = new String;
+			[Bindable]
+			public var cc_sq:String = new String;
+			[Bindable]
+			public var sid_sq:String = new String;
+			[Bindable]
+			private var req_sq:String = new String;
+			[Bindable]
+			public var DateValueArr:ArrayCollection = new ArrayCollection; 
+			[Bindable]   
+			public var user_sq:String = new String;
+			
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);    
+			}
+			
+			private function init(evt:Event):void {
+				btn_submit.setFocus();
+				httpRequestUrlReditionCM(parentApplication.application_entry);
+				//req_sq = "REFRESH,RETRIEVE|VARIABLEDATES|" + user_sq + "|" + cc_sq + "|";  
+				
+				
+				req_sq = "REFRESH,RETRIEVE|VARIABLEDATES|" + user_sq + "|" + cc_sq + "|"; 
+				
+				SubmitDateValue.send();
+				/*
+				var today_date:Date = new Date();
+				var date_month:String = (today_date.getMonth()+1).toString();
+				var date_day:String = (today_date.getDate()).toString();
+				var int_length_date_month:int = date_month.length;
+				if (int_length_date_month == 1){
+				date_month = "0" + date_month.toString();
+				}
+				var int_length_date_day:int = date_day.length;
+				if (int_length_date_day == 1){   
+				date_day = "0" + date_day.toString();
+				}	
+				
+				
+				date_str = (today_date.getFullYear()) + "-" + (date_month) + "-" + (date_day);
+				
+				if ((daterange_fromdate == null) || (daterange_fromdate == "")){
+				daterange_fromdate = date_str;
+				}
+				if ((daterange_todate == null) || (daterange_todate == "")){
+				daterange_todate = date_str;
+				}
+				*/
+				
+			}
+			private function httpRequestUrlReditionCM(str_app:String):void{
+				/*  I will just leave this for vl and ml for now.  I believe there will be another one coming for the mobileweb */
+				if (str_app == 'ml'){
+					SubmitDateValue.url = 'ae_tlch_ml_req.php'; 
+				} else {
+					SubmitDateValue.url = 'ae_tlch_xmlreq.php';
+				}  
+			}
+			private function getValueDatefaultListHandler(evt:FaultEvent):void
+			{     
+				var faultMessage:String = "Value Date Problem: " + evt.message;
+				
+				AlertMessageShow(faultMessage);
+			}
+			
+			
+			private function ValueDateListHandler(evt:ResultEvent):void{
+				DateValueArr = new ArrayCollection;
+				if (evt.result.ezware_response.status == "OK"){		
+					
+					
+					
+					
+					if (evt.result.ezware_response.refresh_data.variable_dates.data == null)
+					{
+						DateValueArr = new ArrayCollection();
+					}   
+					else if (evt.result.ezware_response.refresh_data.variable_dates.data is ArrayCollection)
+					{
+						DateValueArr = evt.result.ezware_response.refresh_data.variable_dates.data;
+					}
+					else if (evt.result.ezware_response.refresh_data.variable_dates.data is ObjectProxy)
+					{
+						DateValueArr = new ArrayCollection(mx.utils.ArrayUtil.toArray(evt.result.ezware_response.refresh_data.variable_dates.data));
+						//DateValueArr = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.variable_dates.data));
+						//	DateValueArr = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.variable_dates.data));
+						//	_LotxlcColumn = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.root.AdvancedDataGridColumn.column));
+					}
+					
+					
+					
+					DateValueArr.refresh();
+					
+					
+					
+					
+					
+					
+					
+				} else	{  
+					
+					var s_ret:String = resultStatussq(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}
+			} 
+			private function resultStatussq(string_result:String, string_reason:String):String{
+				var retstr:String = string_reason;
+				
+				if (string_result == "EXPIRED"){
+					retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+				} 
+				if (string_result == "FAIL"){
+					retstr = string_reason;
+				}     
+				
+				return retstr;
+			}
+			
+			
+			private function dateValueFrom():void{
+				from_dateField.text = "";
+				if (datevalue_from.selectedItem.date == null){
+					AlertMessageShow("No date retrieved. Please check with your administrator");
+					return;
+				}
+			from_dateField.text = datevalue_from.selectedItem.code;
+
+			} 
+			private function fromdatefieldchange():void{
+				datevalue_from.selectedIndex = -1;
+				//Alert.show(datevalue_from.selectedIndex.toString())
+			}
+			
+			private function dateValueTo():void{
+				to_dateField.text = "";
+				if (datevalue_to.selectedItem.date == null){
+					AlertMessageShow("No date retrieved. Please check with your administrator");
+					return;
+				}
+				to_dateField.text = datevalue_to.selectedItem.code;
+			} 
+			private function todatefieldchange():void{
+				datevalue_to.selectedIndex = -1;
+				//Alert.show(datevalue_from.selectedIndex.toString())
+			}
+			
+			
+		]]>
+	</mx:Script>
+	<mx:Style source="css/main.css"/>
+	<mx:VBox id="vb" width="100%">
+		<mx:HBox id="hb0" width="100%" >
+			<mx:Spacer width="100%" />
+			<mx:Label text="Multi Filter Date Range" fontSize="20" fontWeight="bold" color="#050505"/>
+			<mx:Spacer width="100%" />
+		</mx:HBox>
+		<mx:HBox width="100%">
+			<mx:Spacer width="100%" />
+			<mx:Label text="From Date" width="85" fontFamily="Verdana" fontSize="14" color="#000203" fontWeight="bold"/>
+			<mx:DateField yearNavigationEnabled="true" width="135" id="from_dateField" change="fromdatefieldchange()"  text="{daterange_fromdate}" formatString="YYYY-MM-DD" fontFamily="Verdana" fontSize="14" fontWeight="bold" color="#000506"/>
+			<!-- mx:DateField yearNavigationEnabled="true" width="135" id="from_dateField"  change="fromdatefieldchange()" text="{daterange_fromdate}" formatString="YYYY-MM-DD" fontFamily="Verdana" fontSize="14" fontWeight="bold" color="#000506"/ -->
+			<mx:Label text=" OR "  fontFamily="Verdana" fontSize="14" color="#000203" fontWeight="bold"/>
+			<mx:ComboBox editable="false"   dataProvider="{DateValueArr}" 
+						 labelField="description"
+						 id="datevalue_from"  width="300"
+						 prompt="Select variable date"  fontSize="14"  
+						 change="{dateValueFrom()}" 
+						 ></mx:ComboBox>
+			<mx:Spacer width="100%" />   
+			
+		</mx:HBox>	
+		
+		
+		<mx:HBox width="100%">    
+			<mx:Spacer width="100%" />
+			<mx:Label text="To Date" width="85" fontFamily="Verdana" fontSize="14" color="#000404" fontWeight="bold"/>
+			<mx:DateField yearNavigationEnabled="true" width="135" id="to_dateField" change="todatefieldchange()" text="{daterange_todate}" formatString="YYYY-MM-DD" fontFamily="Verdana" fontSize="14" color="#000202" fontWeight="bold"/>
+			<!-- mx:DateField yearNavigationEnabled="true" width="135" id="to_dateField" change="todatefieldchange()" text="{daterange_todate}" formatString="YYYY-MM-DD" fontFamily="Verdana" fontSize="14" color="#000202" fontWeight="bold"/ -->
+			<mx:Label text=" OR "  fontFamily="Verdana" fontSize="14" color="#000203" fontWeight="bold"/>
+			<mx:ComboBox editable="false" dataProvider="{DateValueArr}" 
+						 labelField="description"
+						 id="datevalue_to"  width="300"
+						 prompt="Select variable date "  fontSize="14"
+						 change="{dateValueTo()}" ></mx:ComboBox>	
+			
+			<mx:Spacer width="100%" /> 
+		</mx:HBox>
+		<mx:HBox>
+			<mx:Spacer width="100" />
+		</mx:HBox>
+		
+		<mx:HBox width="100%">
+			<mx:Spacer width="100%" />
+			<mx:Button id="btn_submit" label="OK" width="78" />
+			<mx:Button id="btn_cancel" label="Cancel" click="{titleWindow_close(event)}" width="78"/>
+			<mx:Spacer width="100%" />
+			
+		</mx:HBox>	
+		
+	</mx:VBox>
+	
+</mx:TitleWindow>

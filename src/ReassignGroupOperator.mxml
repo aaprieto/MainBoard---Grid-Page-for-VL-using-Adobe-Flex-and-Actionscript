@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="500" y="180" width="474"  creationComplete="init(event);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        layout="horizontal"
+        color="#B6B9BA" height="189"
+        backgroundImage=""
+        
+        > 
+        
+	<mx:HTTPService 
+		id="getgroupcode" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="rgo_getgrouphandler(event)" 
+		method="POST" 
+		fault="rgo_getgroupfault(event)"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{dd_compcode}</company>
+				<sid>{parentApplication.parameters.sid}</sid>
+				<parameters>{parms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:Script source="AlertMessageHandler.as"/>     
+ <mx:Script> 
+ 	<![CDATA[
+ 			import mx.collections.ArrayCollection; 
+ 			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+		 	import mx.events.ItemClickEvent;
+		 	[Bindable]
+		 	public var dd_compcode:String;	
+		 	[Bindable]
+			private var parms:String = new String;
+			[Bindable]
+			private var Arr_OprGroup:ArrayCollection = new ArrayCollection;
+			
+ 		    private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+            }
+            private function init(evt:Event):void {
+				httpRequestUrlrgo(parentApplication.application_entry);
+            	parms = "REFRESH,RETRIEVE|OPR_GROUP|";
+            	getgroupcode.send();
+            	//Alert.show(parentApplication.parameters.sid);
+            }
+            private function rgo_getgrouphandler(evt:ResultEvent):void
+			{
+				if (evt.result.ezware_response.status == "OK"){
+					if (evt.result.ezware_response.refresh_data.opr_groups.data == null)
+					{
+						Arr_OprGroup=new ArrayCollection()
+					}
+					else if (evt.result.ezware_response.refresh_data.opr_groups.data  is ArrayCollection)
+					{
+						Arr_OprGroup=evt.result.ezware_response.refresh_data.opr_groups.data ;
+					}
+					else if (evt.result.ezware_response.refresh_data.opr_groups.data  is ObjectProxy)
+					{
+						Arr_OprGroup = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.opr_groups.data )); 
+					}
+					
+					Arr_OprGroup.refresh();
+				} else	{
+					var s_ret:String = resultStatusrgo(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}		
+				
+					
+ 					
+			 
+			}
+			private function rgo_getgroupfault(evt:FaultEvent):void
+			{
+				var faultMessage:String = "The origin of this fault is: " + evt.message;
+				Alert.show(faultMessage, "Error opening file");
+			}	
+		private function httpRequestUrlrgo(str_app:String):void{
+			
+			/*  I will just leave this for vl and ml for now.  I believe there will be another one coming for the mobileweb */
+			if (str_app == 'ml'){
+				getgroupcode.url = 'ae_tlch_ml_req.php'; 
+			} else {
+				getgroupcode.url = 'ae_tlch_xmlreq.php'; 
+			}
+		}
+		private function resultStatusrgo(string_result:String, string_reason:String):String{
+			var retstr:String = new String;
+			if (string_result == "EXPIRED"){
+				retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+			} 
+			if (string_result == "FAIL"){
+				retstr = string_reason;
+			} 
+			return retstr;
+		}
+ 	]]>
+ </mx:Script>
+    <mx:VBox id="vb" width="100%"> 
+    <mx:HBox id="hb0" width="100%" >
+    <mx:Spacer width="100%" />
+    	<mx:Label text="Select Group" fontSize="20" fontWeight="bold" color="#050505"/>
+    	<mx:Spacer width="100%" />
+    </mx:HBox>
+     <mx:HBox id="hb02" width="100%" >
+    <mx:Spacer width="100%" />
+    	<mx:Label text="for Re-assignment of Operators" fontSize="18" fontWeight="bold" color="#050505"/>
+    	<mx:Spacer width="100%" />
+    </mx:HBox>
+    	<mx:HBox id="hblabels" width="100%" >
+    			<mx:Spacer width="100%" />
+    			<mx:ComboBox
+					id="cb_operatorgroup"
+					color="#162F52" prompt="No selection" dataProvider="{Arr_OprGroup}" labelField="groupcode"
+					fontSize="14"
+			 		mouseOver="{parentApplication.mousehovering(event,'Re assignment Operators','BUTTON')}"
+		   	 		mouseOut="{parentApplication.stopHoverTimer()}"
+		   	 	/>		
+    			<mx:Spacer width="100%" />
+    			
+    	</mx:HBox>
+    	<mx:HBox id="isnow" width="100%" >
+    			<mx:Spacer width="100%" />
+    			
+    	</mx:HBox>
+    	<mx:HBox id="hb3" width="100%" >
+    		<mx:Spacer width="100%" />
+    		<mx:Button id="btn_submit" label="Submit" width="126"
+    			 />
+    		<mx:Button id="btn_cancel" label="Cancel" width="126"
+    			 click="{titleWindow_close(event)}"/>	 
+    		<mx:Spacer width="100%" />
+    	</mx:HBox>
+    </mx:VBox>
+</mx:TitleWindow>

@@ -1,0 +1,23 @@
+<root>
+<Panel>
+<code>021</code>
+<title>Operators</title>
+<type>Profile</type>
+<refreshall>Y</refreshall>
+<setupjob>RD06</setupjob>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="Profiles" columnstart="0"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="operator" dataField="operator_code" title_header="Operator Code" width="190" datatype="S" docid="test_1" />
+<column columnId="1" columnName="oper_group" dataField="group" title_header="Operator Group" width="190" datatype="S" docid="" />
+<column columnId="2" columnName="oper_init" dataField="operator_init" title_header="Initials" width="120" datatype="S" docid="" />
+<column columnId="3" columnName="oper_name" dataField="operator_name" title_header="Operator Name" width="320" datatype="S" docid="" />
+<column columnId="4" columnName="clnt_restr" dataField="restrict_client" title_header="Restrict Clients" width="180" datatype="S" docid="" />
+<column columnId="5" columnName="job_log" dataField="log_job" title_header="Job Log?" width="180" datatype="S" docid="" />
+<column columnId="6" columnName="init_job" dataField="init_job" title_header="Initial Job" width="150" datatype="S" docid="" />
+<column columnId="7" columnName="group_lgcy" dataField="group_lgcy" title_header="Legacy Group" width="160" datatype="S" docid="" />
+<column columnId="8" columnName="" dataField="" title_header="" width="1500" datatype="S" />
+</AdvancedDataGridColumn>
+</root>

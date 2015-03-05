@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10" width="604" height="470" creationComplete="init(event);" 
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundImage=""
+				layout="horizontal"
+				
+				
+				xmlns:local="*">
+	    
+	
+	<mx:HTTPService 
+		id="retrieve_query" 
+		url="ae_tlch_xmlreq.php"     
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="QueryHandler(event)"
+		fault="FaultQuery(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="delete_query" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerQueryDelete(event)"
+		fault="FaultQueryDelete(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParmsdelete}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="update_default_query" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerQueryUpdate(event)"
+		fault="FaultQueryUpdate(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParmsupdate}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:Script source="AlertMessageHandler.as"/>
+	<mx:Script> 
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.events.CloseEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy; 
+			[Bindable]
+			private var loc_reqParms:String = new String();
+			[Bindable]
+			private var loc_reqParmsdelete:String = new String();
+			[Bindable]
+			private var loc_reqParmsupdate:String = new String();
+			[Bindable]
+			public var loc_mbdcode:String = new String();
+			[Bindable]
+			public var loc_user:String = new String();
+			[Bindable]
+			public var loc_ccode:String = new String();
+			[Bindable]
+			public var loc_sid:String = new String();
+			//[Bindable]
+			//private var RenditionCollection:ArrayCollection = new ArrayCollection;
+			[Bindable]
+			private var QueryCollection:ArrayCollection = new ArrayCollection;
+			
+			private var helpWindow:TitleWindow;
+			
+			private function titleWindow_close(evt:Event):void { 
+				PopUpManager.removePopUp(this);
+			}
+			private function init(evt:Event):void {
+				httpRequestRenditionUrl(parentApplication.application_entry);
+				loc_reqParms = "REFRESH,RETRIEVE|GDQUERIES|" + loc_user + "|" + loc_mbdcode +"|";
+				retrieve_query.send();
+			}
+			
+			private function QueryHandler(evt:ResultEvent):void{
+				if (evt.result.ezware_response.status == 'OK' ) {
+					QueryCollection = new ArrayCollection();
+					if (evt.result.ezware_response.refresh_data.gdqueries.gdquery == null)
+					{
+						QueryCollection=new ArrayCollection()
+					}
+					else if (evt.result.ezware_response.refresh_data.gdqueries.gdquery is ArrayCollection)
+					{
+						QueryCollection=evt.result.ezware_response.refresh_data.gdqueries.gdquery;
+					}
+					else if (evt.result.ezware_response.refresh_data.gdqueries.gdquery is ObjectProxy)
+					{
+						QueryCollection = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.gdqueries.gdquery)); 
+					}
+					QueryCollection.refresh();
+				} else	{
+					var s_ret:String = resultStatusQuery(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}				
+			}   
+			
+			
+			private function ResultHandlerQueryDelete(evt:ResultEvent):void{
+				if (evt.result.ezware_response.status == "OK"){
+					retrieve_query.send(); 
+				} else	{
+					var s_ret:String = resultStatusQuery(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}	
+			}
+			private function ResultHandlerQueryUpdate(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == "OK"){
+					retrieve_query.send(); 
+				} else	{
+					var s_ret:String = resultStatusQuery(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}		
+				
+			}
+			private function FaultQuery(evt:FaultEvent):void
+			{
+				var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow("Query Error: "  + faultMessage);
+			}
+			private function FaultQueryDelete(evt:FaultEvent):void
+			{
+				AlertMessageShow("Delete Query Error");
+			}
+			private function FaultQueryUpdate(evt:FaultEvent):void
+			{
+				AlertMessageShow("Update Default Query Error");
+			}
+			import mx.core.Application;
+			
+			private function RefreshPage(evt:Event):void{
+				/*
+				var urlRequest:URLRequest = new URLRequest(Application.application.url);
+				
+				navigateToURL(urlRequest,"_self");
+				PopUpManager.removePopUp(this);
+				*/	
+			}
+			private function deleteQuery(evt:Event):void{
+				
+				if (dg_query.selectedItems.length == 0){
+					AlertMessageShow("Please select a row to delete.");
+					return;
+				}
+				/*
+				if (dg_query.selectedItems.length == 1 ){
+					if (dg_query.selectedItem['querydefault'] == 'Y'){
+						AlertMessageShow("Delete of Default Query is not allowed");
+						return;
+					}
+				}
+				*/
+				//loc_reqParmsdelete = "REFRESH,DELETE|RENDITION|" +  loc_user + "|" + loc_mbdcode + "|" + dg_query.selectedItem['querycode'] + "|";
+				
+				
+					
+				loc_reqParmsdelete =  "REFRESH,DELETE|GDQUERY|" + loc_user + "|" + loc_mbdcode + "|" +dg_query.selectedItem['querycode'] + "|"
+				
+				delete_query.send();  
+			}
+			private var pop_deleteconfirm:DeleteConfirm;
+			private function validateQuery(evt:Event):void{
+				if (dg_query.selectedItems.length == 0){
+					AlertMessageShow("Please select a row to delete.");
+					return;
+				}
+				
+				/*
+				if (  (inputcode.text.toUpperCase()).substr(0,4) == "BASE"){
+				AlertMessageShow("'BASE' Code is not allowed");
+				return;
+				}
+				*/
+				/*
+				if (loc_user.toUpperCase() !=  'MAVES'){
+					
+					if (((dg_query.selectedItem.rendcode).toUpperCase()).substr(0,4) == 'BASE'){
+						AlertMessageShow("'BASE' delete not allowed.");
+						return;
+					}
+					
+				}
+				
+				if (dg_query.selectedItem.rendcode == 'MASTER'){
+					AlertMessageShow("'MASTER' delete not allowed.");
+					return;
+				}
+				
+				
+				
+				// Check user Permission.
+				if ( Application.application.parameters.ar == 'O'){
+					if((dg_query.selectedItem.rendcode).substr(0,1) != '*'){
+						AlertMessageShow("You are not allowed to delete a Generic Rendition");
+						return;
+					}
+				}
+				*/
+				
+				pop_deleteconfirm = DeleteConfirm(
+					PopUpManager.createPopUp(this, DeleteConfirm, true));
+				pop_deleteconfirm.del_filtercode = dg_query.selectedItem.rendcode;
+				pop_deleteconfirm["btn_ok"].addEventListener("click",  handleDeleteConfirm);
+				pop_deleteconfirm["inputcode"].addEventListener("enter", handleDeleteConfirm);
+				
+			}
+			
+			public function handleDeleteConfirm( event:Event ) : void
+			{
+				if (pop_deleteconfirm.inputcode.text == "YES"){
+					PopUpManager.removePopUp(pop_deleteconfirm);	
+					deleteQuery(event);
+				}	
+				if (pop_deleteconfirm.inputcode.text != "YES"){
+					
+					pop_deleteconfirm.inputcode.setFocus();
+					pop_deleteconfirm.inputcode.drawFocus(true);
+					return;
+					
+				}
+			}	
+			public function updateDefaultQuery( event:Event ) : void
+			{
+				if (dg_query.selectedItems.length == 0){
+					AlertMessageShow("Please select a row to change default.");
+					return;
+				}
+				loc_reqParmsupdate = "REFRESH,UPDATE|DFLTQUERY|" + loc_user + "|" + loc_mbdcode + "|" +dg_query.selectedItem['querycode'] + "|"
+				update_default_query.send();
+			}
+			public function httpRequestRenditionUrl(str_app:String):void{
+				if (str_app == 'ml'){
+					retrieve_query.url = 'ae_tlch_ml_req.php'; 
+					delete_query.url = 'ae_tlch_ml_req.php'; 
+					update_default_query.url = 'ae_tlch_ml_req.php'; 
+				} 
+			}
+			
+			private function resultStatusQuery(string_result:String, string_reason:String):String{
+				var retstr:String = new String;
+				if (string_result == "EXPIRED"){
+					retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+				} 
+				if (string_result == "FAIL"){
+					retstr = string_reason;
+				} 
+				return retstr;
+			}
+		]]>
+	</mx:Script>
+	<mx:VBox width="100%" height="100%">
+		<mx:HBox width="100%">
+			<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'','Renditions Console','BUTTON')}"
+					   
+					   />     
+			<mx:Spacer width="50%"/>
+			<mx:Label text="Retrieve Query" width="100%" textAlign="center"  fontSize="19" color="#364D6A" fontWeight="bold"
+					  rollOver="{parentApplication.mbdg_mousehovering(event,event.currentTarget.text,'Renditions','RENDITIONS')}"
+					  rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+					  />
+			<mx:Spacer width="100%"/>
+			
+		</mx:HBox>
+		
+		<mx:Label id="txt_current" text="CurrentRendition" width="100%" textAlign="center"  fontSize="19" color="#030303" fontWeight="bold"
+				  rollOver="{parentApplication.mbdg_mousehovering(event,event.currentTarget.text,'Current Rendition','CURRENT RENDITION')}"
+				  rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+				  />
+		
+		
+		<local:ActionGridADGRendition
+			id="dg_query"
+			width="100%"
+			height="100%"
+			rowHeight="22"
+			dataProvider="{QueryCollection}"
+			dragEnabled="false"
+			dropEnabled="false" dragMoveEnabled="false"
+			verticalScrollPolicy="auto"
+			allowMultipleSelection="false"
+			variableRowHeight="true"
+			headerStyleName="centerAlignDataGridCol"
+			horizontalGridLines="true"
+			verticalGridLines="true"
+			horizontalGridLineColor="black"
+			verticalGridLineColor="black" borderColor="#010101" borderThickness="1"
+			
+			   
+			
+			>
+			<local:columns>
+				<mx:AdvancedDataGridColumn id="rnd_rendcode" dataField="querycode" headerText="Code" width="150" wordWrap="true"  editable="false" />
+				<mx:AdvancedDataGridColumn id="rnd_renddesc" dataField="querydesc" headerText="Description"   editable="false" wordWrap="true" />
+				<!-- mx:AdvancedDataGridColumn id="rnd_default" dataField="querydefault" headerText="Default" width="100" wordWrap="true"  editable="false" / -->
+			</local:columns>
+		</local:ActionGridADGRendition>
+		
+		
+		
+		<mx:HBox horizontalGap="0">
+			
+			<mx:Button id="btn_query_switch" label="Apply" click="{RefreshPage(event);}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button id="btn_query_default" label="Default" click="{updateDefaultQuery(event)}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			
+			
+			<mx:Button id="btn_query_delete" label="Delete"  click="{validateQuery(event)}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<!-- mx:Button label="Default Y/N" 
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/ -->
+			<mx:Button label="Close" click="{titleWindow_close(event)}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			
+		</mx:HBox>
+	</mx:VBox>
+	
+	
+</mx:TitleWindow>

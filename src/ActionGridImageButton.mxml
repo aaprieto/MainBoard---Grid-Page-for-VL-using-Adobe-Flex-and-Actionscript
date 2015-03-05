@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Image xmlns:mx="http://www.adobe.com/2006/mxml" 	useHandCursor="true" buttonMode="true"
+		  mouseChildren="false">
+	<!-- mx:Style source="css/main.css"/ --> 
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			[Bindable]
+			public var doc_id:String;  
+			[Bindable]
+			public var command:String; 
+			[Bindable]
+			public var jobcode:String; 
+			[Bindable]
+			public var refresh:String; 
+			[Bindable]
+			public var numofrec:String; 
+			[Bindable]
+			public var datafield:String;
+			[Bindable]
+			public var actiongrid:String;  
+		]]>
+	</mx:Script>
+</mx:Image>

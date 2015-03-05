@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+ <root>
+ 	<Panel>
+		<code>017</code>
+ 		<title>Resources WiP ActionGrid</title>
+ 	</Panel>
+	<AdvancedDataGridColumnGroup>
+		<columngroup headerText="General" columnstart="0"/>
+	</AdvancedDataGridColumnGroup>
+	<AdvancedDataGridColumn>
+ 	    <column columnId="0"  dataField="resources_num" title_header="Resources" width="80" datatype="S"/>
+	</AdvancedDataGridColumn>
+
+ </root>
+ 

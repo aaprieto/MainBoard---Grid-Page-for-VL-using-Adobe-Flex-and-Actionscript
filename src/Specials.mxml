@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="10" y="10" width="470" height="284" creationComplete="init(event);btn_flash.setFocus();btn_flash.drawFocus(true);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+   
+  
+        layout="horizontal"
+        color="#B6B9BA" xmlns:local="*">
+ 
+ <mx:Script> 
+ 	<![CDATA[
+ 		import mx.collections.ArrayCollection;
+ 			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	
+		 	
+		 	[Bindable]
+		 	public var cb_subtotalarray:ArrayCollection;
+		 	
+		 	private var helpWindow:TitleWindow;
+
+ 		    private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+           }
+            private function init(evt:Event):void {
+          				btn_flash.setFocus();
+          				if (cb_subtotalarray.length <1){
+          						btn_flash.enabled = false;
+          						btn_gt.enabled = false;
+          						btn_st.enabled = false;
+								cb_sort.enabled = false;
+          						rb_onlycolumns.enabled = false;
+          						rb_chooseall.selected = true;
+          						
+          				} else {
+          						rb_onlycolumns.selected = true
+          				}
+          				
+          				
+           }
+          
+           
+ 	]]>
+ </mx:Script>
+   
+    <mx:VBox id="vb" width="216"> 
+         <mx:Label text="Specials" width="100%" textAlign="center"  fontSize="19" color="#F9FBFB" fontWeight="bold"/>
+        <!-- mx:Button id="btn_ok" label="OK" / -->
+        <local:HighViewButton id="btn_flash" doc_id="1022" label="Flash Filter"  width="{vb.width}"  /> 
+        <local:HighViewButton id="btn_gt" doc_id="1023" label="Crunch: % Grand Totals"  width="{vb.width}"  />  
+        <local:HighViewButton id="btn_st" doc_id="1024" label="Crunch: % SubTotals"  width="{vb.width}" />
+       
+        <!-- local:HighViewButton id="btn_tca" doc_id="1026" label="Time Chart Analysis"  width="{vb.width}" enabled="false"  / -->  
+        
+        <!-- local:HighViewButton id="btn_op" doc_id="1028" label="Operator Profile"  width="{vb.width}"  enabled="false" / -->  
+        
+        <local:HighViewButton id="btn_e2e" doc_id="1029" label="Export to Excel"  width="{vb.width}" />
+         <mx:Button id="filler" label=""  width="{vb.width}" visible="false"/>
+        <local:HighViewButton id="btn_cd" doc_id="1029" label="Charting Dialog"  width="{vb.width}" visible="false" />
+        <!--  local:HighViewButton id="btn_render" doc_id="1027" label="Renditions"  width="{vb.width}" enabled="true" / -->
+        <!-- local:HighViewButton id="btn_ptp" doc_id="1030" label="Print to PDF"  width="{vb.width}"  enabled="false"/ -->  
+        
+
+    </mx:VBox>
+     <mx:VBox id="vb2" width="216" > 
+         <mx:Label text="Specials" width="100%" textAlign="center"  fontSize="19" color="#F9FBFB" fontWeight="bold" visible="false"/>
+        <!-- mx:Button id="btn_ok" label="OK" / -->
+         <mx:Button id="btn_flash2" label="Flash Filter"  width="{vb2.width}"  visible="false"/> 
+        <mx:Button id="btn_gt2" label="Crunch:% Grand Totals"  width="{vb2.width}"  visible="false"/>  
+        <local:HighViewCombobox  id="cb_sort" doc_id="1025" dataProvider="{cb_subtotalarray}" fontSize="14" color="#040404" width="100%"/>
+        <mx:RadioButton id="rb_chooseall" label="All Columns" fontWeight="bold" color="#FFFCFC" height="{btn_e2e.height}"/>
+        <mx:RadioButton id="rb_onlycolumns" label="Only Sorted Columns" fontWeight="bold" color="#FCFCFC" height="{btn_e2e.height}" />
+     
+        
+       	
+        
+        <!-- mx:Button id="btn_tca2" label="Time Chart Analysis"  width="{vb2.width}"  visible="false"/ -->  
+       
+        <!-- mx:Button id="btn_op2" label="Operator Profile"  width="{vb2.width}"  visible="false"/ -->  
+        
+        <mx:Button id="btn_e2e2" label="Export to Excel"  width="{vb2.width}" visible="false"/>
+        <!-- mx:Button id="btn_cd22" label="Crunch:% Grand Totals"  width="{vb2.width}"  visible="false"/ -->  
+        <!-- mx:Button id="btn_ptp2" label="Print to PDF"  width="{vb2.width}"  visible="false"/ -->  
+         <!-- mx:Button id="btn_render2" label="Renditions"  width="{vb2.width}" visible="false"/ -->
+
+    </mx:VBox>
+
+</mx:TitleWindow>

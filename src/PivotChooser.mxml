@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"	width="940" height="800"  verticalScrollPolicy="off"
+				layout="vertical"
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundImage=""
+				creationComplete="init()" 
+				xmlns:local="*">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			[Bindable]
+			public var pivot_xlcColumn:ArrayCollection = new ArrayCollection;
+			
+			
+			[Bindable]
+			public var Arr_Columns:ArrayCollection = new ArrayCollection;
+			[Bindable]	
+			public var Arr_ColumnstoRow:ArrayCollection = new ArrayCollection;
+			[Bindable]	
+			public var Arr_Discard:ArrayCollection = new ArrayCollection;
+			
+			[Bindable]
+			
+			public var pivot_columns:ArrayCollection;
+			public var sorted_pivot_columns_by_index:Array;
+			private function init():void {
+				Arr_Columns = pivot_xlcColumn;
+				
+				
+				
+				
+			}    
+			
+			
+			
+				
+				
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			private function removeFromGrid(evt:Event):void {
+				if (evt.currentTarget.id == 'dg_1_remove'){
+					Arr_ColumnstoRow.removeItemAt(pvtctr_dg.selectedIndex);
+					Arr_ColumnstoRow.refresh();
+				} 
+				if (evt.currentTarget.id == 'dg_2_remove'){
+					Arr_Discard.removeItemAt(pvtd_dg.selectedIndex);
+					Arr_Discard.refresh();
+				} 
+			}
+			
+			private function clearFromGrid(evt:Event):void {
+				if (evt.currentTarget.id == 'dg_1_clear'){
+					Arr_ColumnstoRow = new ArrayCollection;
+					Arr_ColumnstoRow.refresh();
+				} 
+				if (evt.currentTarget.id == 'dg_2_clear'){
+					Arr_Discard = new ArrayCollection;
+					Arr_Discard.refresh();
+				} 
+			}
+			
+			
+		]]>
+	</mx:Script>
+	<mx:Script source="AlertMessageHandler.as"/>
+	<mx:Style source="css/main.css"/>
+	<mx:VBox width="100%">
+		
+		<mx:HBox width="100%">
+			<mx:Spacer width="100%"/>
+			<mx:Label text="Columns to Rows" width="100%" textAlign="center"  fontSize="19" color="#030303" fontWeight="bold"/>
+			<mx:Spacer width="100%"/>
+			
+		</mx:HBox>
+		
+	</mx:VBox>
+	<mx:HBox width="100%" height="100%" id="hbox1">
+		
+		<!-- mx:AdvancedDataGrid id="dg_testing"  width="100%" height="100%"  verticalScrollPolicy="on" horizontalScrollPolicy="on">
+			
+		</mx:AdvancedDataGrid -->
+		
+		<mx:AdvancedDataGrid id="pvt_dg" dataProvider="{Arr_Columns}" allowMultipleSelection="true" width="100%" height="100%" 
+							 dragEnabled="true"
+							 >
+				<mx:columns>     
+					<mx:AdvancedDataGridColumn id="mf_title" dataField="title_header" headerText="Columns" />
+				</mx:columns>
+		</mx:AdvancedDataGrid>
+		
+		<mx:VBox width="100%" height="100%">
+					
+			<mx:HBox width="100%" height="100%">	
+			
+							<mx:AdvancedDataGrid id="pvtctr_dg" dataProvider="{Arr_ColumnstoRow}" allowMultipleSelection="false" width="100%" height="100%"
+												 dragEnabled="true"
+												 dragMoveEnabled="true"
+												 dropEnabled="true"		 
+												 >
+								<mx:columns>     
+									<mx:AdvancedDataGridColumn id="mf_title1" dataField="title_header" headerText="Columns to Rows" />
+								</mx:columns>
+							</mx:AdvancedDataGrid>
+				
+							<mx:VBox height="100%"> 
+								<mx:Button id="dg_1_remove" label="Remove" width="100" click="removeFromGrid(event)"/>
+								<mx:Button id="dg_1_clear" label="Clear" width="100" click="clearFromGrid(event)"/>
+								
+							</mx:VBox>
+			</mx:HBox>		
+			<mx:HBox width="100%" height="100%">	
+					<mx:AdvancedDataGrid id="pvtd_dg" dataProvider="{Arr_Discard}" allowMultipleSelection="false" width="100%" height="100%" 
+										 dragEnabled="true"
+										 dragMoveEnabled="true"
+										 dropEnabled="true"	
+								>
+						<mx:columns>     
+							<mx:AdvancedDataGridColumn id="mf_title2" dataField="title_header" headerText="Base Columns to Keep" />
+						</mx:columns>
+					</mx:AdvancedDataGrid>
+					<mx:VBox id="secondvbox" height="100%"> 
+						<mx:Button id="dg_2_remove" label="Remove" width="100" click="removeFromGrid(event)"/>
+						<mx:Button id="dg_2_clear" label="Clear" width="100" click="clearFromGrid(event)"/>
+						
+					</mx:VBox>	
+			</mx:HBox>		
+		</mx:VBox>	
+		
+		
+		
+		<!--
+		<mx:VBox>
+			<mx:HBox width="10%" height="100%">
+				<mx:VBox height="100%"> 
+				<mx:Button label="Remove"/>
+				<mx:Button label="Clear All"/>
+					
+				</mx:VBox>
+				
+			</mx:HBox>	
+			<mx:HBox width="10%" height="100%">
+					<mx:VBox height="100%"> 
+						<mx:Button label="Remove"/>
+						<mx:Button label="Clear All"/>
+						
+					</mx:VBox>
+					
+			</mx:HBox>	
+		</mx:VBox>
+		
+		-->
+		
+		
+	</mx:HBox>
+	<mx:HBox width="100%">
+		
+	
+		<mx:Button id="btn_accept" label="Accept" width="100" />
+		<mx:Spacer width="100%"/>	
+		<mx:Button id="btn_close_window" label="Cancel"
+				  click="{titleWindow_close(event)}"
+				  width="100" 
+			   
+			   />
+	</mx:HBox>
+</mx:TitleWindow>

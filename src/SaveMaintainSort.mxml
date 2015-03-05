@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="320" height="74"  verticalScrollPolicy="off"
+	        layout="vertical"
+        title="Do you want to save current sort?" 
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="10" y="10"  
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        borderColor="haloSilver"
+        backgroundColor="haloSilver"
+        creationComplete="init()"
+        >
+      <mx:Script>
+      	<![CDATA[
+      		import mx.managers.PopUpManager;
+      	private function init():void {
+                 btn_save_maintainsort_yes.setFocus();
+           }
+      		private function titleWindow_close(evt:Event):void {
+                 PopUpManager.removePopUp(this);
+           }
+      	]]>
+      </mx:Script>
+	
+	      		<mx:HBox width="291">
+	      		<mx:Spacer width="100%"/>
+        		<mx:Button id="btn_save_maintainsort_yes" label="Yes"/>
+        		<mx:Button id="btn_save_maintainsort_no" label="No"/>
+				<mx:Spacer width="100%"/>
+        		<!-- mx:Button id="mf_add" label="Add" / -->
+        		<!-- mx:Button id="mf_clear" label="Clear" click="clearMyArray()" / -->
+        		<!-- mx:Button id="btn_close" label="Close" click="titleWindow_close(event);"/ -->
+        	</mx:HBox>
+	 		
+</mx:TitleWindow>
+

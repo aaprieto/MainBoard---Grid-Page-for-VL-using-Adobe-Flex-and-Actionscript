@@ -1,0 +1,761 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				
+				showCloseButton="false"
+				close="titleWindow_close(event);" x="10" y="10" width="946" height="470" creationComplete="init(event);" 
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundImage=""
+				layout="horizontal"
+				
+				
+				xmlns:local="*">
+	
+	
+	<mx:HTTPService 
+		id="retrieve_rendition" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerRendition(event)"
+		fault="FaultRendition(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService  
+		id="delete_rendition" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerRenditionDelete(event)"
+		fault="FaultRenditionDelete(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParmsdelete}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="update_default_rendition" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerRenditionUpdate(event)"
+		fault="FaultRenditionUpdate(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParmsupdate}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="update_display_myview" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerMyViewUpdateDisplay(event)"
+		fault="FaultRenditionUpdateDisplay(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParmsupdatemyviewdisplay}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService  
+		id="rename_myview" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerRenditionDelete(event)"
+		fault="FaultRenameMyview(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParmsdelete}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:Script source="AlertMessageHandler.as"/>
+	<mx:Script> 
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.events.CloseEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy; 
+			import com.utilities.Utils;
+			[Bindable]
+			private var loc_reqParms:String = new String();
+			[Bindable]
+			private var loc_reqParmsdelete:String = new String();
+			[Bindable]
+			private var loc_reqParmsupdate:String = new String();
+			[Bindable]
+			private var loc_reqParmsupdatemyviewdisplay:String = new String();
+			[Bindable]
+			public var loc_mbdcode:String = new String();
+			[Bindable]
+			public var loc_user:String = new String();
+			[Bindable]
+			public var loc_ccode:String = new String();
+			[Bindable]
+			public var loc_rendcode:String = new String();
+			[Bindable]
+			public var loc_sid:String = new String();
+			//[Bindable]
+			//public var myview_code_from = new String();
+			[Bindable]
+			public var RenditionCollection:ArrayCollection = new ArrayCollection;
+			private var c_utils:Utils = new Utils();
+			private var helpWindow:TitleWindow;
+			
+			private function titleWindow_close(evt:Event):void { 
+				PopUpManager.removePopUp(this);
+			}
+			private function init(evt:Event):void {
+				httpRequestRenditionUrl(parentApplication.application_entry);
+				//loc_reqParms = "REFRESH,RETRIEVE|GRIDRENDITIONS|" +  loc_user + "|" + loc_mbdcode + "|";
+				
+				loc_reqParms = "REFRESH,RETRIEVE|MYVIEWS|" +  loc_user + "|" + loc_mbdcode + "|";
+				
+				//REFRESH,RETRIEVE|MYVIEWS|usercode|gridcode|
+				
+				//Alert.show(parentApplication.application_entry);
+				retrieve_rendition.send();  
+			}
+			
+			private function ResultHandlerRendition(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == 'OK' ) {
+					
+					RenditionCollection = new ArrayCollection();
+					
+					if (evt.result.ezware_response.refresh_data.myviews.myview == null)
+					{    
+						RenditionCollection=new ArrayCollection()
+					}
+					else if (evt.result.ezware_response.refresh_data.myviews.myview is ArrayCollection)
+					{
+						RenditionCollection=evt.result.ezware_response.refresh_data.myviews.myview;
+					}
+					else if (evt.result.ezware_response.refresh_data.myviews.myview is ObjectProxy)
+					{
+						RenditionCollection = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.myviews.myview)); 
+					}
+					RenditionCollection.refresh();
+					
+				} else	{
+					
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}				
+				
+				
+				
+			}
+			
+			
+			private function ResultHandlerRenditionDelete(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == "OK"){
+					
+					retrieve_rendition.send(); 
+					
+					
+				} else	{
+					
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return; 
+				}	
+				
+				
+			}
+			private function ResultHandlerRenditionUpdate(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == "OK"){
+					AlertMessageShow("Default will take effect the next time you enter the HighView. To select this view now click the 'Apply' button.");
+					  
+					retrieve_rendition.send(); 
+				} else	{
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}		 
+				
+			}
+			private function ResultHandlerMyViewUpdateDisplay(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == "OK"){
+				//	AlertMessageShow("Default will take effect the next time you enter the HighView. To select this view now click the 'Apply' button.");
+					
+					retrieve_rendition.send(); 
+				} else	{
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}		 
+				
+			}
+			private function FaultRendition(evt:FaultEvent):void
+			{
+				//var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow("MyView Error");
+			}
+			private function FaultRenditionDelete(evt:FaultEvent):void
+			{
+				AlertMessageShow("Delete MyView Error");
+			}
+			private function FaultRenameMyview(evt:FaultEvent):void
+			{
+				AlertMessageShow("Rename MyView Error");
+			}
+			private function FaultRenditionUpdate(evt:FaultEvent):void
+			{
+				AlertMessageShow("Update Default MyView Error");
+			}
+			import mx.core.Application;
+			private function FaultRenditionUpdateDisplay(evt:FaultEvent):void
+			{
+				AlertMessageShow("Update Default MyView Error");
+			}
+			import mx.core.Application;
+			
+			private function RefreshPage(evt:Event):void{
+				/*
+				var urlRequest:URLRequest = new URLRequest(Application.application.url);
+				
+				navigateToURL(urlRequest,"_self");
+				PopUpManager.removePopUp(this);
+				*/	
+			}
+			private function deleteRendition(evt:Event):void{
+				loc_reqParmsdelete = "REFRESH,DELETE|MYVIEW|" +  loc_user + "|" + loc_mbdcode + "|" + dg_rendition.selectedItem.viewcode + "|";
+				delete_rendition.send();
+			}
+			
+			
+			
+			
+			
+			private var pop_deleteconfirm:DeleteConfirm;
+			private function validateRendition(evt:Event):void{
+				
+				
+				if (dg_rendition.selectedItems.length == 0){
+					AlertMessageShow("Please select view code to delete.");
+					return;
+				}
+				
+				if (dg_rendition.selectedItem.viewdefault == "Y"){
+					AlertMessageShow("Default view code cannot be deleted.");
+					return;
+				}
+				
+				
+				if ( dg_rendition.selectedItem.viewcode == loc_rendcode){
+					AlertMessageShow("You are not allowed to delete the current View.");
+					return;
+				}
+				
+				/*
+				if (  (inputcode.text.toUpperCase()).substr(0,4) == "BASE"){
+				AlertMessageShow("'BASE' Code is not allowed");
+				return;
+				}
+				*/
+				
+				if (loc_user.toUpperCase() !=  'MAVES'){
+					
+					if (((dg_rendition.selectedItem.viewcode).toUpperCase()).substr(0,4) == 'BASE'){
+						AlertMessageShow("'BASE' delete not allowed.");
+						return;
+					}
+					 
+				}
+				
+				if (dg_rendition.selectedItem.viewcode == 'MASTER'){
+					AlertMessageShow("'MASTER' delete not allowed.");
+					return;
+				}
+				
+				
+				
+				// Check user Permission.
+				if ( Application.application.parameters.ar == 'O'){
+					if((dg_rendition.selectedItem.viewcode).substr(0,1) != '*'){
+						AlertMessageShow("You are not allowed to delete a Generic Rendition");
+						return;
+					}
+				}
+				
+				//'REFRESH,UPDATE|DFLTRENDITION|maves|RPTSCH|*abc|'
+				pop_deleteconfirm = DeleteConfirm(
+					PopUpManager.createPopUp(this, DeleteConfirm, true));
+				pop_deleteconfirm.del_filtercode = dg_rendition.selectedItem.viewcode;
+				pop_deleteconfirm["btn_ok"].addEventListener("click",  handleDeleteConfirm);
+				pop_deleteconfirm["inputcode"].addEventListener("enter", handleDeleteConfirm);
+				
+			}
+			
+			
+			private var pop_renamemyview:RenameMyView;
+			private function renameMyView(event:Event):void{
+				
+				if (dg_rendition.selectedItems.length == 0){
+					AlertMessageShow("Please select view code to rename.");
+					return;
+				}
+				
+				if (dg_rendition.selectedItem.viewdefault == "Y"){
+					AlertMessageShow("Default view code cannot be renamed.");
+					return;
+				}
+				
+				
+				if ( dg_rendition.selectedItem.viewcode == loc_rendcode){
+					AlertMessageShow("You are not allowed to rename the current View.");
+					return;
+				}
+				
+				/*
+				if (  (inputcode.text.toUpperCase()).substr(0,4) == "BASE"){
+				AlertMessageShow("'BASE' Code is not allowed");
+				return;
+				}
+				*/
+				
+				if (loc_user.toUpperCase() !=  'MAVES'){
+					
+					if (((dg_rendition.selectedItem.viewcode).toUpperCase()).substr(0,4) == 'BASE'){
+						AlertMessageShow("'BASE' rename not allowed.");
+						return;
+					}
+					
+				}
+				
+				if (dg_rendition.selectedItem.viewcode == 'MASTER'){
+					AlertMessageShow("'MASTER' rename not allowed.");
+					return;
+				}
+				
+				
+				
+				// Check user Permission.
+				if ( Application.application.parameters.ar == 'O'){
+					if((dg_rendition.selectedItem.viewcode).substr(0,1) != '*'){
+						AlertMessageShow("You are not allowed to rename Generic Rendition");
+						return;
+					}
+				}
+				
+				
+				  
+				//Alert.show(dg_rendition.selectedItem.auto_apply);
+				//'REFRESH,UPDATE|DFLTRENDITION|maves|RPTSCH|*abc|'
+				pop_renamemyview = RenameMyView(
+					PopUpManager.createPopUp(this, RenameMyView, true));
+				//pop_renamemyview.del_filtercode = dg_rendition.selectedItem.viewcode;
+				pop_renamemyview.loc_myviewcode =  dg_rendition.selectedItem.viewcode;
+				pop_renamemyview.loc_myviewdescription =  dg_rendition.selectedItem.viewdesc;
+				pop_renamemyview.loc_autoapply = dg_rendition.selectedItem.auto_apply;
+				pop_renamemyview.loc_btnlabel = dg_rendition.selectedItem.btnlabel; 
+				
+				if (dg_rendition.selectedItem.auto_apply == 'Y'){
+					pop_renamemyview.hbox_aa.visible = true;
+					pop_renamemyview.aa_yes.selected = true;
+					pop_renamemyview.aa_no.selected = false;
+				} else if (dg_rendition.selectedItem.auto_apply == 'N') {
+					pop_renamemyview.hbox_aa.visible = true;
+					pop_renamemyview.aa_yes.selected = false;
+					pop_renamemyview.aa_no.selected = true;
+					
+				} else {
+					pop_renamemyview.hbox_aa.visible = true;
+					pop_renamemyview.aa_yes.selected = false;
+					pop_renamemyview.aa_no.selected = false;
+				}
+				 
+				pop_renamemyview.aa_yes.enabled = false;
+				pop_renamemyview.aa_no.enabled = false;
+				
+				pop_renamemyview["btn_submit"].addEventListener("click",  handleRenameMyView);  
+				
+			
+			}
+			
+			
+			private function handleRenameMyView(event:Event):void{
+			//Alert.show(pop_renamemyview.myviewcode.text);
+			
+				var share:String = new String();
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				
+				// Check operator access.
+				// O - Operator Code
+				// N - Not Allowed
+				// G - Generic
+				
+				if ( Application.application.parameters.av == 'O'){
+					if (pop_renamemyview.gen.selected == true){
+						AlertMessageShow('You are not allowed to rename a Generic View.')
+						return;
+					}    
+				}
+				
+				//if (popcmmyviews.create_modify == "C"){
+					
+					
+					if (pop_renamemyview.myviewcode.text == ""){
+						AlertMessageShow("Please Enter Code.");
+						pop_renamemyview.myviewcode.setFocus();
+						pop_renamemyview.myviewcode.setStyle("backgroundColor", "#C7CECC");
+						pop_renamemyview.myviewdescription.setStyle("backgroundColor", "#ffffff");
+						return;
+						
+					}
+					
+					
+					if (loc_user.toUpperCase() != 'MAVES'){
+						if(((pop_renamemyview.myviewcode.text).toUpperCase()).substr(0,4) == 'BASE'){
+							AlertMessageShow("'BASE' Code is not allowed");
+							pop_renamemyview.myviewcode.setFocus();
+							pop_renamemyview.myviewcode.setStyle("backgroundColor", "#C7CECC");
+							pop_renamemyview.myviewdescription.setStyle("backgroundColor", "#ffffff");
+							return;
+						}	
+					}
+					
+					if (pop_renamemyview.myviewdescription.text == ""){
+						AlertMessageShow("Please Enter Description.");
+						pop_renamemyview.myviewdescription.setFocus();
+						pop_renamemyview.myviewcode.setStyle("backgroundColor", "#ffffff"); 	
+						pop_renamemyview.myviewdescription.setStyle("backgroundColor", "#C7CECC");
+						return;
+					}
+				//}
+				
+				
+					if (pop_renamemyview.uoc.selected == true){
+						if (pop_renamemyview.myviewcode.text.substr(0,1) != '*'){
+							pop_renamemyview.myviewcode.text = '*' + pop_renamemyview.myviewcode.text
+							 
+						}
+						//usermv = myName_main; 
+					}
+					
+					if (pop_renamemyview.gen.selected == true){
+						if (pop_renamemyview.myviewcode.text.substr(0,1) == '*'){ 
+							pop_renamemyview.myviewcode.text = pop_renamemyview.myviewcode.text.substr(1,pop_renamemyview.myviewcode.text.length);
+						}
+						//usermv = "gen"; 
+					}
+				
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+				   
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				 
+				
+			//Validate existing name
+			/*  Remove as per anthony.  It should not check the existing list of myviews on the rename.
+				for( var i:int = 0; i < RenditionCollection.length; i++ ){
+					
+					if (c_utils.trim(pop_renamemyview.myviewcode.text) ==  RenditionCollection[i]["viewcode"]){
+							AlertMessageShow("View Code: " + pop_renamemyview.myviewcode.text + " already exist.");
+								if (pop_renamemyview.myviewcode.text.substr(0,1) == '*'){ 
+									pop_renamemyview.myviewcode.text = pop_renamemyview.myviewcode.text.substr(1,pop_renamemyview.myviewcode.text.length);
+								}    
+							   
+								return;
+								break;
+					}
+				}
+			
+		*/
+				// If everything is good.. do this ...
+				
+				
+				/*
+				
+				if (popcmmyviews.gen.selected == true){
+				share = 'Y';     
+				
+				} else {
+				share = 'N';
+				}
+				reqSJ = "";
+				reqParmsMyViewParameters = "";
+				reqParmsMyViewParameters = "REFRESH,UPDATE|MYVIEW|" + popcmmyviews.inputcode.text + "|" + popcmmyviews.inputdescription.text + "|" +
+				share + "|" + myName_main + "|" + mainBoard + "|";
+				saveMyViewHeader.send();
+				*/
+				
+				  
+				
+				if (pop_renamemyview.gen.selected == true){
+					share = 'Y';     
+					
+				} else {
+					share = 'N';
+				}
+				
+				//loc_reqParmsdelete = "REFRESH,RENAME|MYVIEW|" + loc_mbdcode+"|"+c_utils.trim(pop_renamemyview.myviewcode.text)+"|"+c_utils.trim(pop_renamemyview.myviewdescription.text)+"|"+loc_user+"|";
+				//rename_myview.send();
+				
+				loc_reqParmsdelete = "REFRESH,RENAME|MYVIEW|" + 
+					loc_mbdcode +"|" + dg_rendition.selectedItem.viewcode +"|"+share+"|"+
+					c_utils.trim(pop_renamemyview.myviewcode.text)+"|"+
+					c_utils.trim(pop_renamemyview.myviewdescription.text)+"|"+loc_user+"|" +
+					pop_renamemyview.loc_autoapply+"|"+
+					c_utils.trim(pop_renamemyview.btnlabel.text)+"|"; 
+				
+				rename_myview.send();
+				PopUpManager.removePopUp(pop_renamemyview);	
+			}               
+			public function handleDeleteConfirm( event:Event ) : void
+			{
+				if (pop_deleteconfirm.inputcode.text == "YES"){
+					PopUpManager.removePopUp(pop_deleteconfirm);	
+					deleteRendition(event);
+				}	
+				if (pop_deleteconfirm.inputcode.text != "YES"){
+					
+					pop_deleteconfirm.inputcode.setFocus();
+					pop_deleteconfirm.inputcode.drawFocus(true);
+					return;
+					
+				}
+			}	
+			public function updateDefaultRendition( event:Event ) : void
+			{
+				
+				/*  Remove this for now.  We can default everything now.
+				  
+				if (dg_rendition.selectedItem.type != "AG"){
+					AlertMessageShow("Crunch/Chart cannot be saved as default View"); 
+					return;
+				} 
+				*/
+				if (dg_rendition.selectedItems.length == 0){    
+					AlertMessageShow("Please select a row to change default.");
+					return;
+				}
+				loc_reqParmsupdate = "REFRESH,UPDATE|DFLTMYVIEW|" +  loc_user + "|" + loc_mbdcode + "|" + dg_rendition.selectedItem.viewcode + "|";
+				update_default_rendition.send();   
+			}
+			
+			
+			private function updateDisplayMyView( event:Event ) : void
+			{
+			
+				if (dg_rendition.selectedItems.length == 0){    
+					AlertMessageShow("Please select a row to change display.");
+					return;
+				}
+				
+				loc_reqParmsupdatemyviewdisplay = "REFRESH,UPDATE|DSPLYMYVIEW|" +  loc_user + "|" + loc_mbdcode + "|" + 
+					dg_rendition.selectedItem.viewcode + "|" + 
+					dg_rendition.selectedItem.display + "|";
+				update_display_myview.send();   
+			}
+			
+			public function httpRequestRenditionUrl(str_app:String):void{
+				if (str_app == 'ml'){
+					update_display_myview.url = 'ae_tlch_ml_req.php';
+					retrieve_rendition.url = 'ae_tlch_ml_req.php'; 
+					delete_rendition.url = 'ae_tlch_ml_req.php'; 
+					update_default_rendition.url = 'ae_tlch_ml_req.php'; 
+					rename_myview.url = 'ae_tlch_ml_req.php'; 
+					      
+				} 
+			}  
+			
+			private function resultStatusRendition(string_result:String, string_reason:String):String{
+				var retstr:String = new String;
+				if (string_result == "EXPIRED"){
+					retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+				} 
+				if (string_result == "FAIL"){
+					retstr = string_reason;
+				} 
+				return retstr;
+			}
+		]]>
+	</mx:Script>
+	<mx:VBox width="100%" height="100%">
+		<mx:HBox width="100%">
+			<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'','MyViews Console','BUTTON')}"
+					   
+					   />     
+			<mx:Spacer width="50%"/> 
+			<mx:Label text="MyViews" width="100%" textAlign="center"  fontSize="19" color="#364D6A" fontWeight="bold"
+					  rollOver="{parentApplication.mbdg_mousehovering(event,event.currentTarget.text,'MyViews','MYVIEWS')}"
+					  rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+					  />
+			<mx:Spacer width="100%"/>
+			
+		</mx:HBox>
+		
+		<mx:Label id="txt_current" text="CurrentView" width="100%" textAlign="center"  fontSize="19" color="#030303" fontWeight="bold"
+				  rollOver="{parentApplication.mbdg_mousehovering(event,event.currentTarget.text,'Current Rendition','CURRENT RENDITION')}"
+				  rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+				  />
+	 	
+		
+		<!-- local:ActionGridADGRendition
+			id="dg_rendition"
+			width="100%"
+			height="100%"
+			rowHeight="22"
+			dataProvider="{RenditionCollection}"
+			dragEnabled="true"
+			dropEnabled="true" dragMoveEnabled="true"
+			verticalScrollPolicy="auto"
+			
+			allowMultipleSelection="false"   
+			variableRowHeight="true"
+			headerStyleName="centerAlignDataGridCol"
+			horizontalGridLines="true"
+			verticalGridLines="true"
+			horizontalGridLineColor="black"
+			verticalGridLineColor="black" borderColor="#010101" borderThickness="1"
+			
+			sortableColumns="false" 
+			
+			>
+			<local:columns>
+				<mx:AdvancedDataGridColumn id="rnd_rendcode" dataField="viewcode" headerText="Code" width="150" wordWrap="true"  editable="false" />
+				<mx:AdvancedDataGridColumn id="rnd_renddesc" dataField="viewdesc" headerText="Description"   editable="false" wordWrap="true" />
+				<mx:AdvancedDataGridColumn id="rnd_trype" dataField="type" headerText="Type" width="100" wordWrap="true"  editable="false" />
+				<mx:AdvancedDataGridColumn id="rnd_default" dataField="viewdefault" headerText="DEF" width="100" wordWrap="true"  editable="false" />
+				<mx:AdvancedDataGridColumn id="rnd_autoapply" dataField="auto_apply" headerText="Apply" width="100" wordWrap="true"  editable="false" />
+				
+			</local:columns>       
+		</local:ActionGridADGRendition -->
+		
+		<mx:DataGrid
+			id="dg_rendition"
+			width="100%"
+			height="100%"
+			rowHeight="22"
+			dataProvider="{RenditionCollection}"
+			dragEnabled="true"
+			dropEnabled="true" dragMoveEnabled="true"
+			verticalScrollPolicy="auto"
+			
+			allowMultipleSelection="false"   
+			variableRowHeight="true"
+			headerStyleName="centerAlignDataGridCol"
+			horizontalGridLines="true"
+			verticalGridLines="true"
+			horizontalGridLineColor="black"
+			verticalGridLineColor="black" borderColor="#010101" borderThickness="1"
+			
+			sortableColumns="false" 
+			
+			>
+			<mx:columns>
+				<mx:DataGridColumn id="rnd_rendcode" dataField="viewcode" headerText="Code" width="150" wordWrap="true"  editable="false" />
+				<mx:DataGridColumn id="rnd_btnlabel" dataField="btnlabel" headerText="Button Label" width="150" wordWrap="true"  editable="false" />
+				<mx:DataGridColumn id="rnd_renddesc" dataField="viewdesc" headerText="Description"   editable="false" wordWrap="true" />
+				<mx:DataGridColumn id="rnd_trype" dataField="type" headerText="Type" width="100" wordWrap="true"  editable="false" />
+				<mx:DataGridColumn id="rnd_default" dataField="viewdefault" headerText="DEF" width="100" wordWrap="true"  editable="false" />
+				<mx:DataGridColumn id="rnd_autoapply" dataField="auto_apply" headerText="Apply" width="100" wordWrap="true"  editable="false" />
+				<mx:DataGridColumn id="rnd_display" dataField="display" headerText="Show" width="100" wordWrap="true"  editable="false" />
+				
+			</mx:columns>       
+		</mx:DataGrid>
+		  
+		
+		
+		<mx:HBox horizontalGap="0" width="100%">
+			
+			<mx:Button id="btn_rendition_switch" label="Apply" click="{RefreshPage(event);}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			
+			<mx:Button id="btn_myviews_create" label="Save"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button id="btn_myviews_rename" label="Rename"  click="renameMyView(event)"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button id="btn_rendition_delete" label="Delete"  click="{validateRendition(event)}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button id="btn_myviews_display" label="Show"  visible="true" click="{updateDisplayMyView(event)}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button id="btn_rendition_default" label="Default" click="{updateDefaultRendition(event)}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<!-- mx:Button id="btn_rendition_modify" label="Modify"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/ -->
+			<mx:Button id="btn_myviews_merge" label="Merge"  visible="true"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			
+			
+			<mx:Spacer width="100%"/>
+			<mx:Button label="Close" id="btn_myview_close"  
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			
+		</mx:HBox>
+	</mx:VBox>
+	
+	
+</mx:TitleWindow>

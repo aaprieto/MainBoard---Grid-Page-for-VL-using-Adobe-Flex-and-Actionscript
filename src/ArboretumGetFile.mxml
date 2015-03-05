@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="10" y="10" width="482" height="470" creationComplete="init(event);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        backgroundImage=""
+        layout="horizontal"
+       >
+       
+       
+ <mx:HTTPService id="GetFileList" 
+				result="GFLListHandler(event)"   
+				fault="GFLfaultHandler(event)" />
+
+<mx:Script source="AlertMessageHandler.as"/>
+ <mx:Script> 
+ 	<![CDATA[
+ 			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	import mx.collections.ArrayCollection;
+		 	import mx.utils.ObjectProxy;
+		 	import mx.utils.ArrayUtil; 
+		 	import mx.controls.AdvancedDataGrid;
+		 	import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn; 
+		 	[Bindable]
+ 		    public var orderid:String;
+ 		    [Bindable]
+ 		    public var client:String;
+ 		    
+  			[Bindable]
+ 			private var ArboretumFileList:ArrayCollection = new ArrayCollection; 
+		 	
+ 		    private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+           }
+            private function init(evt:Event):void {
+            	ArboretumFileList=new ArrayCollection();
+				ArboretumFileList.refresh();
+				GetFileList.url ="https://www.diditinc.com/maves/GetFileList.php?clientname=" +  client + "&orderid=" + orderid+"&class=1";
+				
+				GetFileList.send();
+				
+				
+          			dg_2.setFocus();
+          				//btn_close.setFocus();
+          				//btn_close.drawFocus(true);
+          				
+          				
+           }
+           
+           
+           
+           private function GFLListHandler(evt:ResultEvent):void{
+           	
+           	if (evt.result.result.code != "0"){
+           		titleWindow_close(evt);
+           		AlertMessageShow(evt.result.result.message.toString());
+           		return;
+           	}
+           	
+			if (evt.result.result.file == null)
+            { 
+                ArboretumFileList=new ArrayCollection()
+            }
+            else if (evt.result.result.file is ArrayCollection)
+            {
+              ArboretumFileList=evt.result.result.file;
+            }
+            else if (evt.result.result.file is ObjectProxy)
+            {
+               ArboretumFileList = new ArrayCollection(ArrayUtil.toArray(evt.result.result.file)); 
+            }
+ 			ArboretumFileList.refresh();
+ 			if (ArboretumFileList.length < 1){
+ 				titleWindow_close(evt);
+ 				AlertMessageShow("No File(s) Available.")
+ 				return;
+ 			}
+ 			
+		}
+		
+		
+		private function GFLfaultHandler(event:FaultEvent):void{
+				AlertMessageShow("XML Parse Error from Arboretum.  Please Contact your System Administrator."); 
+		}
+		private function GetPrintout(event:Event):void{
+				var s:String = dg_2.selectedItem.downloadurl.toString(); 
+				 var u:URLRequest = new URLRequest(s);
+       			 navigateToURL(u,"_blank");
+		}
+ 	]]>
+ </mx:Script>
+  <mx:Style source="css/main.css"/>
+  <mx:VBox width="100%" height="100%">
+      
+       <mx:Label text="Graphic Form List" width="100%" textAlign="center"  fontSize="19" color="#030303" fontWeight="bold"/>
+  	
+    <mx:AdvancedDataGrid id="dg_2" width="100%" dataProvider="{ArboretumFileList}" 
+    				height="100%" horizontalScrollPolicy="auto" 
+    				dragEnabled="false" dropEnabled="false" dragMoveEnabled="false" verticalScrollPolicy="on" 
+    				variableRowHeight="true"
+    				doubleClick="GetPrintout(event)"
+					doubleClickEnabled="true"
+    				>
+    				  <mx:columns>
+            			<mx:AdvancedDataGridColumn headerText="Name" dataField="name" width="300" />
+            			<mx:AdvancedDataGridColumn headerText="Class" dataField="class" />
+            			<!-- mx:AdvancedDataGridColumn headerText="File Path" dataField="filepath"/ -->
+            			<!-- mx:AdvancedDataGridColumn headerText="Download URL" dataField="downloadurl"/ -->
+        				
+						</mx:columns>		
+	</mx:AdvancedDataGrid> 	
+	
+	<!-- mx:HBox>
+	
+		<mx:Button id="btn_close" label="Close" visible="false" />
+		
+	</mx:HBox -->
+	</mx:VBox>
+  	
+		
+		
+</mx:TitleWindow>	

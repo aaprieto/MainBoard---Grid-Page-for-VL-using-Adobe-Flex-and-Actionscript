@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="1152" height="748"  verticalScrollPolicy="off"
+				layout="vertical"
+				
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundColor="white"
+				backgroundImage=""
+				
+				creationComplete="init(event)"
+				color="#010101" fontSize="19" xmlns:local="*">
+	
+	<!-- mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="860" height="556"  verticalScrollPolicy="off"
+	layout="vertical"
+	title=" Crunch Analysis" 
+	showCloseButton="true"
+	close="titleWindow_close(event);" x="10" y="10"  
+	dropShadowEnabled="true"
+	borderAlpha="1.0"
+	borderColor="haloSilver" 
+	backgroundColor="haloSilver"
+	creationComplete="init()"
+	-->
+	<mx:Style source="css/main.css"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.*;
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.controls.Alert;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			import mx.utils.ArrayUtil;
+			
+			////
+			[Bindable]
+			public var columnstorow:ArrayCollection;
+			[Bindable]
+			public var basetokeep:ArrayCollection;
+			///
+			[Bindable]
+			public var mfArray:ArrayCollection;
+			[Bindable]
+			public var columnArray:ArrayCollection;
+			[Bindable]
+			public var mainColumnArray:Object;
+			[Bindable]
+			public var headTitle:String;
+			[Bindable]
+			public var local_sesid:String;
+			[Bindable]
+			public var local_companycode:String;
+			[Bindable]
+			public var local_crunch:String;
+			public var newObject1:datagrid_test = new datagrid_test();
+			private var arr_crunchtoaction:ArrayCollection;
+			//The location of the excel export file
+			public var urlExcelExport:String = "exportexcel.php"; 
+			
+			private var dgc:AdvancedDataGridColumn = new AdvancedDataGridColumn();
+			
+			
+			
+			private function init(event:Event):void{
+				
+				if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+					this.width = 1000;
+					this.height = 575;
+					vdivbox.height = 455;
+				}
+				
+				buildDatagrid(event);
+			}
+			private function titleWindow_close(evt:Event):void  {
+				PopUpManager.removePopUp(this);
+			}
+			private var total_xlcColumnCrunch:XML = new XML;
+			[Bindable]
+			private var arrcol:ArrayCollection = new ArrayCollection;
+			private function buildDatagrid(event:Event):void{
+				arrcol = new ArrayCollection;
+				var obj:Object = new Object();
+				
+			
+				
+				
+				for (var a:int=0;a<basetokeep.length;a++)  {
+					obj = new Object();	
+					obj.columnId = a;
+					obj.columnName = basetokeep[a]["columnName"];
+					obj.dataField = basetokeep[a]["dataField"];
+					obj.title_header = basetokeep[a]["title_header"];
+					obj.width = parseInt(basetokeep[a]["width"]);
+					obj.wordwrap = basetokeep[a]["wordwrap"];
+					obj.datatype = basetokeep[a]["datatype"];
+					obj.analyzeby = basetokeep[a]["analyzeby"];
+					obj.drilldown = basetokeep[a]["drilldown"];
+					obj.tcv = "-";
+					arrcol.addItem(obj);
+				}
+				      
+				
+			
+				/* Pivot */
+				obj = new Object();	
+				obj.columnId = '99';
+				obj.columnName = "pivot";
+				obj.dataField ="pivot";
+				obj.title_header = "Pivot";
+				obj.width = parseInt("100");
+				obj.wordwrap = "false";
+				obj.datatype = "S";
+				obj.analyzeby = "no";
+				obj.drilldown = "no";
+				
+				obj.tcv = "-";
+				arrcol.addItem(obj);
+				
+				
+					
+				/* Value */
+				obj = new Object();	
+				obj.columnId = '100';
+				obj.columnName = "value";
+				obj.dataField ="value";
+				obj.title_header = "Value";
+				obj.width = parseInt("100");
+				obj.wordwrap = "false";
+				obj.datatype = "N";
+				obj.analyzeby = "no";
+				obj.drilldown = "no";
+				obj.tcv = "-";
+				arrcol.addItem(obj);
+				
+				
+				/*  Unique Key */
+				obj = new Object();	
+				obj.columnId = '100';
+				obj.columnName = "upd_unique";
+				obj.dataField ="upd_unique";
+				obj.title_header = "Unique Key";
+				obj.width = parseInt("200");
+				obj.wordwrap = "false";
+				obj.datatype = "S";
+				obj.analyzeby = "no";
+				obj.drilldown = "no";
+				obj.tcv = "-";
+				arrcol.addItem(obj);
+				/*  Trailing Space */
+				obj = new Object();	
+				obj.columnId = '';
+				obj.columnName = "";
+				obj.dataField ="";
+				obj.title_header = "";
+				obj.width = parseInt("1500");
+				obj.wordwrap = "false";
+				obj.datatype = "N";
+				obj.analyzeby = "no";
+				obj.drilldown = "no";
+				obj.tcv = "-";
+				arrcol.addItem(obj);
+				
+				
+				
+				
+				arrcol.refresh();
+				
+				newObject1 = new datagrid_test();
+				
+				newObject1._xlcTitle = local_crunch + ' Console';
+				newObject1._xlcColumn = arrcol;
+				
+				newObject1.pivot_Array1 = mfArray;   
+				
+				newObject1.ag_application_entry = parentApplication.application_entry;
+				newObject1.height = vdivbox.height; 
+				newObject1.my_sid = local_sesid;
+				newObject1.my_c_code1 = local_companycode;
+				newObject1.pivot = true;
+				
+				
+			
+				vdivbox.addChild(newObject1);
+			}
+			private function buildDatagrid_old(event:Event):void{
+				
+				var title_header:String = new String;
+				var aColumnsNew:Array = new Array;
+				var obj:Object = new Object();
+				for (var ctr_i:int = 0; ctr_i < columnArray.length; ctr_i++){
+					
+					for (var i:int=0;i<mainColumnArray.length;i++)  {
+						if (columnArray[ctr_i].cs_field == mainColumnArray[i]["dataField"]){
+							/* ****************************************************************  */
+							/* New solution.  Will not create an XML anymore. Just put everything to 
+							an ArrayCollection then pass it to the actiongrid.  */
+							//initialize the object
+							obj = new Object();	
+							obj.columnId = ctr_i;
+							obj.columnName = mainColumnArray[i]["dataField"];
+							obj.dataField = columnArray[ctr_i].cs_field;
+							obj.title_header = mainColumnArray[i]["title_header"];
+							obj.width = parseInt(mainColumnArray[i]["width"]);
+							obj.wordwrap = mainColumnArray[i]["wordwrap"];
+							obj.datatype = mainColumnArray[i]["datatype"];
+							obj.tcv = "-";
+							arrcol.addItem(obj);
+							
+							/* ****************************************************************  */
+							
+							
+							if (mainColumnArray[i]["datatype"] == 'N'){
+								dgc.setStyle("textAlign", "right");
+								dgc.setStyle('color','green');
+								
+							}
+							break;
+							
+							
+						}
+					} 
+					
+					aColumnsNew.push(dgc);
+					
+					if (columnArray[ctr_i].cs_datatype == 'N'){
+						/* ****************************************************************  */
+						/* New solution.  Will not create an XML anymore. just put everything to 
+						an ArrayCollection then pass it to the actiongrid.  */
+						//initialize the object
+						obj = new Object();	
+						obj.columnId = ctr_i;
+						obj.columnName = mainColumnArray[i]["dataField"];
+						obj.dataField = 'pct_' + columnArray[ctr_i].cs_field;
+						obj.title_header = '%';
+						obj.width = '110';
+						obj.wordwrap = false;
+						obj.datatype = mainColumnArray[i]["datatype"];
+						obj.tcv = "-";
+						arrcol.addItem(obj);
+						
+						/* ****************************************************************  */
+					}
+				}
+				/* ****************************************************************  */
+				/* New solution.  Will not create an XML anymore. just put everything to 
+				an ArrayCollection then pass it to the actiongrid.  */
+				//initialize the object
+				obj = new Object();	
+				obj.columnId = ctr_i;
+				obj.columnName ='instance';
+				obj.dataField = 'instance';
+				obj.title_header = 'Instance';
+				obj.width = '110';
+				obj.wordwrap = false;
+				obj.datatype = 'N';
+				obj.tcv = "-";
+				arrcol.addItem(obj);
+				
+				/* ****************************************************************  */
+				/* New solution.  Will not create an XML anymore. just put everything to 
+				an ArrayCollection then pass it to the actiongrid.  */
+				//initialize the object
+				obj = new Object();	
+				obj.columnId = ctr_i;
+				obj.columnName ='pct_instance';
+				obj.dataField = 'pct_instance';
+				obj.title_header = '%';
+				obj.width = '110';
+				obj.wordwrap = false;
+				obj.datatype = 'N';
+				obj.tcv = "-";
+				arrcol.addItem(obj);
+				
+				/* ****************************************************************  */
+				/* New solution.  Will not create an XML anymore. just put everything to 
+				an ArrayCollection then pass it to the actiongrid.  */
+				//initialize the object
+				obj = new Object();	
+				obj.columnId = ctr_i;
+				obj.columnName ='';
+				obj.dataField = '';
+				obj.title_header = '';
+				obj.width = '1500';
+				obj.wordwrap = false;
+				obj.datatype = 'N';
+				obj.tcv = "-";
+				arrcol.addItem(obj);
+				
+				/* ****************************************************************  */	
+				arrcol.refresh();
+				
+				newObject1 = new datagrid_test();
+				
+				/*
+				newObject1.mainBoard = dd_mainBoard
+				newObject1.myName_main = dd_usercode;
+				*/
+				newObject1._xlcTitle = local_crunch + ' Console';
+				newObject1._xlcColumn = arrcol;
+				//arr_crunchtoaction = mfArray;
+				newObject1.crunch_Array1 = mfArray;
+				//	newObject1 .correctWidth(event);
+				//newObject1.dg.render = flagger(event);
+				//mfArray = new ArrayCollection;
+				/*
+				newObject1.Array1 =  mfArray;
+				newObject1.Array2 =  mfArray;
+				newObject1.Array3 =  mfArray;
+				*/
+				//newObject1.tdObjectCollection =  mfArray;
+				Alert.show(parentApplication.application_entry);
+				newObject1.ag_application_entry = parentApplication.application_entry;
+				newObject1.height = vdivbox.height; 
+				newObject1.my_sid = local_sesid;
+				newObject1.my_c_code1 = local_companycode;
+				newObject1.pivot = true;
+				
+				
+				
+				/*
+				newObject1.id = dd_usercode;
+				newObject1.my_c_code1 = dd_compcode;
+				newObject1.my_sid = sessid;
+				newObject1.dd_columnone = dd_firstcolumn;
+				
+				vdivbox.addChild(newObject1); 
+				*/
+				vdivbox.addChild(newObject1);
+				
+			}     
+			
+			
+			/*
+			private function convertCrunchDGToHTMLTable(event:Event) {
+			
+			var font:String = adg1.getStyle('fontFamily');
+			//var size:String = dg.getStyle('fontSize');
+			var size:String = '10';
+			var str:String = ''; 
+			var colors:String = '';
+			var style:String = 'style="font-family:'+font+';font-size:'+size+'pt;"';
+			var hcolor:Array;
+			
+			//Retrieve the headercolor
+			if(adg1.getStyle("headerColor") != undefined) {
+			hcolor = [adg1.getStyle("headerColor")];
+			} else {
+			hcolor = adg1.getStyle("headerColors");
+			}				
+			
+			//Set the htmltable based upon knowledge from the datagrid
+			str+= '<table border="true" width="'+adg1.width+'"><thead><tr width="'+adg1.width+'" style="background-color:#' +Number((hcolor[0])).toString(16)+'">';
+			//str+= '<table border="true" width="'+dg.width+'"><thead><tr width="'+dg.width+'">';
+			//Set the tableheader data (retrieves information from the datagrid header				
+			for(var i:int = 0;i<adg1.columns.length;i++) {
+			colors = adg1.getStyle("themeColor");
+			
+			if(adg1.columns[i].headerText != undefined) {
+			str+="<th "+style+">"+adg1.columns[i].headerText+"</th>";
+			} else {
+			str+= "<th "+style+">"+adg1.columns[i].dataField+"</th>";
+			}
+			}
+			str += "</tr></thead><tbody>";
+			colors = adg1.getStyle("alternatingRowColors");
+			
+			//Loop through the records in the dataprovider and 
+			//insert the column information into the table
+			
+			for(var j:int =0;j<adg1.dataProvider.length;j++) {					
+			str+="<tr width=\""+Math.ceil(adg1.width)+"\">";
+			
+			for(var k:int=0; k < adg1.columns.length; k++) {
+			
+			//Do we still have a valid item?				
+			
+			if(adg1.dataProvider.getItemAt(j) != undefined && adg1.dataProvider.getItemAt(j) != null) {
+			
+			//Check to see if the user specified a labelfunction which we must
+			//use instead of the dataField
+			
+			if(adg1.columns[k].labelFunction != undefined) {
+			str += "<td width=\""+Math.ceil(adg1.columns[k].width)+"\" "+style+">"+adg1.columns[k].labelFunction(adg1.dataProvider.getItemAt(j),adg1.columns[k].dataField)+"</td>";
+			
+			} else {
+			
+			//Our dataprovider contains the real data
+			//We need the column information (dataField)
+			//to specify which key to use.
+			if ((adg1.dataProvider.getItemAt(j)[adg1.columns[k].dataField]) == null || (adg1.dataProvider.getItemAt(j)[adg1.columns[k].dataField]) == undefined || (adg1.dataProvider.getItemAt(j)[adg1.columns[k].dataField]) == ''){
+			adg1.dataProvider.getItemAt(j)[adg1.columns[k].dataField] = '';
+			} 
+			str += "<td width=\""+Math.ceil(adg1.columns[k].width)+"\" "+style+">" +adg1.dataProvider.getItemAt(j)[adg1.columns[k].dataField]+"</td>";
+			
+			}
+			} 
+			}
+			str += "</tr>";
+			
+			}
+			str+="</tbody></table>";
+			
+			var variables:URLVariables = new URLVariables(); 
+			variables.htmltable	= str;
+			//Setup a new request and make sure that we are 
+			//sending the data through a post
+			var u:URLRequest = new URLRequest(urlExcelExport);
+			
+			u.data = variables; //Pass the variables
+			u.method = URLRequestMethod.POST; //Don't forget that we need to send as POST
+			
+			//Navigate to the script
+			//We can use _self here, since the script will go through a filedownload header
+			//which results in offering a download to the user (and still remaining in you Flex app.)
+			navigateToURL(u,"_self"); 
+			//return str; 
+			}
+			*/
+			
+			/* 
+			private var cr_xlcColumn:ArrayCollection = new ArrayCollection;
+			function resultHandler(event:ResultEvent):void {
+			Alert.show("go here");
+			cr_xlcColumn=event.result.root.AdvancedDataGridColumn.column;
+			Alert.show(cr_xlcColumn.length.toString());
+			}
+			*/	
+			public var popshowChart:ShowChart; 
+			private function showChart():void {
+				//	Alert.show(newObject1.Array1.length.toString());
+				
+				popshowChart = ShowChart(
+					PopUpManager.createPopUp(this, ShowChart, true));
+				
+				popshowChart.mfArray = newObject1.Array1; 
+				popshowChart.ca_xlcColumn = newObject1._xlcColumn; 
+				
+				/*
+				popshowChart.mfArray = cs_CAArray; 
+				popshowChart.ca_xlcColumn = _xlcColumn; 
+				*/
+				popshowChart.adv_mfArray = newObject1.dg;
+				
+				popshowChart.cap_title = crunchtitle.text;
+				popshowChart.showlocal_crunch = local_crunch;
+				/*
+				popshowChart["btn_viewSettings"].addEventListener( MouseEvent.CLICK,launchHistoryLog);
+				popshowChart["btn_viewSettings"].addEventListener( MouseEvent.ROLL_OVER,passMouseHoverfromComponents);
+				popshowChart["btn_viewSettings"].addEventListener( MouseEvent.ROLL_OUT,closepassMouseHoverfromComponents);
+				popshowChart["btn_close"].addEventListener( MouseEvent.ROLL_OVER,passMouseHoverfromComponents);
+				popshowChart["btn_close"].addEventListener( MouseEvent.ROLL_OUT,closepassMouseHoverfromComponents);
+				*/
+			}
+			private function launchEZLearnMenu(event:Event):void{
+				//	Alert.show(mousehoverparslabel);
+				if (parentApplication.mousehoverparslabel == "OFF")
+				{
+					parentApplication.mousehoverparslabel = "ON"
+					parentApplication.mousehoverpars = "YES";
+					/*
+					popezlearnmenu = EZLearnMenu(
+					PopUpManager.createPopUp(this, EZLearnMenu, true));
+					popezlearnmenu.mh_res = mousehoverpars;
+					popezlearnmenu.ses_id = session_id;
+					popezlearnmenu.e_z_learn_link = ezlearnlink;
+					//popezlearnmenu["hoverswitch"].addEventListener(MouseEvent.CLICK,  switchedHover);
+					popezlearnmenu["btn_ok"].addEventListener(MouseEvent.CLICK,  switchedHover); 
+					*/
+					
+				}
+				else
+					//if (mousehoverparslabel = "ON")
+				{
+					//popezlearnmenu.hoverswitch.label = "ON";
+					parentApplication.mousehoverpars = "NO";
+					parentApplication.mousehoverparslabel = "OFF"
+				}
+				
+			}
+		]]>
+	</mx:Script>
+	
+	
+	
+	<mx:VBox width="100%" height="100%">
+		<!--
+		<mx:HBox width="100%" id="hdivbox1">
+		<mx:Button label="e-Z Learn {parentApplication.mousehoverparslabel}" id="btn_help" icon="@Embed('image/scholar_cap.png')"
+		fontFamily="Arial" textAlign="center"  height="28"
+		click="{launchEZLearnMenu(event)}" 
+		rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+		rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+		width="252"
+		styleName="{'highResolutionLabel'}"
+		/>
+		<mx:Spacer width="100%"/>
+		<mx:Label id="crunchtitle" text="{'Crunch Analysis - ' + headTitle}"   
+		fontSize="19" color="#010000" fontWeight="bold"
+		rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.text,'VISUALOBJ')}"
+		rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+		useHandCursor="true" buttonMode="true"
+		mouseChildren="false"
+		/>
+		<mx:Spacer width="100%"/>
+		<local:HighViewButton id="btn_cancel_mc" doc_id="1036" label="Close" click="{titleWindow_close(event)}"  />
+		</mx:HBox>
+		-->
+		<mx:HBox width="100%"  id="hdivbox1">
+			
+			<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'',local_crunch + ' Console','BUTTON')}"
+					   
+					   />
+			<mx:Spacer width="100%"/>
+			<mx:Label id="crunchtitle" text="{headTitle}"   
+					  fontSize="19" color="#010000" fontWeight="bold"
+					  rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.text,'VISUALOBJ')}"
+					  rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+					  useHandCursor="true" buttonMode="true"
+					  mouseChildren="false"
+					  />
+			<mx:Spacer width="100%"/>	
+			<local:HighViewButton id="btn_cancel_mc" doc_id="1036" label="Close" click="{titleWindow_close(event)}"  />
+		</mx:HBox> 
+		
+		
+		<mx:VBox id="vdivbox" height="100%" width="100%" borderColor="#FEFFFF" borderStyle="none" color="#071C20">
+		</mx:VBox>
+		
+		<mx:HBox width="100%">
+			<!-- local:HighViewButton id="btn_toExcel" doc_id="1033" label="Export to Excel" click="{convertCrunchDGToHTMLTable(event)}"  / -->
+			<!-- local:HighViewButton id="btn_toExcel" doc_id="1033" label="Export to Excel"  / -->
+			<!-- local:HighViewButton id="btn_viewSettings" doc_id="10344" label="View Settings" / --> 
+			<local:HighViewButton id="btn_showChart" doc_id="1035" label="Show Chart"  click="{showChart()}" /> 
+			<mx:Spacer width="100%"/>
+			<!-- local:HighViewButton id="btn_cancel_mc" doc_id="1036" label="Close" click="{titleWindow_close(event)}"  / -->
+		</mx:HBox>
+		
+	</mx:VBox>
+</mx:TitleWindow>
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+ <root>
+ 	<Panel>
+		<code>005</code>
+ 		<title>Board Builder</title>
+ 	</Panel>
+ 	 		<AdvancedDataGridColumnGroup>
+		<columngroup headerText="Board" columnstart="0"/>
+	</AdvancedDataGridColumnGroup>
+ 	
+	<AdvancedDataGridColumn>
+ 	  <column columnId="0"  dataField="boardcode" title_header="Code" width="240" datatype="S" />
+        <column columnId="1"  dataField="boardname" title_header="Name" width="240" datatype="S"/> 
+	</AdvancedDataGridColumn>
+ </root>

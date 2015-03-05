@@ -1,0 +1,17 @@
+<root>
+<Panel>
+<code>022</code>
+<title>Operator Groups</title>
+<type>Profile</type>
+<refreshall>Y</refreshall>
+<setupjob>RD07</setupjob>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="Profiles" columnstart="0"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="group_code" dataField="group_code" title_header="Group Code" width="150" datatype="S" />
+<column columnId="1" columnName="group_desc" dataField="group_desc" title_header="Group Description" width="340" datatype="S" />
+<column columnId="2" columnName="" dataField="" title_header="" width="1500" datatype="S" />
+</AdvancedDataGridColumn>
+</root>

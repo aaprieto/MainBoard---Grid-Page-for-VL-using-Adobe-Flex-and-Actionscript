@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Label xmlns:mx="http://www.adobe.com/2006/mxml" styleName="ribbonLabel" useHandCursor="true" buttonMode="true"
+		  mouseChildren="false"  mouseOver="{ribbonLabelMouseOver(event)}"
+		  mouseOut="{ribbonLabelMouseOut(event)}" click="{ribbonLabelMouseOut(event)}"
+		  >
+	
+	<mx:Style source="css/main.css"/> 
+	<mx:Script>
+		<![CDATA[
+			private function ribbonLabelMouseOver(event:Event):void {	
+				//var obj:Object = event.currentTarget.id;
+				this.setStyle("color", 'Blue');  	  
+			}	
+			private function ribbonLabelMouseOut(event:Event):void {
+				//var obj:Object = event.currentTarget.id;
+				this.setStyle("color", 'Black');  	
+			}
+		]]>
+	</mx:Script>
+</mx:Label>

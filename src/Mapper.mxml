@@ -1,0 +1,1622 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+				width="1474" height="800" 
+				backgroundImage=""
+				creationComplete="init()"
+				initialize="i_init()"
+				showCloseButton="false"
+				
+				headerHeight="20"
+				borderAlpha="1.0"
+				borderColor="#cccccc"
+				xmlns:local="*" 
+				>     
+	<mx:states>
+		<mx:State name="SaveMapping">
+		
+			<mx:AddChild relativeTo="{dataGrid2}" position="before">
+				<mx:HBox width="100%" id="hbox2">
+					<mx:Label text="Map Name" width="191" id="label1" fontWeight="bold" fontSize="14"/>
+					<mx:TextInput  backgroundColor="#FCFDFD"  width="232" id="inputmappingcode" text="{r_mapper_code}"  maxChars="20" fontSize="14" fontWeight="bold" />
+				</mx:HBox>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{dataGrid2}" position="before">
+				<mx:HBox width="100%" height="60" id="hbox3">  
+					<mx:Label text="Map Description" width="191" id="label2" fontWeight="bold" fontSize="14"/>
+					<mx:TextArea   backgroundColor="#FEFFFF"  width="324" height="55" id="inputmappingdescription" text="{r_mapper_description}" fontSize="14" fontWeight="bold"/> 
+				</mx:HBox>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{dataGrid2}" position="before">
+				<mx:HBox width="100%" id="hbox4">
+					<mx:Label text="Trading Partner" width="191" id="label3" fontWeight="bold" fontSize="14"/>
+					<mx:TextInput  backgroundColor="#FCFDFD"  width="131" id="inputtradingpartner" text="{r_trading_partner}"  maxChars="30" fontSize="14" fontWeight="bold" />
+					<mx:TextInput  backgroundColor="#FCFDFD"  width="259" id="inputtradingpartnerdescription" text="{r_trading_partner_description}"  maxChars="30" fontSize="14" fontWeight="bold" />
+					
+				</mx:HBox>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{dataGrid2}" position="before">
+				<mx:HBox width="100%" id="hbox5">
+					<mx:Label text="Transaction Set" width="191" id="label4" fontWeight="bold" fontSize="14"/>
+					<mx:TextInput  backgroundColor="#FCFDFD"  width="232" id="inputtransactionset" text="{r_transaction_set}"  maxChars="30" fontSize="14" fontWeight="bold" />
+				</mx:HBox>
+			</mx:AddChild>
+			
+			<mx:AddChild relativeTo="{dataGrid2}" position="before">
+				<mx:HBox width="100%" id="hbox6">
+					<mx:Label text="Authentication File" width="191" id="label5" fontWeight="bold" fontSize="14"/>
+					<mx:TextInput  backgroundColor="#FCFDFD"  width="131" id="inputauthenticationfile" 
+								   text="{r_authentication_file}"  maxChars="30" fontSize="14" 
+								   keyUp="{kb_auth_mapper(event)}" fontWeight="bold" />
+					<mx:Button id="btn_browse_authfile_mapper" icon="@Embed('image/icon_lookup.png')"   
+							   width="33" click="{LaunchAuthenticationFileMapper(event)}"  />
+					<mx:TextInput  backgroundColor="#FCFDFD"  width="259" id="inputauthenticationfiledesc" 
+								   text="{r_authentication_file_desc}"  maxChars="30" fontSize="14"
+								   enabled="false" fontWeight="bold" />
+				</mx:HBox>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{dataGrid2}" position="before">
+				<mx:HBox width="100%" id="hbox_rt">
+					<mx:Label text="Root Tag" width="191" id="label_rt" fontWeight="bold" fontSize="14"/>
+					<mx:TextInput  backgroundColor="#FCFDFD"  width="232" id="root_tag" text="{r_root_tag}"  maxChars="30" fontSize="14" fontWeight="bold" />
+				</mx:HBox>   
+			</mx:AddChild>
+			
+			
+			<mx:AddChild relativeTo="{dataGrid2}" position="before"> 
+				<mx:HBox width="100%">
+					<mx:Spacer width="100%"/>
+					<!-- local:HighViewButton doc_id="1046" label="Submit" id="btn_save_current" click="{submit(event)}" / -->
+					<local:HighViewButton doc_id="1046" label="Submit" id="btn_save_current" click="{checkXML(event)}" />
+					<local:HighViewButton label="Cancel" doc_id="1047" id="btn_cancel" click="{currentState	= ''}"/>
+				</mx:HBox>
+			</mx:AddChild>	
+		</mx:State>	
+	</mx:states>
+	
+	<mx:HTTPService 
+		id="getauthenticationfilelist_mapper" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"
+		fault="getauthenticationfilefaultHandler(event)"
+		result="authenticationFileHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{r_company_code}</company>
+				<sid>{r_sessid}</sid>
+				<parameters>REFRESH,RETRIEVE|AUTHENTICATIONS|</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="retrieverendition" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="ListHandler(event)" 
+		method="POST" 
+		fault="faultListHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{r_company_code}</company>
+				<sid>{r_sessid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	
+	<mx:HTTPService 
+		id="savemappingbycreate" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		result="CreateResultHandlerRendition(event)"
+		fault="CreatefaultListHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{r_company_code}</company>
+				<sid>{r_sessid}</sid>
+				<parameters>{finalMappingXML}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="verifytradingpartner" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		result="VerifyResultHandlerRendition(event)"
+		fault="VerifyfaultListHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{r_company_code}</company>
+				<sid>{r_sessid}</sid>
+				<parameters>{reqverifytd}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="retrievemodifymapper" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="ModifyListHandler(event)" 
+		method="POST" 
+		fault="ModifyfaultListHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{r_company_code}</company>
+				<sid>{r_sessid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	
+	
+	<!--   -->
+	<mx:HTTPService 
+		id="retrievegridfrom" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="ListHandler(event)" 
+		method="POST" 
+		fault="faultListHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{r_company_code}</company>
+				<sid>{r_sessid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:Script source="AlertMessageHandler.as"/>
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import com.utilities.Utils;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.events.CloseEvent;
+			import mx.events.DragEvent;
+			import mx.managers.DragManager;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+			
+			
+			[Bindable]
+			public var loc_xlcColumn:ArrayCollection;
+		
+			[Bindable]
+			public var r_company_code:String;
+			[Bindable]
+			public var r_arr_mapcollection:ArrayCollection;
+			[Bindable]
+			public var r_passed_mainboard:String;
+			[Bindable]
+			public var r_user_code:String;
+			[Bindable]     
+			public var r_file_passed:String;
+			[Bindable]
+			public var r_sessid:String;
+			[Bindable]
+			private var RenditiontdObjectCollection:ArrayCollection = new ArrayCollection;
+			[Bindable]
+			private var loc_RenditiontdObjectCollection:ArrayCollection = new ArrayCollection;
+			[Bindable]
+			private var reqParms:String = new String;
+			[Bindable]
+			private var finalMappingXML:String = new String;
+			[Bindable]
+			private var reqverifytd:String = new String;
+			[Bindable]
+			public var r_flag_type:String = new String;
+			
+			
+			
+			
+			[Bindable]
+			public var r_mapper_code:String = new String;
+			[Bindable]
+			public var r_mapper_description:String = new String;
+			[Bindable]
+			public var r_mapper_tp_code:String = new String;
+			[Bindable]
+			public var r_client:String = new String;
+			[Bindable]
+			public var r_exp_flname:String = new String;
+			[Bindable]
+			public var r_exp_method:String = new String;
+			
+			[Bindable]
+			public var r_trading_partner:String = new String;
+			[Bindable]
+			public var r_trading_partner_description:String = new String;
+			[Bindable]
+			public var r_transaction_set:String = new String;
+			[Bindable]
+			public var r_root_tag:String = new String;
+			[Bindable]
+			public var r_authentication_file:String = new String;
+			[Bindable]
+			public var r_authentication_file_desc:String = new String;
+			[Bindable]	
+			private var UserMapperdObjectCollection:ArrayCollection = new ArrayCollection;
+			
+			public var c_utils:Utils = new Utils();
+			private var poptf:TranslateFileMaintenance;
+			private function i_init():void{
+				if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+					this.width = 1200;
+					this.height = 575;
+				}
+				
+			}
+			
+			private function CreateResultHandlerRendition(evt:ResultEvent):void{
+				if (evt.result.ezware_response.status == 'OK'){
+					
+					PopUpManager.removePopUp(this);
+					_callbackFunction(null); 
+				} else	{
+					var s_ret:String = resultStatusRenditionCM(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}	
+			}
+			private function VerifyResultHandlerRendition(evt:ResultEvent):void{
+				if (evt.result.ezware_response.status == 'OK'){
+					
+					
+					if (evt.result.ezware_response.refresh_data.data.exist != 'Y'){
+						AlertMessageShow(evt.result.ezware_response.refresh_data.data.message);
+						return;
+					}     
+					
+					
+				} else	{
+					var s_ret:String = resultStatusRenditionCM(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}	
+			}
+			private function CreatefaultListHandler(evt:FaultEvent):void
+			{
+				
+				var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow("Error in saving XML to Database");
+			}
+			private function VerifyfaultListHandler(evt:FaultEvent):void
+			{
+				
+				var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow("Error in verifying Trading Partner");
+			}
+			private function init():void{
+				
+				
+				httpRequestUrlReditionCM(parentApplication.application_entry);
+				
+								reqParms = "REFRESH,RETRIEVE|MAPPER_FROM|" + r_mapper_code + "|"+  r_passed_mainboard + "|" + r_trading_partner + "|" ;
+				retrievegridfrom.send();   
+			}
+			
+			
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function httpRequestUrlReditionCM(str_app:String):void{
+				/*  I will just leave this for vl and ml for now.  I believe there will be another one coming for the mobileweb */
+				if (str_app == 'ml'){
+					
+					
+					
+					retrieverendition.url = 'ae_tlch_ml_req.php'; 
+					verifytradingpartner.url = 'ae_tlch_ml_req.php'; 
+					retrievemodifymapper.url = 'ae_tlch_ml_req.php'; 
+					//saverenditionbycreate.url = 'ae_tlch_ml_req.php'; 
+					//-------------------------------------------
+					retrievegridfrom.url = 'ae_tlch_ml_req.php'; 
+					
+					
+					
+				} else {
+					
+					
+					
+					retrieverendition.url = 'ae_tlch_xmlreq.php';
+					verifytradingpartner.url = 'ae_tlch_xmlreq.php';
+					retrievemodifymapper.url = 'ae_tlch_xmlreq.php';
+					//saverenditionbycreate.url = 'ae_tlch_xmlreq.php';
+					//----------------------------------------------
+					retrievegridfrom.url = 'ae_tlch_xmlreq.php';
+					
+					
+				}
+				
+			}
+			private function checkArray2(event:Event):void{
+				Alert.show(UserMapperdObjectCollection[0].newxmltag);
+			}      
+			private function datagrid2Drop_old(event:DragEvent):void{
+				
+				var dropTarget:DataGrid = DataGrid(event.currentTarget);  
+				var dropLoc:int = dropTarget.calculateDropIndex(event); 
+				if 	(dropLoc < 1){
+					AlertMessageShow('Dropping of items on Header panel is not allowed');
+					event.preventDefault(); 
+				} 
+			}
+			
+			private function datagrid1Click(event:Event):void {
+				var arrclick:Array = new Array();
+				for(var a:uint=0;a<dataGrid1.selectedItems.length;a++){
+					arrclick.push(dataGrid1.selectedIndices[a]);
+				}
+				arrclick = AscendingSortArray(arrclick);
+				dataGrid1.selectedIndices = arrclick;
+				
+				}
+			private function AscendingSortArray(myArray:Array):Array
+			{ 
+				var tempValue:String; 
+				var done:String = "no"; 
+				var swap:String = "no"; 
+				var i:int; 
+				var fileTemp1:int; 
+				var fileTemp2:int; 
+				while (done == "no") { 
+					for (i = 0; i < (myArray.length - 1); i++) {
+						
+						fileTemp1 = myArray[i]; 
+						fileTemp2 = myArray[i+1]; 
+						if (fileTemp1 > fileTemp2) { 
+							tempValue = myArray[i]; 
+							myArray[i] = myArray[i+1]; 
+							myArray[i+1] = tempValue; 
+							swap = "yes"; 
+						}
+						
+						
+						
+					} 
+					
+					if (swap == "no") { 
+						done = "yes"; 
+					} 
+					swap = "no"; 
+					
+					
+				} 
+				return myArray; 
+			}         
+			private function datagrid2Click(event:DragEvent):void {
+				var arrclick:Array = new Array();
+				for(var a:uint=0;a<dataGrid2.selectedItems.length;a++){
+					arrclick.push(dataGrid2.selectedIndices[a]);
+				}     
+				arrclick = SortArray(arrclick);
+				
+				dataGrid2.selectedIndices = arrclick;
+				
+				
+				
+				
+			}
+			private function SortArray(myArray:Array):Array
+			{ 
+				var tempValue:String; 
+				var done:String = "no"; 
+				var swap:String = "no"; 
+				var i:int; 
+				var fileTemp1:int; 
+				var fileTemp2:int; 
+				while (done == "no") { 
+					for (i = 0; i < (myArray.length - 1); i++) {
+						fileTemp1 = myArray[i]; 
+						fileTemp2 = myArray[i+1]; 
+						if (fileTemp1 < fileTemp2) { 
+							tempValue = myArray[i]; 
+							myArray[i] = myArray[i+1]; 
+							myArray[i+1] = tempValue; 
+							swap = "yes"; 
+						}
+					} 
+					if (swap == "no") { 
+						done = "yes"; 
+					} 
+					swap = "no"; 
+				} 
+				return myArray; 
+			} 
+			private function selectAlldg1(event:Event):void {
+				var arr:Array = new Array();
+				for (var a:uint=dataGrid1.dataProvider.length -1 ;a>0;a--){	
+					arr.push(a);
+				}
+				arr.push(0);
+				arr = AscendingSortArray(arr);
+				dataGrid1.selectedIndices = arr;
+			}
+			private function removeItem(evt:Event):void {
+				
+				var arr_rem:Array = new Array();
+				var idx:int = new int;
+				
+				// Validate first
+				
+				var ctr_flag:Boolean = true;
+				for(var ab:uint=0;ab<dataGrid2.selectedItems.length;ab++){
+					
+					if (dataGrid2.selectedItems[ab].columnname == 'panel'){
+						ctr_flag = false;
+						break;
+					}
+					
+				} 
+				
+				if (ctr_flag == false){
+					AlertMessageShow('Removing of panel Header is not allowed');
+					return;
+				}
+				
+				for(var a:uint=0;a<dataGrid2.selectedItems.length;a++){
+					idx = dataGrid2.selectedIndices[a];
+					arr_rem.push(idx);
+				}   
+				arr_rem.sort(Array.NUMERIC | Array.DESCENDING);
+				
+				for (var b:uint=0;b<arr_rem.length;b++){
+						UserMapperdObjectCollection.removeItemAt(arr_rem[b]);
+								
+					
+				}  
+				
+			} 
+			private function clearall(event:Event):void {
+				
+				var arr:Array = new Array();
+				for (var a:uint=dataGrid2.dataProvider.length-1 ;a>0;a--){	
+					arr.push(a);
+				}
+				arr.push(0);
+				arr = AscendingSortArray(arr);
+				dataGrid2.selectedIndices = arr;
+				removeItem(event);             
+			}
+			
+			
+			private function faultListHandler(evt:FaultEvent):void
+			{
+				
+				var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow("Error opening file for Retrieving Rendition");
+			}
+			
+			
+			private function ListHandler(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == 'OK' ) {
+					
+					RenditiontdObjectCollection=new ArrayCollection()
+					
+					if (evt.result.ezware_response.refresh_data.mapper_details_from.column == null)
+					{
+						RenditiontdObjectCollection=new ArrayCollection()
+					}
+					else if (evt.result.ezware_response.refresh_data.mapper_details_from.column is ArrayCollection)
+					{
+						RenditiontdObjectCollection=evt.result.ezware_response.refresh_data.mapper_details_from.column;
+					}
+					else if (evt.result.ezware_response.refresh_data.mapper_details_from.column is ObjectProxy)
+					{
+						RenditiontdObjectCollection = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.mapper_details_from.column)); 
+					}
+					RenditiontdObjectCollection.refresh();
+					
+					
+				
+					
+					
+					for(var a:uint=0;a<RenditiontdObjectCollection.length;a++){
+						var newObj:Object = new Object;
+						
+						
+						
+						newObj.mbdcode = RenditiontdObjectCollection[a].mbdcode;
+						newObj.columnname = RenditiontdObjectCollection[a].columnname; 
+						newObj.label = RenditiontdObjectCollection[a].label;
+						newObj.tag_base = RenditiontdObjectCollection[a].tag_base;
+						newObj.tag_map = RenditiontdObjectCollection[a].tag_base;
+						newObj.fixedvalue = RenditiontdObjectCollection[a].fixedvalue;
+						
+						
+						loc_RenditiontdObjectCollection.addItem(newObj);
+						
+						
+					}   
+					
+					
+					
+					if (r_flag_type == 'Modify' || r_flag_type == 'Copy'){
+						
+						
+							reqParms = "REFRESH,RETRIEVE|MAPPER_TO|" + r_mapper_code +"|";
+						
+						retrievemodifymapper.send();
+					}
+					
+					
+					
+				} else	{
+					
+					var s_ret:String = resultStatusRenditionCM(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}			
+				
+				getauthenticationfilelist_mapper.send();
+				
+				
+			}
+			private function resultStatusRenditionCM(string_result:String, string_reason:String):String{
+				var retstr:String = new String;
+				if (string_result == "EXPIRED"){
+					retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+				} 
+				if (string_result == "FAIL"){
+					retstr = string_reason;
+				} 
+				return retstr;
+			}
+			
+			private function validateSaveMapping(event:Event):void {
+				
+				
+				
+				if (UserMapperdObjectCollection[0]["columnname"] == "fixedvalue"){
+					AlertMessageShow("'ActionGrid To' should not start with a Column value of 'fixedvalue'");
+					return;
+				}
+				
+				/* Start Validation */
+				var ctrflag:Boolean = true;
+			//	for(var ctr:uint=0;ctr<UserMapperdObjectCollection.length;ctr++){
+					//if UserMapperdObjectCollection[ctr].
+			//	} 
+				
+				if (ctrflag == false){
+					return;
+				}
+				
+				currentState	= 'SaveMapping';
+				
+				inputtradingpartner.editable = false;
+				inputtradingpartner.enabled = false;
+				inputtradingpartnerdescription.editable = false;      
+				inputtradingpartnerdescription.enabled = false;
+				inputtransactionset.editable = false;
+				inputtransactionset.enabled = false;
+				
+				if (r_flag_type != 'Copy'){
+					inputmappingcode.editable = false;  
+					inputmappingcode.enabled = false;
+					
+					
+					
+				}     
+				if (r_flag_type == 'Copy'){
+					inputmappingcode.editable = true;
+					inputmappingcode.enabled = true;
+				}
+				
+				
+			}	
+			
+			private function actionGridCodeonfocus(event:Event):void{
+				inputmappingcode.drawFocus(true);
+				inputmappingcode.setFocus();
+			}
+			private var _callbackFunction:Function;    
+			
+			public function set callbackFunction( value:Function ):void {
+				
+				_callbackFunction = value;
+			}
+			private function submit(event:Event):void{
+				PopUpManager.removePopUp(this);
+				
+				_callbackFunction(null); 
+			}
+			private function saveMapping(event:Event):void {
+				
+			
+				if (inputauthenticationfile.text.length > 0){
+					
+					
+					var res_bool:String = "nothing";
+					
+					res_bool = checkIfExist(inputauthenticationfile.text);
+					if (res_bool == "nothing"){
+						
+						AlertMessageShow("Please enter a correct Authentication File Code or clear the Authentication File code if not required. ");
+						return;
+					} 
+					
+					
+					
+					
+				}
+				
+				
+				
+			
+				
+				if (r_flag_type == "Copy"){
+					var lf:Boolean = true;
+					for(var a:uint=0;a<r_arr_mapcollection.length;a++){
+						
+						if (inputmappingcode.text == r_arr_mapcollection[a]["mapper_cd"]){
+							lf = false;
+							break;
+						}   
+					}
+					if (lf == false){
+						AlertMessageShow("Map Name already exist.  Please create a new Mapping Code.");
+						return     
+					}
+				}
+				
+				/* Put validation here */
+				/* Column Value should not start with a 'fixedvalue' */
+				if (UserMapperdObjectCollection[0]["columnname"] == "fixedvalue"){
+					AlertMessageShow("'ActionGrid To' should not start with a Column value of 'fixedvalue'");
+					return;
+				}
+				
+				
+				if ((inputmappingcode.text).length < 1){
+					AlertMessageShow("Map Name should not be blank");
+					return;
+				}
+				if ((inputmappingdescription.text).length < 1){     
+					AlertMessageShow("Map Description should not be blank");
+					return;
+				}
+				
+				createMappingXML(event);
+				
+			}   
+			private function createMappingXML(event:Event):void {
+				
+				var mapping_head:String = '<mapper>'
+				var mapping_tail:String = '</mapper>'
+				//var mapping_body:String = new String;
+				var string_detail:String = new String;	
+				var string_final:String = new String();	
+				finalMappingXML = new XML;
+				
+				
+				
+				var arr:Array = new Array();
+				for (var a:uint=dataGrid1.dataProvider.length -1 ;a>0;a--){	
+					arr.push(a);
+				}
+				arr.push(0);
+				
+				arr = AscendingSortArray(arr);
+				dataGrid2.selectedIndices = arr;
+				
+				for(var i:int = 0; i < dataGrid2.dataProvider.length; i++){
+					
+					
+					
+					var dg_mbdcode:String = "";
+					var dg_columnname:String = "";
+					var dg_label:String = "";
+					var dg_tag_base:String = "";
+					var dg_tag_map:String = "";
+					var dg_attribute:String = "";
+					var dg_fixedvalue:String = "";
+					var dg_translate:String = "";
+					
+					
+					
+					if (dataGrid2.dataProvider[i].mbdcode == null){
+						dg_mbdcode = ""
+					} else {
+						dg_mbdcode = dataGrid2.dataProvider[i].mbdcode;
+					}
+					if (dataGrid2.dataProvider[i].columnname == null){
+						dg_columnname = ""
+					} else {
+						dg_columnname = dataGrid2.dataProvider[i].columnname;
+					}
+					if (dataGrid2.dataProvider[i].label == null){
+						dg_label = ""
+					} else {
+						dg_label = dataGrid2.dataProvider[i].label;
+					}
+					if (dataGrid2.dataProvider[i].tag_base == null){
+						dg_tag_base = ""
+					} else {
+						dg_tag_base = dataGrid2.dataProvider[i].tag_base;
+					}
+					if (dataGrid2.dataProvider[i].tag_map == null){
+						dg_tag_map = ""
+					} else {
+						dg_tag_map =dataGrid2.dataProvider[i].tag_map;
+					} 
+					
+					if (dataGrid2.dataProvider[i].attribute == null){
+						dg_attribute = ""
+					} else {
+						dg_attribute =dataGrid2.dataProvider[i].attribute;
+					} 
+					
+					if (dataGrid2.dataProvider[i].fixedvalue == null){
+						dg_fixedvalue = ""
+					} else {
+						dg_fixedvalue =dataGrid2.dataProvider[i].fixedvalue;
+					} 
+					if (dataGrid2.dataProvider[i].translate == null){
+						dg_translate = ""
+					} else {
+						dg_translate =dataGrid2.dataProvider[i].translate;
+					} 
+					
+					string_detail = string_detail + '<column>' +
+						'<mbdcode>' + dg_mbdcode + '</mbdcode>' +
+						'<label>' + dg_label + '</label>' +
+						'<columnname>' + dg_columnname + '</columnname>' +
+						'<tag_base>' + dg_tag_base + '</tag_base>' +
+						'<tag_map>' + dg_tag_map + '</tag_map>' +
+						'<attribute>' + dg_attribute + '</attribute>' +
+						'<fixedvalue>' + dg_fixedvalue + '</fixedvalue>' +
+						'<translate>' + dg_translate + '</translate>' +
+						'</column>'
+				}                 
+				
+				
+				finalMappingXML = ('REFRESH,UPD_MAPPER,' + mapping_head +     
+					'<mapper_cd>' + inputmappingcode.text + '</mapper_cd>' +
+					'<mapper_ds>' + inputmappingdescription.text + '</mapper_ds>' +
+					'<tp_code>' + inputtradingpartner.text + '</tp_code>' + 
+					'<trans_set>' + inputtransactionset.text + '</trans_set>' + 
+					'<auth_file>' + inputauthenticationfile.text + '</auth_file>' +
+					'<root_tag>' + root_tag.text + '</root_tag>' +
+					
+					string_detail +	mapping_tail);
+				
+				
+				savemappingbycreate.send();
+				
+			}
+			private function datagrid2Drop(event:DragEvent):void{
+				
+				/* 
+				var dropTarget:DataGrid = DataGrid(event.currentTarget);  
+				var dropLoc:int = dropTarget.calculateDropIndex(event); 
+				
+				if 	(dropLoc < 1){
+				AlertMessageShow('Dropping of items on Header panel is not allowed');
+				event.preventDefault(); 
+				}
+				*/
+				//UserRenditiontdObjectCollection.refresh();
+				
+				
+			}
+			private function checkTradingPartner(event:Event){
+				
+				
+				httpRequestUrlReditionCM(parentApplication.application_entry);
+				verifytradingpartner.send();
+			}
+			private function ModifyfaultListHandler(evt:FaultEvent):void
+			{
+				
+				var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow("Error opening file for Modified Mapping");
+			}
+			private function ModifyListHandler(evt:ResultEvent):void{
+				if (evt.result.ezware_response.status == "OK"){
+					
+					UserMapperdObjectCollection=new ArrayCollection()
+					var trans_UserMapperdObjectCollection:ArrayCollection = new ArrayCollection
+					
+					if (evt.result.ezware_response.refresh_data.mapper_details_to.column == null)
+					{
+						UserMapperdObjectCollection=new ArrayCollection();
+					}
+					else if (evt.result.ezware_response.refresh_data.mapper_details_to.column is ArrayCollection)
+					{
+						UserMapperdObjectCollection=evt.result.ezware_response.refresh_data.mapper_details_to.column;
+					}
+					else if (evt.result.ezware_response.refresh_data.mapper_details_to.column is ObjectProxy)
+					{
+						UserMapperdObjectCollection = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.mapper_details_to.column));
+					}
+					
+					
+					
+					
+					
+					
+					UserMapperdObjectCollection.refresh();
+					
+					
+					
+					
+					
+				} else	{
+					var s_ret:String = resultStatusRenditionCM(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}	   
+			}
+			public function validate_clickHandler(event:Event):void{
+				
+				if (dataGrid2.selectedIndex.toString() == "-1"){
+					AlertMessageShow("Please select a row to Translate.");
+					return;
+				}
+				if (dataGrid2.selectedItems.length > 1){
+					AlertMessageShow("Please select only 1 row to Translate.");
+					return;
+				}
+				
+				LaunchTranslate(event);    
+			}
+			private function LaunchTranslate(event:Event):void{
+				
+				poptf = TranslateFileMaintenance(   
+					PopUpManager.createPopUp(this, TranslateFileMaintenance, true)); 
+				
+				
+				poptf.tf_user_code = r_user_code;
+				poptf.tf_sessid = r_sessid;
+				poptf.tf_company_code = r_company_code;
+				
+				   
+				
+				poptf["adg_tf"].addEventListener(MouseEvent.CLICK, ClickDatagridViews_tf);
+				poptf["adg_tf"].addEventListener(KeyboardEvent.KEY_DOWN, EnterDatagridViews_tf);
+				
+				
+			}
+			
+			
+			private function ClickDatagridViews_tf(event:Event):void{
+				GetChosenDataViews_tf(event);
+				
+				
+			}
+			private function EnterDatagridViews_tf(event:KeyboardEvent):void{     
+				
+				if (event.keyCode == 27){
+					PopUpManager.removePopUp(poptf);
+					
+				}
+				if (event.keyCode == 13){
+					GetChosenDataViews_tf(event);
+				}
+			}    
+			
+			private function GetChosenDataViews_tf(event:Event):void{
+				
+				
+				
+				if (poptf.adg_tf.selectedItem.trans_code == "Clear"){
+					
+					UserMapperdObjectCollection[dataGrid2.selectedIndex]['translate'] = "";
+				} else {
+					UserMapperdObjectCollection[dataGrid2.selectedIndex]['translate'] = poptf.adg_tf.selectedItem.trans_code;  
+				}
+				
+				
+							
+				PopUpManager.removePopUp(poptf);
+				UserMapperdObjectCollection.refresh();   
+				
+			}   
+			public var popafm:AuthenticationFileMaintenance;
+			private function LaunchAuthenticationFileMapper(event:Event):void{
+				
+				popafm = AuthenticationFileMaintenance(
+					PopUpManager.createPopUp(this, AuthenticationFileMaintenance, true)); 
+				
+				
+				popafm.af_user_code = r_user_code;
+				popafm.af_sessid = r_sessid;
+				popafm.af_company_code = r_company_code;
+				
+				
+				
+				
+				
+				
+				popafm["adg_af"].addEventListener(MouseEvent.CLICK, ClickDatagridViews_af_mapper);
+				
+				popafm["adg_af"].addEventListener(KeyboardEvent.KEY_DOWN, EnterDatagridViews_af_mapper);
+				
+				
+			}
+			
+			
+			
+			private function ClickDatagridViews_af_mapper(event:Event):void{
+				GetChosenDataViews_af_mapper(event);
+				
+				
+			}
+			private function EnterDatagridViews_af_mapper(event:KeyboardEvent):void{     
+				
+				if (event.keyCode == 27){
+					PopUpManager.removePopUp(popafm);
+					
+				}
+				if (event.keyCode == 13){
+					GetChosenDataViews_af_mapper(event);
+				}
+			}    
+			private function GetChosenDataViews_af_mapper(event:Event):void{
+				
+				if (popafm.adg_af.selectedItem.auth_code == "Clear"){    
+					inputauthenticationfile.text = "";    
+					inputauthenticationfiledesc.text = "";
+				} else {    
+					inputauthenticationfile.text = popafm.adg_af.selectedItem.auth_code;
+					inputauthenticationfiledesc.text = popafm.adg_af.selectedItem.auth_desc;				
+				}
+				
+				PopUpManager.removePopUp(popafm);
+				
+			}   
+			
+			
+			private function kb_auth_mapper(event:Event):void{
+				
+				inputauthenticationfile.text = inputauthenticationfile.text.toUpperCase();
+				
+				var res_bool:String = "nothing";
+				
+				res_bool = checkIfExist(inputauthenticationfile.text);
+				if (res_bool == "nothing"){
+					
+					inputauthenticationfiledesc.text = "";
+				} 
+				if (res_bool != "nothing"){
+					
+					inputauthenticationfiledesc.text = res_bool;
+				}
+				
+				
+			}
+			
+			
+			private function checkIfExist(str:String):String{
+				str = c_utils.trim(str);
+				
+				for(var i:int = 0;i<Arr_af.length;i++) {
+					var str_ret:String = "nothing";
+					if (str == Arr_af[i]["auth_code"]){
+						str_ret =  Arr_af[i]["auth_desc"];
+						
+						break;
+					} 
+					
+				}
+				return str_ret;
+			}
+			
+			
+			private function getauthenticationfilefaultHandler(evt:FaultEvent):void
+			{
+				
+				AlertMessageShow(evt.message.toString());
+				return;
+			}
+			
+			[Bindable] private var Arr_af:ArrayCollection = new ArrayCollection;
+			private function authenticationFileHandler(event:ResultEvent):void
+			{   
+				if (event.result.ezware_response.status == 'OK' ) {
+					Arr_af = new ArrayCollection();
+					if (event.result.ezware_response.refresh_data.authentications.authentication == null)
+					{ 
+						Arr_af=new ArrayCollection()
+					}
+					else if (event.result.ezware_response.refresh_data.authentications.authentication is ArrayCollection)
+					{
+						Arr_af=event.result.ezware_response.refresh_data.authentications.authentication;
+					}
+					else if (event.result.ezware_response.refresh_data.authentications.authentication is ObjectProxy)
+					{
+						Arr_af = new ArrayCollection(ArrayUtil.toArray(event.result.ezware_response.refresh_data.authentications.authentication)); 
+					}
+					
+				} else	{    
+					
+					var retstr:String = new String();
+					if (event.result.ezware_response.status == "EXPIRED"){
+						retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+					} 
+					if (event.result.ezware_response.status == "FAIL"){
+						retstr = event.result.ezware_response.reason;
+					} 
+					AlertMessageShow(retstr);
+					return;
+				}	
+				
+				
+			}
+			
+			
+			
+			
+			private function doubleclickHandler(event:ListEvent):void {
+				// Get the target of this event (Datagrid)
+				
+				var dataGrid:DataGrid = event.target as DataGrid;
+				var dsColumnIndex:Number = event.columnIndex;
+				var col:DataGridColumn = dataGrid.columns[dsColumnIndex];
+				if (col.dataField == 'translate'){
+					validate_clickHandler(event);
+				}
+				
+			}
+
+			
+				private function validateXML(event:Event, s_function:String):void{
+					
+					
+				
+					
+					
+					var str_alert:String = '';
+				   /* first validation:  find start tag and end tag - Easy! just get the
+				   length of the ArrayCollection and look for the first and last item.*/
+				   if (UserMapperdObjectCollection[0]['columnname'] !=  'tag_start'){
+					   if (s_function != 'validate'){
+						   AlertMessageShow('Line: 1'  + 'Missing "tag_start" on the first row');
+						   return;
+					   }else{
+					   str_alert = str_alert + 'Line: 1 - Missing "tag_start" on the first row \n';
+					   }
+					   
+				   }     
+				   if( UserMapperdObjectCollection[UserMapperdObjectCollection.length - 1]['columnname'] != 'tag_end'){
+					   if (s_function != 'validate'){
+					   AlertMessageShow('Line: ' +[UserMapperdObjectCollection.length - 1]+  ' - Missing "tag_end" on the last row');
+					   return;
+					   }else {
+						   str_alert = str_alert + 'Line: ' +[UserMapperdObjectCollection.length - 1]+ ' - Missing "tag_end" on the last row \n';
+					   }
+				   } 
+				   
+				   if ((UserMapperdObjectCollection[0]['columnname'] ==  'tag_start')&&(UserMapperdObjectCollection[1]['columnname'] ==  'tag_end')){
+					   if (s_function != 'validate'){
+						   AlertMessageShow('Line: 0' + ' - tag_start and tag_end must have an Element in between.');
+						   return;
+					   }  else {
+						   str_alert = str_alert + 'Line: 0' +' - tag_start and tag_end must have an Element in between. \n';
+					   }   
+				   }  
+				    
+				  
+				   /* second validation:  Check if all tag_start has a tag_end.  
+				   Easy, just check the number of tag_start and the number of tag_end and equate them.  
+				   
+				   Another thing that I need to add is the tag_start and tag_end 
+				   should always have an element. 
+				   */
+				   
+				   var ctr_tagstart:int = 0;
+				   var ctr_tagend:int = 0;
+				   
+				   
+				   for(var c:uint=0;c<UserMapperdObjectCollection.length;c++){
+					   if (UserMapperdObjectCollection[c]['columnname'] == 'tag_start'){
+						   ctr_tagstart = ctr_tagstart + 1;
+						   if (UserMapperdObjectCollection[c]['tag_map'].length < 1){
+							   if (s_function != 'validate'){
+								   AlertMessageShow('Line: ' + [c] + 'Missing tag_start Element'); 
+								   return;
+							   }else{
+									str_alert = str_alert + 'Line: ' + [c] + ' - Missing tag_start Element \n';   
+								   }	   
+						   }
+					   }
+					   if (UserMapperdObjectCollection[c]['columnname'] == 'tag_end'){
+						   ctr_tagend = ctr_tagend + 1;
+						   if (UserMapperdObjectCollection[c]['tag_map'].length < 1){
+							   
+							   if (s_function != 'validate'){
+								   
+								   AlertMessageShow('Line: ' + [c] + ' - Missing tag_end Element');
+								   return;    
+							   } else{
+								   str_alert = str_alert + 'Line: ' + [c] + ' - Missing tag_end Element \n';  
+							   }	   
+						   }
+					   }
+				   }
+				   
+				   
+				   //*  Check the tag_start and tag_end element when exist.  *//
+				   var ArrCheckTag:ArrayCollection = new ArrayCollection;
+				   for(var z:uint=0;z<UserMapperdObjectCollection.length;z++){
+					   
+					   
+					   
+					   
+					   var newObj:Object = new Object;
+					   if (UserMapperdObjectCollection[z]['columnname'] == 'tag_start'){
+					   		newObj.element = UserMapperdObjectCollection[z]['tag_map'];
+							newObj.start = 'Y';
+							newObj.end = 'N';
+							ArrCheckTag.addItem(newObj);
+							
+					   }
+					   if (UserMapperdObjectCollection[z]['columnname'] == 'tag_end'){
+						   var flag:Boolean = false; 
+						   for(var y:uint=0;y<ArrCheckTag.length;y++){
+							   
+							   if (UserMapperdObjectCollection[z]['tag_map'] == ArrCheckTag[y]['element']){
+								   flag = true;
+								   ArrCheckTag[y]['end'] = 'Y';
+								   break
+							   }
+							   
+							   
+						   }
+						   if (flag == false){
+						   
+						   	newObj.element = UserMapperdObjectCollection[z]['tag_map'];
+						   	newObj.start = 'N';
+							newObj.end = 'Y';
+							ArrCheckTag.addItem(newObj);
+						   }
+						   
+					   }
+					   
+					   
+					   
+				   }
+				   for(var v:uint=0;v<ArrCheckTag.length;v++){
+						if 	(ArrCheckTag[v]['start'] != 'Y'){
+							str_alert = str_alert + '- Missing the Field "tag_start" for the Element "' + ArrCheckTag[v]['element'] +   '"\n';
+						}	   
+						if 	(ArrCheckTag[v]['end'] != 'Y'){
+							str_alert = str_alert + '- Missing the Field "tag_end" for the Element "' + ArrCheckTag[v]['element'] + '"\n';
+						}
+				   }
+				       
+				   
+				   // Compare them.
+				
+				   if (ctr_tagstart < ctr_tagend){
+					   if (s_function != 'validate'){
+					   AlertMessageShow('Missing "tag_start" Field');
+					   return;
+					   }else{
+					   str_alert = str_alert + '- Missing "tag_start" Field \n';
+					   }
+					   
+				   }
+				   if (ctr_tagstart > ctr_tagend){
+					   if (s_function != 'validate'){
+					   AlertMessageShow('Missing "tag_end" Field');
+					   return;
+					   }else{
+						   str_alert = str_alert + '- Missing "tag_end" Field \n';
+					   }
+				   }
+				   
+				 
+				   
+				   /*  Remove any Element that has an Attribute value  */
+				   /*
+				   for(var d:uint=0;d<UserMapperdObjectCollection.length;d++){
+					   if (UserMapperdObjectCollection[d]['attribute'] == null){
+						   UserMapperdObjectCollection[d]['attribute'] = '';
+					   }
+				   
+					   if (UserMapperdObjectCollection[d]['attribute'].length > 0){
+						   UserMapperdObjectCollection[d]['tag_map'] = ''; 
+					   }
+					   
+				   }
+				   */
+				   
+				   /*  third validation: Now check the Attribute if it has an element by decrementing process */
+				   for(var a:int=UserMapperdObjectCollection.length - 1;a>=0;a--){
+					   if (UserMapperdObjectCollection[a]['attribute'] == null){
+						   UserMapperdObjectCollection[a]['attribute'] = '';
+					   }
+					   if (c_utils.trim(UserMapperdObjectCollection[a]['attribute']).length > 0){
+							for(var b:int=a - 1;b>=0;b--){
+								/*  Check for null values */     
+								if (UserMapperdObjectCollection[b]['attribute'] == null){
+									UserMapperdObjectCollection[b]['attribute'] = ''
+								}
+								if (UserMapperdObjectCollection[b]['tag_map'] == null){
+										UserMapperdObjectCollection[b]['tag_map'] = ''
+								}	
+								if ((c_utils.trim(UserMapperdObjectCollection[b]['attribute']).length < 1)&&(UserMapperdObjectCollection[b]['tag_map'].length > 0 ) && ((UserMapperdObjectCollection[b]['columnname'] == 'tag_start')|| (UserMapperdObjectCollection[b]['columnname'] == 'tag_end'))){                                                
+									if (s_function != 'validate'){
+									AlertMessageShow('Line: ' + [a + 1] + " - " +UserMapperdObjectCollection[a]['attribute'] + " - Attribute needs to have an Element");
+										return;  
+										break; 
+									}else{    
+										str_alert = str_alert +"- " + 'Line: ' + [a + 1] + " - " +UserMapperdObjectCollection[a]['attribute'] + ' - Attribute needs to have an Element \n';
+									}	
+								}  
+								if ((c_utils.trim(UserMapperdObjectCollection[b]['attribute']).length < 1)&&(UserMapperdObjectCollection[b]['tag_map'].length > 0 ) && ((UserMapperdObjectCollection[b]['columnname'] != 'tag_start')&& (UserMapperdObjectCollection[b]['columnname'] != 'tag_end'))){                                                
+									break; 
+								}  	
+							}
+					   }
+				   }
+				  
+				   
+				   
+				   if (s_function == 'validate'){
+					  // AlertMessageShow("No errors detected.");
+					   checkDisplayXML(event, str_alert);
+				   }
+				   if (s_function == 'save'){
+					   validateSaveMapping(event);
+				   }
+				   if (s_function == 'submit'){
+					   saveMapping(event);
+				   }
+				   
+				   
+				}
+			
+			
+				private function checkXML(event:Event):void{
+					
+					for(var d:uint=0;d<UserMapperdObjectCollection.length;d++){
+						if (UserMapperdObjectCollection[d]['attribute'] == null){
+							UserMapperdObjectCollection[d]['attribute'] = '';
+						}
+						
+						if (UserMapperdObjectCollection[d]['tag_map'] == null){
+							UserMapperdObjectCollection[d]['tag_map'] = ''; 
+						}
+						
+						if (UserMapperdObjectCollection[d]['attribute'].length > 0){
+							UserMapperdObjectCollection[d]['tag_map'] = ''
+						}
+					}    
+					UserMapperdObjectCollection.refresh();
+					
+					
+					
+					
+					/*
+					Alert.show("check 1");
+					if (UserMapperdObjectCollection[1]['attribue'] == null){
+						Alert.show("booyahh!");
+					}    
+					Alert.show("check 2");
+					*/
+					
+					//Alert.show(event.target.id);btn_dg2_validate
+					
+					
+					if (event.target.id == 'btn_dg2_validate'){
+						validateXML(event, 'validate');
+					}
+					if (event.target.id == 'btn_dg2_saverendition'){
+						//validateSaveMapping(event, 'save');
+						validateXML(event, 'save');
+					}
+					if (event.target.id == 'btn_save_current'){
+						//saveMapping(event, 'submit');
+						validateXML(event, 'submit');
+					}
+					
+				
+				}
+			
+			private function checkDisplayXML(event:Event, res:String){
+				UserMapperdObjectCollection.refresh();
+				
+				var final_xml:String = new String;
+					/*
+					Field = columnname
+					Element = tag_map
+					Attribute = attribute
+					*/
+				var lastfield:String = new String();      
+				
+				/* Initializing Array */
+				for(var a:uint=0;a<UserMapperdObjectCollection.length;a++){
+				 /* We are adding rows on the next process, it's better to initialize them now rather than later.  */
+					if (UserMapperdObjectCollection[a]['tag_map'] == null){
+						UserMapperdObjectCollection[a]['tag_map'] = '';
+					}
+					if (UserMapperdObjectCollection[a]['attribute'] == null){
+						UserMapperdObjectCollection[a]['attribute'] = '';
+					}
+				}
+				UserMapperdObjectCollection.refresh();
+				
+				
+				//if  (UserMapperdObjectCollection.length > 1){ 
+				if ((c_utils.trim(UserMapperdObjectCollection[0]['columnname']) == 'tag_start') && (c_utils.trim(UserMapperdObjectCollection[UserMapperdObjectCollection.length -1]['columnname'])) == 'tag_end'){
+						for(var x:uint=0;x<UserMapperdObjectCollection.length;x++){
+							
+							
+							
+							if (c_utils.trim(UserMapperdObjectCollection[x]['columnname']) == 'tag_start'){
+								final_xml = final_xml +  "<" + c_utils.trim(UserMapperdObjectCollection[x]['tag_map']) + ">\n"
+							}   
+							
+							
+									if ((c_utils.trim(UserMapperdObjectCollection[x]['columnname']) != 'tag_start')&&(c_utils.trim(UserMapperdObjectCollection[x]['columnname']) != 'tag_end')){
+												if (((c_utils.trim(UserMapperdObjectCollection[x]['tag_map'])).length >  0) &&((c_utils.trim(UserMapperdObjectCollection[x+1]['tag_map'])).length > 0)){
+													final_xml = final_xml +  "<" + UserMapperdObjectCollection[x]['tag_map'] + ">xxxx</" + UserMapperdObjectCollection[x]['tag_map'] +"> \n";
+												} 
+												
+												   
+												if (((c_utils.trim(UserMapperdObjectCollection[x]['tag_map'])).length >  0) &&((c_utils.trim(UserMapperdObjectCollection[x+1]['tag_map'])).length < 1)){
+													lastfield = c_utils.trim(UserMapperdObjectCollection[x]['tag_map']);
+													final_xml = final_xml +  "<" + c_utils.trim(UserMapperdObjectCollection[x]['tag_map']) + " ";
+												}
+												
+												
+												
+												if (((c_utils.trim(UserMapperdObjectCollection[x]['tag_map'])).length <  1) &&((c_utils.trim(UserMapperdObjectCollection[x+1]['tag_map'])).length > 0)){
+													final_xml = final_xml +  c_utils.trim(UserMapperdObjectCollection[x]['attribute']) + "='xxxx'>xxxx</" + lastfield + "> \n";
+												}
+												
+											
+												
+												if (((c_utils.trim(UserMapperdObjectCollection[x]['tag_map'])).length <  1) &&((c_utils.trim(UserMapperdObjectCollection[x+1]['tag_map'])).length < 1)){
+													final_xml = final_xml +  c_utils.trim(UserMapperdObjectCollection[x]['attribute']) + "='xxxx' ";
+												}
+												
+									}  
+								 
+								
+							if (c_utils.trim(UserMapperdObjectCollection[x]['columnname']) == 'tag_end'){
+								final_xml = final_xml +  "</" + c_utils.trim(UserMapperdObjectCollection[x]['tag_map']) + ">\n"
+							}    
+							
+							       
+							
+							
+						}    
+				}
+				//XMLAlertMessageShow("No errors detected!",final_xml);
+				if (res.length < 1){
+					res = "No error(s) detected.";     
+				}
+				XMLAlertMessageShow(res,final_xml);
+				    
+			}
+		]]> 
+	</mx:Script>
+	<mx:ApplicationControlBar dock="true" width="100%">
+		
+		
+		<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+				   height="27"
+				   width="78"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   click="{parentApplication.scholarcap_mousehovering(event,'',lbl_title.text,'BUTTON')}"
+				   
+				   /> 
+		<mx:Spacer width="100%"/>
+		<mx:Label id="lbl_title" text="XML Data Map Editor" fontSize="15" fontWeight="bold" useHandCursor="true" buttonMode="true"
+				  />
+		<mx:Spacer width="100%"/>
+		<mx:Button id="btn_close_window" icon="@Embed('image/icon_logoff.png')"
+				   fontFamily="Arial" textAlign="center" fontSize="12"
+				   
+				   
+				   />		
+	</mx:ApplicationControlBar>
+	
+	<mx:HBox width="100%" height="100%">
+		
+		<mx:VBox width="517" height="100%">    
+			<mx:HBox width="100%" >
+				<mx:Spacer width="100%"/>
+				<mx:Label fontSize="15" fontWeight="bold" text="INPUT - ACTION GRID/BI FILES" color="#163F91"/>
+				<mx:Spacer width="100%"/>
+			</mx:HBox>
+			<mx:Button id="btn_dg1_select_all" label="Select All" fontSize="15" click="{selectAlldg1(event)}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+					   />
+			<local:ActionGridADGRendition id="dataGrid1"
+										  width="516"
+										  height="100%"
+										  rowHeight="22"
+										  dataProvider="{loc_RenditiontdObjectCollection}"
+										  dragEnabled="true"
+										  verticalScrollPolicy="on"
+										  allowMultipleSelection="true"
+										  variableRowHeight="true"
+										  headerStyleName="centerAlignDataGridCol"
+										  horizontalGridLines="true"
+										  verticalGridLines="true"
+										  horizontalGridLineColor="black"
+										  verticalGridLineColor="black" borderColor="#010101" borderThickness="1"
+										  sortableColumns="false"
+										  dragStart="{datagrid1Click(event)}"
+										  >    
+				
+				<local:columns>
+					<!--
+					<mx:AdvancedDataGridColumn dataField="type" itemRenderer="NameLabel"
+					headerText="Panel/Column"  width="50"  >
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn dataField="headertext" itemRenderer="NameLabel"
+					headerText="Label Name" width="50" />
+					-->
+					<!-- mx:AdvancedDataGridColumnGroup headerText="Source" -->
+					<mx:AdvancedDataGridColumn dataField="mbdcode" 
+											   headerText="Action Grid"  width="30"  >
+					</mx:AdvancedDataGridColumn>
+					<mx:AdvancedDataGridColumn dataField="label" 
+											   headerText="Column"  width="40"  >
+					</mx:AdvancedDataGridColumn>  
+					<mx:AdvancedDataGridColumn dataField="columnname" 
+											   headerText="Field"  width="40">
+					</mx:AdvancedDataGridColumn>   	
+					
+					
+					
+					
+					
+					
+				</local:columns>
+				
+			</local:ActionGridADGRendition>
+			
+			
+			
+			
+			<mx:Label text="{dataGrid1.dataProvider.length} items"  fontSize="15" fontWeight="bold"/>
+			
+			
+		</mx:VBox>
+		<mx:VBox height="100%">
+			<mx:Spacer height="100%"/>	
+			<mx:Spacer width="20%"/>
+			<!-- mx:Button id="btn_transfer" label=">" height="41" fontSize="23" color="#3868A3"/ -->
+			<mx:Spacer height="100%"/>
+		</mx:VBox>
+		<mx:VBox width="100%" height="100%">
+			
+			<mx:HBox width="100%" >
+				<mx:Spacer width="100%"/>
+				<mx:Label  fontSize="15" fontWeight="bold" text="OUTPUT - XML FILE" color="#163F91"/>
+				<mx:Spacer width="100%"/>
+			</mx:HBox>
+			<mx:HBox horizontalGap="0">
+				
+				<mx:Button id="btn_dg2_remove" label="Remove" fontSize="15" click="{removeItem(event)}"
+						   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+						   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+				<!-- mx:Button id="btn_dg2_addpanel" label="Add Segment" fontSize="15"  click="{addPanelItem(event)}" enabled="false"/ -->
+				<mx:Button id="btn_dg2_clear" label="Clear All" fontSize="15" click="{clearall(event)}"
+						   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+						   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+				<mx:Button id="btn_dg2_validate" label="Validate" fontSize="15" click="{checkXML(event)}"
+						   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+						   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+				<mx:Button id="btn_dg2_saverendition" label="Save" fontSize="15"  click="{checkXML(event)}"/>
+				
+			</mx:HBox>
+			<mx:DataGrid        id="dataGrid2"
+								width="100%"
+								height="100%"
+								rowHeight="22"
+								dataProvider="{UserMapperdObjectCollection}"
+								dragEnabled="true"
+								dragMoveEnabled="true"
+								dropEnabled="true"
+								verticalScrollPolicy="on"
+								allowMultipleSelection="true"
+								variableRowHeight="true"
+								headerStyleName="centerAlignDataGridCol"
+								horizontalGridLines="true"
+								verticalGridLines="true"
+								horizontalGridLineColor="black"
+								verticalGridLineColor="black"  borderThickness="1"
+								
+								sortableColumns="false"
+								editable="true"
+								dragDrop="datagrid2Drop(event)"
+								dragStart="{datagrid2Click(event)}"
+								itemClick="{doubleclickHandler(event)}"
+								
+								>
+				
+				<mx:columns>  
+					
+					<mx:DataGridColumn dataField="mbdcode"  editable="false"
+									   headerText="Action Grid"  width="60"  >
+					</mx:DataGridColumn>
+					<mx:DataGridColumn dataField="label"  editable="false"
+									   headerText="Column"  width="60"  >
+					</mx:DataGridColumn> 
+					<mx:DataGridColumn dataField="columnname"  editable="false"
+									   headerText="Field"  width="60"  >
+					</mx:DataGridColumn>  
+					
+					<mx:DataGridColumn dataField="tag_map"  editable="true"
+									   headerText="Tag Element"  width="60"  >
+					</mx:DataGridColumn>	
+					<mx:DataGridColumn dataField="attribute"  editable="true"
+									   headerText="Tag Attribute"  width="60"   >
+					</mx:DataGridColumn>
+					
+					<mx:DataGridColumn dataField="fixedvalue"  editable="true"
+									   headerText="Literal"  width="60"  >
+					</mx:DataGridColumn>	
+					
+					<mx:DataGridColumn id="idtrans" dataField="translate"  editable="false"
+									   headerText="Translate"  width="50" >
+						
+									</mx:DataGridColumn>  
+					
+					
+					
+				</mx:columns>
+				
+			</mx:DataGrid>   
+			<mx:Label   fontSize="15" fontWeight="bold" />
+		</mx:VBox>
+	</mx:HBox>
+</mx:TitleWindow>

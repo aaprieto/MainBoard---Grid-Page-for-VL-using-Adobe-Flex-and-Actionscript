@@ -1,0 +1,935 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"	width="894" height="720"  verticalScrollPolicy="off"
+				layout="vertical"
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="5" y="5"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				
+				creationComplete="init()" 
+				xmlns:local="*" xmlns:s="library://ns.adobe.com/flex/spark">
+
+	<mx:Script>
+		<![CDATA[       
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			public var user:String;
+			public var headtitle:String;
+			public var maintenance_code:String;
+		            
+			   
+			public var operatorcode:String;
+			public var operatorgroup:String;
+			public var initials:String;
+			public var operatorname:String;   
+			public var restrictclients:String;
+			public var joblog:String;
+			public var upd_date:String;
+			public var upd_time:String;
+			public var unique_key:String;
+
+			public var popom:OperatorMaintenance;
+			
+				
+			[Bindable]
+			public var Array0:ArrayCollection;
+			
+			[Bindable]
+			public var ArrayPassphrases:ArrayCollection;     
+			
+			[Bindable]
+			public var operatorgroupAC:ArrayCollection; 
+			private function ValidaterOperatorSuffix(event:KeyboardEvent):void{
+				
+				if (event.keyCode == 27){
+					titleWindow_close(event);
+					
+				}   
+				if (event.keyCode == 13 || event.keyCode == 9 || event.keyCode == 40){
+					
+					//Alert.show(ti_groupcodesuffix.text.length.toString());
+					if (ti_operatorsuffix.text.length > 1){
+						if (maintenance_code == "A"){
+							
+							var locgroupcode = ti_operatorprefix.text + ti_operatorsuffix.text;
+							var flag:Boolean = false
+							
+							for (var i:int=0;i<Array0.length;i++)  { 
+								//Alert.show(locgroupcode.toUpperCase() + " = " + Array0[i]['group'].toUpperCase());			
+								if (locgroupcode.toUpperCase() == Array0[i]['operator_code'].toUpperCase()){
+									
+									
+									flag = true;
+									break;
+								}	
+							}
+					
+							if (flag == true){
+								
+								ti_operatorsuffix.setFocus();
+								ti_operatorsuffix.setStyle("backgroundColor","#66FFFF");
+								AlertMessageShow("Operator code already exists");
+							}
+						}
+						
+						
+						
+					}else {
+						
+						
+						ti_operatorsuffix.setFocus();
+						ti_operatorsuffix.setStyle("backgroundColor","#66FFFF");
+						AlertMessageShow("Please Enter the 2 character Group Code");
+					}		
+					
+				}
+			} 
+			private function init():void {
+				ti_operatorsuffix.addEventListener(KeyboardEvent.KEY_DOWN, ValidaterOperatorSuffix);
+				
+				if (maintenance_code == "A"){
+					ti_operatorprefix.text = user.substr(0,4).toUpperCase();
+					ti_operatorprefix.setStyle("backgroundColor",'#BEC5AA');
+					ti_operatorprefix.editable = false;
+					ti_operatorsuffix.editable = true;
+					btn_add.visible = true;
+					btn_delete.visible = false;
+					btn_update.visible = false;
+					headlabel.text = headtitle + " a New Operator";
+					label_validation.text = "[Any 2 Characters or Numbers]";
+					ti_operatorsuffix.setFocus();
+					
+					ti_operatorsuffix.setStyle("backgroundColor","#66FFFF");
+					
+					mcp_no.selected = true;
+					exp_no.selected = true;
+					ina_no.selected = true;
+					ina_no2.selected = true;
+					btn_unlock.visible = false;   
+				}
+				if (maintenance_code == "U"){
+					ti_operatorprefix.text = operatorcode.substr(0,4);
+					ti_operatorprefix.setStyle("backgroundColor",'#BEC5AA');
+					ti_operatorsuffix.text = operatorcode.substr(4,2);
+					ti_operatorsuffix.setStyle("backgroundColor",'#BEC5AA');
+					
+					ti_operatorprefix.editable = false;
+					ti_operatorsuffix.editable = false;
+					btn_add.width=0; 
+					btn_add.visible = false;
+					btn_delete.visible = true;
+					btn_update.visible = true;
+					headlabel.text = headtitle + " an Operator";
+					label_validation.text = "";
+					ti_operatorname.setFocus();
+					
+					
+					
+					for( var i:int = 0; i < operatorgroupAC.length; i++ ){
+						if (operatorgroup == operatorgroupAC[i]['group_code']){
+							ti_groupcode.text = operatorgroupAC[i]['group_code'];
+							ti_groupdescription.text = operatorgroupAC[i]['group_desc'];
+							break;
+						}
+					}     
+					
+					
+				
+					if (ArrayPassphrases[0]['message_flag'] == 'N'){
+						//AlertMessageShow(ArrayPassphrases[0]['message']);
+						ti_minimumpasswordageindays.text = ArrayPassphrases[0]['pp_age_min'];
+						ti_maximumpasswordageindays.text = ArrayPassphrases[0]['pp_age_max'];
+						ti_maximumexpiredpasswordageindays.text = ArrayPassphrases[0]['pp_age_lck'];
+						ti_passwordwarningperiodindays.text = ArrayPassphrases[0]['pp_age_wrn']; 
+						if (ArrayPassphrases[0]['pp_mustchg'] == 'N'){
+								mcp_yes.selected = false;
+								mcp_no.selected = true;
+						} else {
+									mcp_yes.selected = true;
+									mcp_no.selected = false;
+									
+						}
+						
+						
+						
+						ti_lastchanged.text = ArrayPassphrases[0]['pp_chgtime'];
+						if (ArrayPassphrases[0]['pp_expired'] == 'N'){
+							exp_yes.selected = false;
+							exp_no.selected = true;
+						} else {
+							exp_yes.selected = true;
+							exp_no.selected = false;
+							
+						}
+						
+						if (ArrayPassphrases[0]['pp_locked'] == 'N'){
+							ina_yes.selected = false;
+							ina_no.selected = true;
+						} else {
+							ina_yes.selected = true;
+							ina_no.selected = false;
+							
+						}
+						
+						if (ArrayPassphrases[0]['fail_lock'] == 'N'){
+							ina_yes2.selected = false;
+							ina_no2.selected = true;
+							btn_unlock.visible = false;
+						} else {
+							ina_yes2.selected = true;
+							ina_no2.selected = false;
+							btn_unlock.visible = true;    
+							
+						}
+						
+					}
+					if (ArrayPassphrases[0]['message_flag'] == 'Y'){
+						AlertMessageShow(ArrayPassphrases[0]['message']);
+						
+					}
+					
+					
+					
+					
+					
+					
+					
+				}       
+				ti_operatorname.text = operatorname;
+				ti_initials.text = initials;
+				ti_upddate.text =   upd_date;
+				ti_updtime.text =  upd_time;
+				//	ti_uniquekey.text =  unique_key;
+				
+				
+				       
+			}    
+			
+			
+			
+			
+			
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function LaunchOperatorMaintainGroup(event:Event):void{
+				btn_browseviews.setFocus();
+				popom = OperatorMaintenance(
+					PopUpManager.createPopUp(this, OperatorMaintenance, true)); 
+				
+				popom.Arr_mr = operatorgroupAC;
+				popom.maintain = "Select one for Maintain Views";
+				popom.g_code = ti_groupcode.text
+				popom.g_description = 	ti_groupdescription.text;
+				
+				
+				popom["adg1"].addEventListener(MouseEvent.CLICK, ClickDatagridViews);
+				popom["adg1"].addEventListener(KeyboardEvent.KEY_DOWN, EnterDatagridViews);
+				
+				//	PopUpManager.centerPopUp(popogm);
+				
+			}
+			
+			private function ClickDatagridViews(event:Event){
+				GetChosenDataViews(event);
+				
+				
+			}
+			private function EnterDatagridViews(event:KeyboardEvent){
+				
+				if (event.keyCode == 27){
+					PopUpManager.removePopUp(popom);
+					btn_browseviews.setFocus();
+				}
+				if (event.keyCode == 13){
+					GetChosenDataViews(event);
+				}
+			}    
+			
+			
+			private function GetChosenDataViews(event:Event):void{
+				ti_groupcode.text = popom.adg1.selectedItem.group_code;
+				ti_groupdescription.text = popom.adg1.selectedItem.group_desc;
+				PopUpManager.removePopUp(popom);
+				if (maintenance_code == "A"){
+					btn_add.setFocus();	
+				} else {
+					btn_update.setFocus();
+				}
+				
+			}   
+			
+			
+			private function OperatorSuffixFocusIn(event:Event):void{
+				
+				if (maintenance_code == "A"){
+					ti_operatorsuffix.setStyle("backgroundColor","#66FFFF");
+					ti_groupcode.setStyle("backgroundColor","white");
+					ti_groupdescription.setStyle("backgroundColor","white");
+				}	
+				if (maintenance_code == "U"){
+					ti_operatorname.setFocus();
+					ti_groupcode.setStyle("backgroundColor","white");
+					ti_groupdescription.setStyle("backgroundColor","white");
+				}	
+			}   
+			private function OperatorSuffixFocusOut(event:Event):void{
+				
+				if (maintenance_code == "A"){
+					ti_operatorsuffix.setStyle("backgroundColor","white")
+				}    
+			}    
+			
+			private function OperatorNameFocusIn(event:Event):void{
+				ti_operatorname.setStyle("backgroundColor","#66FFFF");
+				ti_groupcode.setStyle("backgroundColor","white");
+				ti_groupdescription.setStyle("backgroundColor","white");
+			}
+			private function OperatorNameFocusOut(event:Event):void{
+				ti_operatorname.setStyle("backgroundColor","white")
+			}      
+			
+			private function InitialsFocusIn(event:Event):void{
+				ti_initials.setStyle("backgroundColor","#66FFFF");
+				ti_groupcode.setStyle("backgroundColor","white");
+				ti_groupdescription.setStyle("backgroundColor","white");
+			}
+			private function InitialsFocusOut(event:Event):void{
+				ti_initials.setStyle("backgroundColor","white")
+			}
+			
+			
+			private function OperatorGroupFocusIn(event:Event):void{
+				LaunchOperatorMaintainGroup(event);
+				ti_groupcode.setStyle("backgroundColor","#66FFFF");
+				ti_groupdescription.setStyle("backgroundColor","#66FFFF");
+			}
+			private function OperatorGroupFocusOut(event:Event):void{
+			
+				ti_groupcode.setStyle("backgroundColor","white");
+				ti_groupdescription.setStyle("backgroundColor","white");
+			
+			}
+			
+			
+			
+			private function BtnAddFocusIn(event:Event):void{
+				btn_add.setFocus();
+				btn_add.drawFocus(true);
+				btn_add.setStyle("backgroundColor","#85e7ff");
+				
+				ti_groupcode.setStyle("backgroundColor","white");
+				ti_groupdescription.setStyle("backgroundColor","white");
+				
+				
+				//btn_add.setStyle("overSkin", "Button_overSkin");
+				//overSkin: Embed(source="blue_plastic.swf", symbol="Button_overSkin");
+				//btn_add.setStyle("fillColors", ["#66FFFF", "#66FFFF", "#66FFFF", "#66FFFF"]);
+				//btn_add.styleDeclaration.setStyle("icon",check);
+			} 
+			private function BtnAddFocusOut(event:Event):void{
+				//btn_add.setStyle("fillColors", btn_add_arr);
+				
+				btn_add.drawFocus(false);
+				btn_add.styleDeclaration.setStyle("backgroundColor","#DFF1F1");
+				
+			}
+			
+			
+			
+			private function BtnUpdateFocusIn(event:Event):void{
+				btn_update.setFocus();
+				btn_update.drawFocus(true);
+				btn_update.setStyle("backgroundColor","#85e7ff");
+				ti_groupcode.setStyle("backgroundColor","white");
+				ti_groupdescription.setStyle("backgroundColor","white");
+			} 
+			private function BtnUpdateFocusOut(event:Event):void{
+				btn_update.drawFocus(false);
+				btn_update.styleDeclaration.setStyle("backgroundColor","#DFF1F1");
+			}
+			
+			private function BtnDeleteFocusIn(event:Event):void{
+				
+				btn_delete.setFocus();
+				btn_delete.drawFocus(true);
+				btn_delete.setStyle("backgroundColor","#85e7ff");
+				ti_groupcode.setStyle("backgroundColor","white");
+				ti_groupdescription.setStyle("backgroundColor","white");
+			} 
+			private function BtnDeleteFocusOut(event:Event):void{
+				
+				btn_delete.drawFocus(false);
+				btn_delete.styleDeclaration.setStyle("backgroundColor","#DFF1F1");
+			}   
+			
+			private function BtnCancelFocusIn(event:Event):void{   
+				btn_cancel.setFocus();
+				btn_cancel.drawFocus(true);
+				btn_cancel.setStyle("backgroundColor","#85e7ff");
+				ti_groupcode.setStyle("backgroundColor","white");
+				ti_groupdescription.setStyle("backgroundColor","white");
+			} 
+			private function BtnCancelFocusOut(event:Event):void{
+				btn_cancel.drawFocus(false);
+				btn_cancel.styleDeclaration.setStyle("backgroundColor","#DFF1F1");
+			}
+			private function GroupSuffixFocusIn(event:Event):void{
+				
+				if (maintenance_code == "A"){
+					
+					
+					ti_operatorsuffix.setStyle("backgroundColor","#66FFFF");
+				}	
+				if (maintenance_code == "U"){
+					ti_operatorname.setFocus();
+					ti_operatorname.drawFocus(true);
+				}	
+			}  
+			private function keydownGroupSuffix(event:KeyboardEvent){
+				if (event.keyCode == 40){
+					ti_operatorname.setFocus();
+				}
+			}  
+			private function keydownOperationName(event:KeyboardEvent):void{
+				if (maintenance_code == "A"){
+					
+					if (event.keyCode == 38){
+						ti_operatorsuffix.drawFocus(true);
+						ti_operatorsuffix.setFocus();
+					}
+					if (event.keyCode == 40){
+						ti_initials.setFocus();
+					}
+					
+				}	
+				if (maintenance_code == "U"){
+					if (event.keyCode == 40){
+						ti_initials.setFocus();
+					}
+				}	
+			}  
+			
+			private function keydownInitials(event:KeyboardEvent):void{
+					if (event.keyCode == 38){
+						ti_operatorname.drawFocus(true);
+						ti_operatorname.setFocus();
+					}
+					if (event.keyCode == 40){
+						ti_groupcode.setFocus();
+						ti_groupcode.drawFocus(true);
+					}
+			}  
+			private function OperatorPrefixFocus(event:Event):void{
+				if (maintenance_code == "A"){
+					
+					ti_operatorsuffix.drawFocus(true);
+					ti_operatorsuffix.setFocus();
+				}
+				if (maintenance_code == "U"){
+					ti_operatorname.setFocus();
+					ti_operatorname.drawFocus(true);
+				}
+			}
+			private function LastChangeFocus(event:Event):void{
+				if (maintenance_code == "A"){
+					btn_add.setFocus();
+					btn_add.drawFocus(true);
+				}
+				if (maintenance_code == "U"){
+					btn_update.setFocus();
+					btn_update.drawFocus(true);
+				}
+			}   
+		]]>
+	</mx:Script>
+	<mx:Script source="AlertMessageHandler.as"/>
+	<mx:Style source="css/main.css"/>
+	<mx:VBox width="100%">
+		
+		<mx:HBox width="100%">
+			<mx:Button id="img_ezlearnswitch_interactive" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'',headlabel.text,'BUTTON')}"
+					   
+					   />
+			<mx:Spacer width="100%"/>
+			<mx:Label id="headlabel"  width="100%" textAlign="center"  fontSize="19" color="#FCFAFA" fontWeight="bold"/>
+			<mx:Spacer width="100%"/>
+			
+		</mx:HBox>
+		     
+	</mx:VBox>
+	<mx:HBox width="100%" height="100%" id="hbox1">
+		
+		<!-- mx:AdvancedDataGrid id="dg_testing"  width="100%" height="100%"  verticalScrollPolicy="on" horizontalScrollPolicy="on">
+		
+		</mx:AdvancedDataGrid -->   
+		
+		<mx:VBox width="100%" height="100%">
+			<mx:Form width="863" height="100%">
+				<mx:FormItem label="Operator Code:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_operatorprefix"  
+									  width="76" 
+									  color="#000000" 
+									  maxChars="4" 
+									  mouseEnabled="false"
+									  />
+						<!-- mx:TextInput id="ti_operatorsuffix"  width="65" restrict="0-9" color="#000000" maxChars="2"/ -->
+						<mx:TextInput id="ti_operatorsuffix"  
+									  width="65" 
+									  color="#000000" 
+									  maxChars="2"
+									  focusIn="{OperatorSuffixFocusIn(event)}" 
+									  focusOut="{OperatorSuffixFocusOut(event)}"
+									  
+									  
+									  click="{GroupSuffixFocusIn(event)}" 
+									  keyDown="{keydownGroupSuffix(event)}"
+									  enter="{ti_operatorname.setFocus()}" 
+									  />
+						
+						
+						<!-- mx:TextInput id="ti_groupcodesuffix"  click="{GroupSuffixFocusIn(event)}" 
+									  width="65" color="#000000" 
+									  enter="{ti_groupdescription.setFocus()}" 
+									  maxChars="2" 
+									  focusIn="{GroupSuffixFocusIn(event)}" 
+									  focusOut="{GroupSuffixFocusOut(event)}"
+									  keyDown="{keydownGroupSuffix(event)}"
+									  
+									  / -->
+						
+						
+						
+						
+						
+						<mx:Label id="label_validation" color="#FCFAFA" width="307" />	
+					</mx:HBox>
+				</mx:FormItem>
+				
+				
+				
+				<mx:FormItem label="Operator Name:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+					<mx:TextInput id="ti_operatorname" 
+								  width="400" 
+								  color="#000000"
+								  focusIn="OperatorNameFocusIn(event)" 
+								  focusOut="{OperatorNameFocusOut(event)}"
+								  enter="{ti_initials.setFocus()}" 
+								  keyDown="{keydownOperationName(event)}"
+								  
+								  
+								  
+								  /> 
+				</mx:FormItem>
+				
+				<mx:FormItem label="Initials:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+					<mx:TextInput id="ti_initials" 
+								  width="61" 
+								  color="#000000"
+								  focusIn="InitialsFocusIn(event)" 
+								  focusOut="{InitialsFocusOut(event)}"
+								  enter="{ti_groupcode.setFocus()}" 
+								  keyDown="{keydownInitials(event)}"
+								  />
+				</mx:FormItem>
+				
+				<mx:FormItem label="Operator Group:" fontSize="14" fontFamily="Arial" fontWeight="bold" width="830" color="#FCFAFA">
+					<mx:HBox>
+						<mx:TextInput id="ti_groupcode" 
+									  width="106" 
+									  color="#000000"
+									  focusIn="{OperatorGroupFocusIn(event)}" 
+									  focusOut="{OperatorGroupFocusOut(event)}"
+									  />
+						<mx:Button id="btn_browseviews" 
+								   icon="@Embed('image/icon_lookup.png')"
+								   width="33"
+								   click="{LaunchOperatorMaintainGroup(event)}"
+								   />
+						<mx:TextInput id="ti_groupdescription" width="323" color="#000000"/>
+					</mx:HBox>	
+				</mx:FormItem> 
+				
+				<mx:HRule width="687" strokeColor="#000000"/>
+	
+				<mx:FormItem label="Minimum Password Age in Days:" 
+							 fontSize="14" 
+							 fontFamily="Arial" 
+							 fontWeight="bold" 
+							 color="#FCFAFA"
+							 toolTip="0 = No minimum days"
+							 
+							 >
+					
+					<mx:TextInput id="ti_minimumpasswordageindays" 
+								  width="39" 
+								  color="#000000"
+								  text="0"
+								  restrict="(0-9)"
+								  />
+					
+				</mx:FormItem>
+				<mx:FormItem label="Maximum Password Age in Days:" 
+							 fontSize="14" 
+							 fontFamily="Arial" 
+							 fontWeight="bold" 
+							 color="#FCFAFA" 
+							 toolTip="0 = No maximum days"
+							 
+							 >
+					
+					<mx:TextInput id="ti_maximumpasswordageindays" 
+								  width="39" 
+								  color="#000000"
+								  text="0"
+								  restrict="(0-9)"
+								  />
+					
+				</mx:FormItem>
+				<mx:FormItem label="Max. Expired Password Age in Days:" 
+							 fontSize="14" 
+							 fontFamily="Arial" 
+							 fontWeight="bold" 
+							 color="#FCFAFA"
+							 toolTip="-1 = Password never expires"
+							 >
+					
+					<mx:TextInput id="ti_maximumexpiredpasswordageindays" 
+								  width="39" 
+								  color="#000000"
+								  text="-1"
+								  />
+					            
+				</mx:FormItem>
+				<mx:FormItem label="Password Warning Period in Days:" fontSize="14" fontFamily="Arial" 
+							 fontWeight="bold" color="#FCFAFA"
+							 toolTip="-1 = Do not give Password Warning"
+							 >
+					
+					<mx:TextInput id="ti_passwordwarningperiodindays" 
+								  width="39" 
+								  color="#000000"
+								  text="-1"
+								  />
+					
+				</mx:FormItem>
+				       
+				
+				<mx:FormItem label="Must Change Password at Next Login?:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+					<mx:HBox>
+						
+						
+						<mx:RadioButtonGroup id="mustchangepassword"/>
+						
+						<mx:RadioButton id="mcp_yes" label="Yes" groupName="mustchangepassword" width="149" color="#FCFAFA"/>
+						<mx:RadioButton id="mcp_no" label="No" groupName="mustchangepassword" width="228" color="#FCFAFA" />
+						
+						
+						
+						
+					</mx:HBox>
+					
+				</mx:FormItem>
+				
+				
+				
+	
+				
+				
+				<mx:HRule width="687" strokeColor="#000000"/>
+				
+				<mx:FormItem label="Passphrase" 
+							 fontSize="14" 
+							 fontFamily="Arial" 
+							 fontWeight="bold" 
+							 color="#FCFAFA"
+							 
+							 >
+					
+					<mx:TextInput id="ti_passphrase1" 
+								  width="322" 
+								  color="#000000"
+								 
+								  displayAsPassword="true"
+								  />
+				</mx:FormItem>	
+					<mx:FormItem label="Re-enter Passphrase:" 
+								 fontSize="14" 
+								 fontFamily="Arial" 
+								 fontWeight="bold" 
+								 color="#FCFAFA"
+								 
+								 >
+						
+						<mx:TextInput id="ti_passphrase2" 
+									  width="322" 
+									  color="#000000"
+									  displayAsPassword="true"	  
+									  
+									  />
+				</mx:FormItem>
+				
+				
+				<mx:HRule width="687" strokeColor="#000000"/>
+				
+				<mx:FormItem label="Password Most Recently Changed:" enabled="false" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="722">
+					
+					<mx:TextInput id="ti_lastchanged" 
+								  width="383" 
+								  color="#000000"
+								  editable="false"
+								  restrict="(0-9)"
+								  />
+					
+				</mx:FormItem>
+				
+				<mx:FormItem label="Password have expired:" fontSize="14" enabled="false" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" >
+					
+					<mx:HBox color="#FDFDFD">
+						
+						
+						
+						<mx:RadioButtonGroup id="rbg_expired" />
+						
+						<mx:RadioButton id="exp_yes" label="Yes" groupName="rbg_expired" width="149"   color="#FCFAFA"/>
+						<mx:RadioButton id="exp_no" label="No" groupName="rbg_expired" width="228"   color="#FCFAFA"/>
+						
+						
+						
+						
+					</mx:HBox>
+					
+					
+				</mx:FormItem>
+				<mx:FormItem label="Account Locked (Password Expired too long):"  enabled="false" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+					
+					<mx:HBox>
+						
+						<mx:RadioButtonGroup id="rbg_inactive"/>
+						
+						<mx:RadioButton id="ina_yes" label="Yes" groupName="rbg_inactive" width="149" color="#FCFAFA"/>
+						<mx:RadioButton id="ina_no" label="No" groupName="rbg_inactive" width="228" color="#FCFAFA"/>
+						
+						
+					</mx:HBox>
+					
+					
+				</mx:FormItem>
+				
+				<mx:HBox>
+				<mx:FormItem label="Account Locked (Too many failed login attempt):" enabled="false" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+					
+					<mx:HBox>
+						
+						<mx:RadioButtonGroup id="rbg_inactive2"/>   
+						
+						<mx:RadioButton id="ina_yes2" label="Yes" groupName="rbg_inactive2"  width="149"  color="#FCFAFA"/>
+						<!-- mx:HBox -->
+							<mx:RadioButton id="ina_no2" label="No" groupName="rbg_inactive2"  width="66"  color="#FCFAFA"/>
+							<!-- mx:Button label="Unlock"/ -->
+						<!-- /mx:HBox -->
+						
+						
+					</mx:HBox>
+					
+					
+				</mx:FormItem>
+					<!-- mx:Button label="Unlock"/ -->
+					
+					<local:InteractiveButton
+						id="btn_unlock"  
+						text="Unlock"
+						focusIn="{ti_groupcode.setStyle('backgroundColor','white'),ti_groupdescription.setStyle('backgroundColor','white')}" 
+						mouseOver="{ti_groupcode.setStyle('backgroundColor','white'),ti_groupdescription.setStyle('backgroundColor','white')}"
+						>
+					</local:InteractiveButton>   
+				</mx:HBox>
+				
+				<mx:HRule width="687" strokeColor="#000000"/>
+				<mx:FormItem label="Last Change Date:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+					<mx:TextInput id="ti_upddate" 
+								  color="#000000" 
+								  editable="false"  
+								  backgroundColor="#BEC5AA"
+								  mouseEnabled="false"
+								  focusIn="{LastChangeFocus(event)}"
+								  />
+				</mx:FormItem>
+				<mx:FormItem label="Last Change Time:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+					<mx:TextInput id="ti_updtime" 
+								  color="#000000"  
+								  editable="false" 
+								  backgroundColor="#BEC5AA" 
+								  mouseEnabled="false"
+								  focusIn="{LastChangeFocus(event)}"
+								  />
+				</mx:FormItem>
+				<!--
+				<mx:FormItem label="Unique Key:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+				<mx:TextInput id="ti_uniquekey" color="#000000"  editable="false" backgroundColor="#BEC5AA"/>
+				</mx:FormItem>
+				-->
+			</mx:Form>
+			
+			<mx:HBox width="100%" horizontalGap="0">   
+				<!-- mx:Button id="btn_add" label="Submit" / -->
+				
+				
+				
+				<!-- mx:TextInput
+					id="btn_add"  
+					width="85" height="25"
+					text="Submit"
+					fontSize="14" fontWeight="bold" color="#010101"
+					fontFamily="Verdana"
+					cornerRadius="10" 
+					borderStyle="solid"
+					textAlign="center" backgroundColor="#DFF1F1" backgroundAlpha="1.0" editable="false"
+					focusOut="{BtnAddFocusOut(event)}" 
+					focusIn="{BtnAddFocusIn(event) }" 
+					
+					mouseOver="{BtnAddFocusIn(event) }"
+					mouseOut="{BtnAddFocusOut(event)}" 
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					
+					
+					dropShadowEnabled="true"
+					shadowDirection= "right"
+					shadowDistance= "10"
+					/ -->
+				
+				
+				<local:InteractiveButton
+					id="btn_add"  
+					text="Submit"
+					focusIn="{ti_groupcode.setStyle('backgroundColor','white'),ti_groupdescription.setStyle('backgroundColor','white')}" 
+					mouseOver="{ti_groupcode.setStyle('backgroundColor','white'),ti_groupdescription.setStyle('backgroundColor','white')}"
+					>
+				</local:InteractiveButton>   
+				
+				
+				<!-- mx:Button id="btn_update" label="Update" / -->
+				
+				<!-- mx:TextInput
+					id="btn_update"  
+					width="85" height="25"
+					text="Update"
+					fontSize="14" fontWeight="bold" color="#010101"
+					fontFamily="Verdana"
+					cornerRadius="10" 
+					borderStyle="solid"
+					textAlign="center" backgroundColor="#DFF1F1" backgroundAlpha="1.0" editable="false"
+					focusOut="{BtnUpdateFocusOut(event)}" 
+					focusIn="{BtnUpdateFocusIn(event) }" 
+					
+					mouseOver="{BtnUpdateFocusIn(event) }"
+					mouseOut="{BtnUpdateFocusOut(event)}" 
+					
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					
+					
+					dropShadowEnabled="true"
+					shadowDirection= "right"
+					shadowDistance= "10"
+					/ -->
+				
+				<local:InteractiveButton
+					id="btn_update"  
+					text="Update"
+					focusIn="{ti_groupcode.setStyle('backgroundColor','white'),ti_groupdescription.setStyle('backgroundColor','white')}" 
+					mouseOver="{ti_groupcode.setStyle('backgroundColor','white'),ti_groupdescription.setStyle('backgroundColor','white')}"
+					>
+				</local:InteractiveButton>   
+				
+				
+				
+				<!-- mx:Button id="btn_delete" label="Delete" / -->
+				 
+				
+				<!-- mx:TextInput
+					id="btn_delete"  
+					width="85" height="25"
+					text="Delete"
+					fontSize="14" fontWeight="bold" color="#010101"
+					fontFamily="Verdana"
+					cornerRadius="10" 
+					borderStyle="solid"
+					textAlign="center" backgroundColor="#DFF1F1" backgroundAlpha="1.0" editable="false"
+					focusOut="{BtnDeleteFocusOut(event)}" 
+					focusIn="{BtnDeleteFocusIn(event) }" 
+					
+					mouseOver="{BtnDeleteFocusIn(event) }"
+					mouseOut="{BtnDeleteFocusOut(event)}" 
+					
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					
+					
+					dropShadowEnabled="true"
+					shadowDirection= "right"
+					shadowDistance= "10"
+					/ -->
+				
+				<local:InteractiveButton
+					id="btn_delete"  
+					text="Delete"
+					focusIn="{ti_groupcode.setStyle('backgroundColor','white'),ti_groupdescription.setStyle('backgroundColor','white')}" 
+					mouseOver="{ti_groupcode.setStyle('backgroundColor','white'),ti_groupdescription.setStyle('backgroundColor','white')}"
+					>
+				</local:InteractiveButton>   
+				
+				
+				<mx:Spacer width="100%"/>
+				<!-- mx:Button id="btn_cancel" label="Cancel" click="{titleWindow_close(event)}"/ -->
+				
+				<!-- mx:TextInput
+					id="btn_cancel"  
+					width="85" height="25"
+					text="Cancel"
+					fontSize="14" fontWeight="bold" color="#010101"
+					fontFamily="Verdana"
+					cornerRadius="10" 
+					borderStyle="solid"
+					textAlign="center" backgroundColor="#DFF1F1" backgroundAlpha="1.0" editable="false"
+					focusOut="{BtnCancelFocusOut(event)}" 
+					focusIn="{BtnCancelFocusIn(event) }" 
+					
+					mouseOver="{BtnCancelFocusIn(event) }"
+					mouseOut="{BtnCancelFocusOut(event)}" 
+					click="{titleWindow_close(event)}"
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					
+					
+					dropShadowEnabled="true"
+					shadowDirection= "right"
+					shadowDistance= "10"
+					/ -->
+			
+				<local:InteractiveButton
+					id="btn_cancel"  
+					text="Cancel"
+					click="{titleWindow_close(event)}"
+					focusIn="{ti_groupcode.setStyle('backgroundColor','white'),ti_groupdescription.setStyle('backgroundColor','white')}" 
+					mouseOver="{ti_groupcode.setStyle('backgroundColor','white'),ti_groupdescription.setStyle('backgroundColor','white')}"
+					>
+				</local:InteractiveButton>   
+				
+			</mx:HBox>
+		</mx:VBox>	
+	</mx:HBox>
+</mx:TitleWindow>

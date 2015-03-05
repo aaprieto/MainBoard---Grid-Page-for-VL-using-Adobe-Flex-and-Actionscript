@@ -1,0 +1,788 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	 xmlns:mx="http://www.adobe.com/2006/mxml"
+	 xmlns:s="library://ns.adobe.com/flex/spark"
+	 width="100%" height="100%" 
+	layout="absolute"       
+	initialize="httpRequestUrlMainboard( mx.core.FlexGlobals.topLevelApplication.parameters.app)"
+	creationComplete="init()"
+	xmlns:local="*"
+	rollOver="{mbdg_stopHoverTimer()}"
+	> 
+	<mx:VBox id="mainvbox" width="100%" height="100%" paddingLeft="0"  
+		paddingRight="0" verticalScrollPolicy="auto" horizontalCenter="0"  
+		top="0" bottom="2" color="#F2F8F9">
+		       
+		 <mx:ApplicationControlBar id="main" width="100%"  rollOver="{mbdg_stopHoverTimer()}"  > 
+				<!-- mx:Button label="e-Z Learn" id="btn_help" icon="@Embed('image/scholar_cap.png')"
+					fontFamily="Arial" textAlign="center" fontSize="20" height="28" 
+					toolTip="Opens a web page containing information about the capabilities of HighView."
+					click="navigateToURL(new URLRequest('http://www.maves.com/e-Z_Learn2/Web%20Pages/HighView%20Menu.htm'), 'quote')" 
+				/ -->
+				<!-- mx:Image x="0" y="0" source="image/RLS_for_VL_HVwShad.png"
+							
+							useHandCursor="true" buttonMode="true"
+							mouseChildren="false"
+							 width="59" height="73"/  -->
+							 
+							 
+				<!-- local:HighViewButton label="e-Z Learn {mousehoverparslabel}" doc_id="1000" id="btn_help_old" icon="@Embed('image/scholar_cap.png')"
+					fontFamily="Arial" textAlign="center"  height="28"
+					click="{launchEZLearnMenu(event)}" 
+					rollOver="{mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+						rollOut="{ mbdg_stopHoverTimer()}"
+				 	width="252"
+				 	styleName="{'highResolutionLabel'}"
+				 / -->
+			 <!-- local:HighViewButton label="e-Z Learn {mousehoverparslabel}" doc_id="1000" id="btn_help" icon="@Embed('image/scholar_cap.png')"
+								   fontFamily="Arial" textAlign="center"  height="28"
+								   click="{pre_mbdg_mousehovering(event,my_c_code_description,my_c_code_description,'BUTTON')}" 
+								   width="252"
+								   styleName="{'highResolutionLabel'}"
+								   / -->
+			  
+			 
+			 <local:HighViewButton label="e-Z Learn {mousehoverparslabel}" doc_id="1000" id="btn_help" icon="@Embed('image/scholar_cap.png')"
+								   fontFamily="Arial" textAlign="center"  height="28"
+								   click="{eZLearn_click(event)}" 
+								   width="252"
+								   styleName="{'highResolutionLabel'}"
+								   />
+			 
+				 <!-- local:HighViewButton label="e-Z Learn {mousehoverparslabel}" doc_id="1000" id="btn_help" icon="@Embed('image/scholar_cap.png')"
+					fontFamily="Arial" textAlign="center" fontSize="20" height="28"
+					toolTip="Opens a web page containing information about the capabilities of HighView."
+					click="{launchEZLearnMenu(event)}" 
+					rollOver="{mbdg_mousehovering(event,'',event.currentTarget.doc_id,'BUTTON_EZ')}"
+						rollOut="{ mbdg_stopHoverTimer()}"
+				 width="252"/ -->
+				<!--   This was the latest one, but have to change this as per Tim Legere. 
+				
+				
+					mx:Button label="e-Z Learn" id="btn_help" icon="@Embed('image/scholar_cap.png')"
+					fontFamily="Arial" textAlign="center" fontSize="20" height="28"
+					toolTip="Opens a web page containing information about the capabilities of HighView."
+					click="navigateToURL(new URLRequest('../../e-Z_Learn2/Web%20Pages/HighView%20Menu.htm'), 'quote')" 
+				/ -->
+				<!-- mx:Button label="e-Z Learn" id="ezlearn" icon="@Embed('image/scholar_cap.png')"   
+				   	   	toolTip="E-Z Learn" textAlign="left" fontSize="16" 
+				   	   	click="{Alert.show('Work In Process')}"  height="53" useHandCursor="true" buttonMode="true" mouseChildren="false"/ -->
+				
+				
+			 <mx:TextInput id="mainboard_h_command" enter="{allcommandsactiongrid =mainboard_h_command.text, passData(event),mainboard_h_command.text = ''}" 
+						   width="100"  color="#000606" fontWeight="bold" maxChars="20" 
+						   editable="true" enabled="true" themeColor="#C9E6F8" backgroundColor="#85e7ff" 
+						   fontSize="14" height="25"  
+						   rollOver="{mbdg_mousehovering(event,'','Commands Input','COMMANDS_INPUT')}"
+						   rollOut="{ mbdg_stopHoverTimer()}"
+						   cornerRadius="4" 
+						   borderStyle="inset"
+						   />
+				 
+			 
+			 <mx:Button id="btn_browse_jobs" icon="@Embed('image/icon_lookup.png')"   
+						width="33" click="{allcommandsactiongrid =mainboard_h_command.text, passData(event),mainboard_h_command.text = ''}"/>
+			 
+			 
+			 
+			 
+				<!-- mx:Label id="namedescription" text="{myNameDescription}" fontFamily="Arial"  height="30" 
+					paddingTop="2" color="#ffffff" fontWeight="bold" styleName="{'highResolutionLabel'}" / -->
+				
+					
+			
+			
+			
+			
+			<!-- mx:Spacer width="100%"/ -->
+				<mx:Label id="time_ctr" text="{tmr_ctr}" fontFamily="Arial"  height="30" styleName="{'highResolutionLabel'}"
+					paddingTop="2" color="#ffffff" fontWeight="bold"  width="0" visible="false"/>
+				
+				<mx:Label id="autorefresh_ctr" fontFamily="Arial" height="30" styleName="{'highResolutionLabel'}"
+					paddingTop="2" color="#ffffff" fontWeight="bold"  visible="false" width="0"/>
+				
+					
+			
+			
+			
+			
+			<mx:Spacer width="60%"/>    
+		 				<!-- mx:HBox id="acb_hb" width="{Application.application.width*0.35}" paddingLeft="5" -->
+		 				<mx:Label id="applicationlabel" text="Module Title" fontFamily="Arial" height="30" 
+		 				paddingTop="2" color="#ffffff" fontWeight="bold"  textAlign="center" styleName="{'highResolutionLabel'}"
+		 				rollOver="{mbdg_mousehovering(event,event.currentTarget.text,sub_sys,'SUBSYSTEM')}"
+		 				rollOut="{ mbdg_stopHoverTimer()}"
+		 				useHandCursor="true" buttonMode="true"
+		 				mouseChildren="false"/> 
+						
+						<!-- /mx:HBox -->
+						
+					
+			   
+			
+			
+			
+			<mx:Spacer width="100%"/>
+			<!-- mx:Image
+			x="27" y="123" 
+			source="{company_logo}"
+			/ -->
+		 			
+		 			<!-- mx:Label id="compcode" text="{Application.application.parameters.cd} " fontFamily="Arial" height="30" 
+		 				paddingTop="2" color="#ffffff" fontWeight="bold"  styleName="{'highResolutionLabel'}"/ -->
+				 	
+			
+			
+			 <!-- local:HighViewButton doc_id="10031"  id="mylogistics_menu" 
+								   label="MyLogistics Menu"
+								   width="0" visible="false"
+								   
+								   rollOver="{openMyLogisticsMainMenu()}"
+								
+								   fontFamily="Arial" textAlign="center"  height="28"
+								 
+								   styleName="{'highResolutionLabel'}"
+								   
+								   
+								   / 
+			 --> 
+			 
+			 
+			 <mx:ComboBox
+				 id="mylogistics_menu"
+				 dataProvider="{ds_xmltomylogjobcode}"
+				 labelField="loc_cn"   
+				 prompt="MyLogistics Menu"
+				 rowCount="{20}"      
+				 color="black"
+				 styleName="highResolutionSystemMenu"
+				 fontWeight="bold"
+				 mouseOver="{mylogistics_menu.open()}"
+				 top="20" 
+				 width="0"
+				 fontFamily="Arial"  
+				 change="change_mylogmenu()"
+				 />
+			 
+			
+			 
+			 
+			 
+			<!-- mx:Spacer width="100%"/ -->
+				
+				<local:HighViewButton doc_id="1003"  id="close_window" icon="@Embed('image/icon_logoff.png')"
+					fontFamily="Arial" textAlign="center" fontSize="12"
+					width="43" 
+					click="closeApp();"
+					rollOver="{mbdg_mousehovering(event,'','Exit Button','EXIT_BUTTON')}"
+						rollOut="{ mbdg_stopHoverTimer()}"
+						
+						
+						
+						
+						
+				/>
+			 
+			
+			 
+				<!-- local:HighViewButton doc_id="1003"  id="close_window" icon="@Embed('image/icon_logoff.png')"
+					fontFamily="Arial" textAlign="center" fontSize="12"
+					toolTip="Closes the current HighView Window."
+					click="closeApp();"
+					rollOver="{mbdg_mousehovering(event,'',event.currentTarget.doc_id,'BUTTON')}"
+			 		rollOut="{ mbdg_stopHoverTimer()}"
+				/ -->
+		</mx:ApplicationControlBar>
+		
+		<!-- mx:Image
+		x="200" y="200" width="61" height="44"
+		source="image/RLS_for_VL_HVwShad.png"
+		/ -->
+		
+		
+		<mx:HBox  paddingLeft="0" width="{main.width}"  id="hb_mbdatagrid"   horizontalScrollPolicy="off"  horizontalGap="0"  fontFamily="Arial" fontSize="12"  
+		 				paddingTop="2"  color="#ffffff" resizeEffect="resizeEffect" fontWeight="bold"  >
+			<mx:HBox  paddingLeft="0" id="hb_mbdatagrid_1"   horizontalScrollPolicy="auto"  horizontalGap="0"  fontFamily="Arial" fontSize="12" height="38" 
+							paddingTop="2"  color="#ffffff" resizeEffect="resizeEffect" fontWeight="bold"  >
+				
+			<!-- local:HighViewButton doc_id="1001" label="Auto Ref {autorefresh_flag}" id="btn_autorefresh"  
+					fontFamily="Arial" textAlign="center" fontSize="20"
+					
+			 		width="179"
+			 		click="{switchAutoRefresh(event)}"
+			 		rollOver="{mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+			 		rollOut="{ mbdg_stopHoverTimer()}"
+			 / -->
+			<!-- mx:Button label="Button" click="{removeSort(event)}"/ -->
+			<!-- local:HighViewButton doc_id="1001" label="Refresh {autorefresh_flag}" id="btn_autorefresh"  
+					fontFamily="Arial" textAlign="center" fontSize="20"
+					toolTip=""
+			 		width="179"
+			 		click="{switchAutoRefresh(event)}"
+			 		rollOver="{mbdg_mousehovering(event,'',event.currentTarget.doc_id,'BUTTON')}"
+			 		rollOut="{ mbdg_stopHoverTimer()}"
+			 / -->
+			 <!-- mx:Button label="Action" id="b1000" icon="@Embed('image/icon_lookup.png')" 
+					fontFamily="Arial" textAlign="center" fontSize="20"
+					toolTip="Displays a list of commands that may be performed with the current highlighted/selected information."
+					click="{launchMoreInfo()}"
+			 		width="111"
+			 		rollOver="{mbdg_mousehovering_for_help(event,'',event.currentTarget.label,'BUTTON', event.currentTarget.id)}"
+			 / -->
+			
+				
+				
+				
+				
+				<!-- local:HighViewButton doc_id="1002" label="Commands" id="btn_ac"  
+					fontFamily="Arial" textAlign="center" fontSize="20"
+					
+					click="{launchMoreInfo()}"
+			 		
+			 		rollOver="{mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+			 		rollOut="{ mbdg_stopHoverTimer()}"
+			 / -->
+				
+				
+				
+				
+				
+				
+			 <!-- local:HighViewButton doc_id="1002" label="Action" id="btn_ac" icon="@Embed('image/icon_lookup.png')" 
+					fontFamily="Arial" textAlign="center" fontSize="20"
+					toolTip="Displays a list of commands that may be performed with the current highlighted/selected information."
+					click="{launchMoreInfo()}"
+			 		width="111"
+			 		rollOver="{mbdg_mousehovering(event,'',event.currentTarget.doc_id,'BUTTON')}"
+			 		rollOut="{ mbdg_stopHoverTimer()}"
+			 / -->
+			<mx:Spacer width="1"/>
+			     
+				
+				
+				
+		
+				<!-- mx:TextInput id="h_command" enter="takeActionCommand(event)" 
+				width="90"  color="#030000" fontWeight="bold" maxChars="20" 
+				editable="true" enabled="true" themeColor="#C9E6F8" backgroundColor="#66FFFF" 
+				fontSize="20" height="32"  
+			 	rollOver="{mbdg_mousehovering(event,'','Commands Input','COMMANDS_INPUT')}"
+			 	rollOut="{ mbdg_stopHoverTimer()}"
+				cornerRadius="4" 
+				borderStyle="solid"
+				/ -->
+			
+			
+			
+			
+			
+			</mx:HBox>	
+			
+			<mx:HBox width="100%" height="100%" >  
+			
+			<mx:Image
+			  
+						source="image/left_arrow_small.png"
+						click="LeftPanActionGridButton(event)"
+					/>
+			<mx:Box direction="horizontal" id="bx_ag" width="100%" height="100%" 
+					minHeight="0" minWidth="0"  horizontalScrollPolicy="off"
+					mouseWheel="handleMouseWheelMainActionGridCommand(event)"
+					>
+			
+			<mx:HBox  paddingLeft="0" width="100%" id="hb_mbdatagrid_actiongrid"   horizontalScrollPolicy="auto"  horizontalGap="0"  fontFamily="Arial" fontSize="12" height="38" 
+							paddingTop="2"  color="#ffffff" resizeEffect="resizeEffect" fontWeight="bold" borderColor="black" borderThickness="4"  >
+					
+					</mx:HBox>	
+			<mx:VBox  paddingLeft="0" width="100%" id="vb_mbdatagrid_actiongrid"   horizontalScrollPolicy="auto"  horizontalGap="0"  fontFamily="Arial" fontSize="12" height="38" 
+						  paddingTop="2"  color="#ffffff" resizeEffect="resizeEffect" fontWeight="bold" borderColor="black" borderThickness="4"  >
+					
+			</mx:VBox>
+					</mx:Box>
+						<mx:Image
+						
+						source="image/right_arrow_small.png"
+						click="RightPanActionGridButton(event)"
+						/>	
+				<mx:Spacer width="1"/>
+					</mx:HBox>
+		
+				
+			<mx:Spacer width="1"/>
+		</mx:HBox>
+			
+	</mx:VBox>
+
+<mx:HTTPService id="tdOperatorList" url="{operatorXmlName}" result="{tdOperatorHandler(event)}" fault="{faultOperatorHandler(event)}"/>
+<mx:HTTPService id="config" url="data/ConfigFileHighview.xml" result="{hoverhelpdomainHandler(event)}" fault="{faulthoverhelpdomainHandler(event)}"/>
+
+	<mx:HTTPService
+		id="httpLogout"
+		url="ae_tlch_ml_req.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="logoutResultHandler(event)"
+		fault="hsFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>logout</action>
+				<sid>{session_id}</sid>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+<mx:HTTPService
+		id="tdJobCodeMainboard" 
+		 
+		result="tdActionCommandHandler(event)" 
+		fault="faultActionCommandHandler(event)"
+		method="POST" 
+		contentType="application/xml"
+>   
+		<mx:request>
+			<ezware_request>
+				<action>{g_action}</action>
+				<company>{my_c_code}</company>
+				<sid>{session_id}</sid>
+				<parameters>{reqActionParms}</parameters> 
+				
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+
+
+<mx:HTTPService
+		id="mainboardlist"
+		
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="mainboardlistresult(event)"
+		fault="mainboardlistfaultHandler(event)"
+>
+		<mx:request>
+			<ezware_request>
+				<action>{g_action}</action>
+				<company>{my_c_code}</company>
+				<sid>{session_id}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="mainboarddatagridlist" 
+		
+		useProxy="false" 
+		result="mainboarddatagridlistresult(event)" 
+		method="POST" 
+		fault="mainboarddatagridlistfaultHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>{g_action}</action>
+				<company>{my_c_code}</company>
+				<sid>{session_id}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<!-- Version 1
+	<mx:HTTPService
+		id="trigger_job"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		result="triggeractionHandler(event)"
+		fault="FaulttriggeractionHandler(event)"
+	>
+		<mx:request>
+			<ezware_request>
+				<action>runJob</action>
+				<jobCategory>{chainCode}</jobCategory> 
+				<company>{my_c_code}</company>
+				<sid>{session_id}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	-->
+	<mx:HTTPService
+		id="trigger_job"
+		
+		method="POST"
+		contentType="application/xml"
+		result="triggeractionHandler(event)"
+		fault="FaulttriggeractionHandler(event)"
+	>
+		<mx:request>
+			<ezware_request>
+				<action>runJob</action>
+				<company>{my_c_code}</company>
+				<sid>{session_id}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<connection>{speed_options}</connection>   
+				<version>2</version>
+				<source>job_exec</source>
+				<chain>{chainCode}</chain>	
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+		<mx:HTTPService
+		id="httpMouseHoverVariable"
+		result="globalvariableMouseHoverHandler(event)"
+		fault="faultglobalvariableMouseHoverHandler(event)"
+		
+	/>	
+	
+			
+		<mx:HTTPService 
+		id="EZLinkJob" 
+		
+		contentType="application/xml" 
+		method="POST" 
+		result="ezlinkHandlerHV(event)" 
+		fault="EZLinkFaultHandlerHV(event)"
+		
+		>
+		<mx:request>    
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{my_c_code}</company>
+				<sid>{session_id}</sid>
+				<parameters>{'REFRESH,RETRIEVE|EZLINK_JOB|' + chainCode + '|'+ sub_sys.substr(2,sub_sys.length).toString() + '|' }</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+			</mx:request>
+		</mx:HTTPService>   
+	
+	
+
+	
+	<!-- mx:Script source="InteractiveMyLogisticsSecurity.as"/ -->	
+<mx:Script source="ResultMainBoard.as"/>
+<mx:Script source="MainBoardHandler.as"/>
+<mx:Script source="MainBoardManagerBean.as"/>	
+<mx:Script source="AlertMessageHandler.as"/>
+<mx:Script source="ResolutionHandler.as"/>
+	
+	
+<mx:Script source="DashboardManagerBean.as"/>	
+<mx:Style source="css/main.css"/> 
+<mx:Script>
+	<![CDATA[
+		import com.utilities.Utils;
+		
+		import flash.events.*;
+		
+		import mx.collections.ArrayCollection;
+		import mx.collections.Sort;
+		import mx.collections.XMLListCollection;
+		import mx.containers.*;
+		import mx.containers.HBox;
+		import mx.controls.*;
+		import mx.controls.AdvancedDataGrid;
+		import mx.controls.Alert;
+		import mx.controls.DataGrid;
+		import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+		import mx.controls.dataGridClasses.DataGridColumn;
+		import mx.core.IUITextField;
+		import mx.events.AdvancedDataGridEvent;
+		import mx.managers.PopUpManager;
+		import mx.rpc.events.*;
+		import mx.states.SetStyle;
+		import mx.utils.ArrayUtil;
+		import mx.utils.ObjectProxy;
+		import mx.validators.StringValidator;
+  		
+  		[Embed(source='image/autorefresh_icon_on.png')]
+ 		private var autorefreshON:Class;
+   
+ 		[Embed(source='image/autorefresh_icon_off.png')]
+ 		private var autorefreshOFF:Class;
+  		
+  		public var c_utils = new Utils();
+  		[Bindable] 
+		private var tdMainBoard:Object;
+		[Bindable]
+		private var tdMainBoardDatagrid:ArrayCollection = new ArrayCollection;	 
+		[Bindable]
+		public var ArrayShow:ArrayCollection = new ArrayCollection;	 
+		[Bindable]
+		private var ArraySpecialCommand:ArrayCollection = new ArrayCollection;
+		[Bindable]
+		private var ArrayRetain:ArrayCollection = new ArrayCollection;	
+		[Bindable]
+		private var ArrayRetainKey:ArrayCollection = new ArrayCollection;	
+		[Bindable]
+		private var ArrayRetainKeyValue:ArrayCollection = new ArrayCollection;	
+		[Bindable]
+		private var ArrayScroll:ArrayCollection = new ArrayCollection;	
+		//[Bindable]
+		//private var ArrayRetainCombo:ArrayCollection = new ArrayCollection;	
+		//[Bindable]
+		//private var ArrayRetainComboPersistent:ArrayCollection = new ArrayCollection;	
+		//[Bindable]
+		//private var ArrayRetainComboGroup:ArrayCollection = new ArrayCollection;	
+		[Bindable]
+		public var toxml_mbcode:String = new String;
+		[Bindable]
+		public var speed_options:String = new String;     
+		[Bindable]
+		public var application_entry:String = new String;
+		[Bindable]
+		public var cyber_name:String = new String;
+		[Bindable]
+		public var client_restriction:String = new String; 
+		[Bindable]
+		public var shortcut_myviewcode:String = "";
+		[Bindable]
+		public var chainCode:String = new String;
+		[Bindable]
+		public var autorefresh_flag:String = new String;
+		
+		public var mousehoverpars:String = new String;
+		[Bindable]
+		public var mousehoverparslabel:String = new String;
+		
+		
+		[Bindable]
+		public var vdivbox:VDividedBox = new VDividedBox(); 	
+		[Bindable]
+		public var panel:Panel= new Panel();
+		[Bindable]
+  		public var operatorXmlName:String; 	
+  		[Bindable]
+		private var tdOperatorBranch:Object;
+		[Bindable]
+		private var hoverhelp_domain:String;
+		[Bindable]
+		private var company_logo:String;
+		[Bindable]
+  		public var operator_namer:String;
+  		[Bindable]
+  		private var operator_branch:String;
+  		[Bindable]
+  		private var myName:String;
+  		[Bindable]
+  		private var myNameDescription:String;
+  		[Bindable]
+  		private var g_action:String;
+  		[Bindable]
+  		private var reqSJ:String;
+  		[Bindable]
+  		private var session_id:String;
+  		[Bindable]
+  		private var mytestccode:String;
+  		[Bindable]
+  		private var myName_main:String;
+  		[Bindable]
+  		private var my_c_code:String;
+		[Bindable]
+		private var cybername:String;
+		
+		[Bindable]
+		private var access_rendition:String;
+		[Bindable]
+		private var access_view:String;
+		// Default action grid to 0 in case of a typo actiongrid code.
+		[Bindable]
+		private var actiongrid_code:int = 0;
+  		[Bindable]
+  		private var sub_sys:String;
+  		[Bindable]
+  		private var reqParms:String;
+  		[Bindable]
+  		private var reqActionParms:String;
+  		[Bindable]
+  		public var my_c_code_description:String;
+  		[Bindable]
+		private var tdActionCommand:ArrayCollection = new ArrayCollection; 
+		[Bindable]
+		private var tdcompany:ArrayCollection;
+		[Bindable]
+		private var ezlearnlink:String;
+  		[Bindable]
+		public var tmr_ctr:String;
+		[Bindable]
+		public var refresh_ctr:String;
+		[Bindable]
+		public var autorefreshTimeLimit:String;
+		[Bindable]
+		public var global_dd:Boolean = false; 
+		private var f_hr:String = "00";
+		private var f_min:String = "02";
+		private var f_sec:String = "00";
+		
+		[Bindable]
+		private var allcommandsactiongrid:String;    
+		///////////////////////////////////////////////////////////////////////////////////
+		
+		
+		
+			private const AR_HR_MASK:String = "00";
+            private const AR_MIN_MASK:String = "00";
+            private const AR_SEC_MASK:String = "00";
+            private const AR_MS_MASK:String = "000"; 
+            private const AR_TIMER_INTERVAL:int = 10;
+
+            private var AR_baseTimer:int;
+
+            private var AR_t:Timer;
+			private var AR_d:Date;
+           
+
+            private function AR_updateTimer(evt:TimerEvent):void {
+           
+                  	var AR_d:Date = new Date(getTimer() - AR_baseTimer);
+                  	var AR_hr:String = (AR_HR_MASK + AR_d.hoursUTC).substr(-AR_HR_MASK.length);
+                	var AR_min:String = (AR_MIN_MASK + AR_d.minutes).substr(-AR_MIN_MASK.length);
+                	var AR_sec:String = (AR_SEC_MASK+ AR_d.seconds).substr(-AR_SEC_MASK.length); 
+                	autorefresh_ctr.text = String(AR_hr + ":" + AR_min + ":" + AR_sec );
+             	if  (autorefresh_ctr.text >= autorefreshTimeLimit){
+            			// Refresh everything first to look for new records.
+	     						for(var ix:int = 0; ix < aCheckBox.length; ix++){
+			    					if (ArrayShow[ix].Array1.sort != null){
+										ArrayShow[ix].CheckSortGeneral(evt);
+									}
+			    						ArrayShow[ix].dataList2_trigger(evt,true);
+								}      
+            			AR_startTimer();
+            	}
+            }
+			
+            private function AR_startTimer():void {
+                AR_baseTimer = getTimer();
+                AR_t.start();
+            }
+
+            private function AR_stopTimer():void {
+                AR_t.stop();
+            }
+		////////////////////////////////////////////////////////////////////////////////////
+		 	
+ 			public var aCheckBox:Array = new Array();
+ 			private var xml_job:String = new String();
+ 			private var xml_parms:String = new String();
+ 		 	private var baseTimer:int;
+ 		 	private const HR_MASK:String = "00";
+            private const MIN_MASK:String = "00";
+            private const SEC_MASK:String = "00";
+            private const MS_MASK:String = "000"; 
+          	public var pophoverinterface_mb:MouseHoverMenu;
+   			private const TIMER_INTERVAL_FOR_HOVER_mb:int = 10;
+   			public var passedtitlecolumn:String;
+   			public var passedtitleheadercolumn:String;
+   			public var passedxmlheaderdoccode:String;
+   			public var nt_mb:Timer;
+   			public var objecttitle_mb:String;
+   			private var mt:Timer;
+   			private var d:Date;
+   			[Bindable]
+   			public var sec:String;
+   			[Bindable]
+   			public var mbctr:int = 0;
+   			
+   			public function hovercolumn(event:Event,doccode:String ,object_id_mb:String, object_title_mb:String):void{
+   				passedtitlecolumn = object_id_mb;
+   				passedtitleheadercolumn = object_title_mb;
+   				passedxmlheaderdoccode = doccode;
+              	mt = new Timer(TIMER_INTERVAL_FOR_HOVER_mb);
+              	mt.addEventListener(TimerEvent.TIMER, hovercolumntimer); 
+              	startHoverTimer_mb(); 
+          	}
+   						
+   			private function pophoverinterface_mb_rem(event:Event):void {
+						PopUpManager.removePopUp(pophoverinterface_mb);
+            }
+            
+   			private function hovercolumntimer(evt:TimerEvent):void { 
+   				
+   				  var d:Date = new Date(getTimer() - baseTimer);
+                	sec = (SEC_MASK + d.seconds).substr(-SEC_MASK.length);
+                
+                	time_ctr.text = (sec);
+                 	stopHoverTimer_mb();
+                if (sec == "01"){
+                	if (passedtitlecolumn != "none"){
+                			mbctr = mbctr + 1;
+   						if (mbctr <= 1){
+   							pophoverinterface_mb_rem(evt);
+                			pophoverinterface_mb = MouseHoverMenu(
+                			PopUpManager.createPopUp(this, MouseHoverMenu,true));
+                			pophoverinterface_mb.helpfortitle = passedtitlecolumn;
+                			pophoverinterface_mb.helpfortitleheader = passedtitleheadercolumn;
+                			pophoverinterface_mb.object_type = "COLUMN";
+                			pophoverinterface_mb.loc_ccode = my_c_code;
+							pophoverinterface_mb.loc_sid = session_id ;
+							pophoverinterface_mb.adcode = passedxmlheaderdoccode ;
+							pophoverinterface_mb.loc_appcode = application_entry;
+							
+						}
+         				
+                	}
+                }
+              	
+            	 stopHoverTimer_mb();
+            }
+   			
+   			private function getColumnName():void{
+   			//new coldatagrid: 
+   			}
+   			public function mousehovering_mb(event:Event, object_id_mb:String):void{
+				objecttitle_mb = object_id_mb;
+		    	nt_mb = new Timer(TIMER_INTERVAL_FOR_HOVER_mb);
+                nt_mb.addEventListener(TimerEvent.TIMER, updateHoverTimer_mb); 
+                stopHoverTimer_mb();
+                startHoverTimer_mb();
+            }	
+   			public function updateHoverTimer_mb(evt:TimerEvent):void {
+        		stopHoverTimer_mb();
+             	pophoverinterface_mb = MouseHoverMenu(
+                PopUpManager.createPopUp(this, MouseHoverMenu,true));
+                pophoverinterface_mb.helpfortitle = objecttitle_mb;
+             	 
+            }
+   			   public function startHoverTimer_mb():void {
+                baseTimer = getTimer();
+                mt.start();
+            }
+
+            	public function stopHoverTimer_mb():void {
+                 mt.stop();
+            } 
+            
+            public function mouseout_alternate():void {
+                 	d = new Date(getTimer() + baseTimer);
+                	sec = (SEC_MASK + d.seconds).substr(-SEC_MASK.length);
+                   	time_ctr.text = (sec);
+                  	mbctr = 0;
+                   	passedtitlecolumn = "none";
+            } 
+        	
+  	]]>
+</mx:Script>	
+<!-- mx:Resize id="resizeEffect" duration="200" /-->
+					
+						
+
+</mx:Application>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" width="650" height="644"  x="600" y="100" -->
+<!-- mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" width="100%" height="100%"  x="0" y="0" -->
+ 
+<!-- mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"  verticalScrollPolicy="off" xmlns:ns1="com.fusioncharts.components.*"
+	        layout="vertical"
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="10" y="10"  
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        borderColor="haloSilver"
+        backgroundColor="haloSilver"
+   		creationComplete="init()" 
+   		width="{resx - 50}"
+   		height="{resy - 250}"
+   		title="Chart Result"
+   		-->
+   		 
+        
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" xmlns:ns1="com.fusioncharts.components.*" viewSourceURL="srcview/index.html"
+	height="644" width="650" creationComplete="init()"
+	>
+<mx:Style source="css/main.css"/>
+<mx:Script>
+	<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+	 		import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.controls.Button;
+         	import mx.charts.chartClasses.ChartBase;
+        	import mx.charts.HitData;
+			import flash.system.Capabilities;
+			import mx.collections.Sort;
+			import mx.collections.SortField;
+			
+			
+			[Bindable]
+		 	public var ChartArrayGraph_2:Array=new Array();
+		 	[Bindable]
+		 	 public var Key1_th:String=new String;
+             [Bindable] 
+            public var Key2_th:String=new String;
+		 	 [Bindable]
+		 	private var _chartData:ArrayCollection=new ArrayCollection();
+ 		    private var _chartParam:ArrayCollection=new ArrayCollection([
+ 		    {xAxisName:'Months'},
+			{yAxisName:'Quantity - Amount'},
+			{showShadow:'1'},
+			{useRoundEdges:'1'},
+			{numVisiblePlot:'10'},
+			{plotGradientColor:''},
+			{legendPosition:'RIGHT'},
+			{showValues:'0'}]);
+			
+			private var resx:int = Capabilities.screenResolutionX;
+			private var resy:int = Capabilities.screenResolutionY;
+ 		   
+ 		   private function titleWindow_close(evt:Event):void {
+                 PopUpManager.removePopUp(this);	
+           }
+           private function init():void {
+				//Alert.show(chartArray1.length.toString());
+				//Alert.show(chart_xlcColumn.length.toString());
+//				var resx:int = Capabilities.screenResolutionX;
+	//			var resy:int = Capabilities.screenResolutionY;
+				//Alert.show(resx.toString());
+			//	this.width = resx - 50;
+			//	this.height = resy - 250;
+				
+				//this.width = 728
+				//this.height = 508
+					
+				creat_chart();
+			//	Alert.show(unit_chart.width.toString());
+
+           }
+    
+    
+    			// Main function for building chart
+			private function creat_chart():void
+			{
+				// Here we are creating the data source for chart as ArrayCollection datatype
+				// Adding data to '_chartData' ArrayCollection object as 'Label' element
+				//Alert.show("go here");	
+				
+				
+				//
+							
+				      // sort data first by analyzedate
+//                   var dataSortField:SortField = new SortField();
+//                	dataSortField.name = "analyzedate";
+ //               	dataSortField.numeric = false;
+//					dataSortField.descending = true;
+                /* Create the Sort object and add the SortField object created earlier to the array of fields to sort on. */
+//                var stringDataSort:Sort = new Sort();
+//                stringDataSort.fields = [dataSortField];
+
+                /* Set the ArrayCollection object's sort property to our custom sort, and refresh the ArrayCollection. */
+//                ChartArrayGraph_2.sort(stringDataSort);
+//                ChartArrayGraph_2.refresh();
+				
+				
+					ChartArrayGraph_2 = new Array();
+						for( var a_testko:int = 0; a_testko < 200; a_testko++ ){
+						var save:Object = new Object();
+							save.analyzedate = a_testko;
+						save.col1 = "100";
+						save.col2 = "200";
+							
+							ChartArrayGraph_2.push(save);
+						
+						}
+						Alert.show(ChartArrayGraph_2.length.toString());
+				
+				
+				for (var i:Number = 0; i<ChartArrayGraph_2.length; i++)
+				{
+					_chartData.addItem({label:ChartArrayGraph_2[i].analyzedate});
+				}
+				
+				// Providing Series name
+				//_chartData.addItem({seriesName:'Line Charge Amt'});
+				
+				//_chartData.addItem({seriesName:Key1_th, color:"8BBA00"});
+				_chartData.addItem({seriesName:Key1_th, color:"00AA00"});
+				// Adding data to '_chartData' ArrayCollection object as 'Value' element
+				for (var j:Number = 0; j<ChartArrayGraph_2.length; j++)
+				{
+					
+				//	_chartData.addItem({value:ChartArrayGraph_2[j].col1});
+					var s_col1:String = ChartArrayGraph_2[j].col1;
+					_chartData.addItem({value:s_col1});
+				} 
+				// Providing another Series name
+				//_chartData.addItem({seriesName:'Rev Amt'});
+				//_chartData.addItem({seriesName:Key2_th, color:"D64646"});
+				_chartData.addItem({seriesName:Key2_th, color:"00AA77"});
+				// Adding data to '_chartData' ArrayCollection object as 'Value' element
+				for (var k:Number = 0; k<ChartArrayGraph_2.length; k++)
+				{
+					var s_col2:String = ChartArrayGraph_2[k].col2;
+					_chartData.addItem({value:s_col2});
+				}
+			/*
+					_chartData.addItem({seriesName:Key2_th, color:"00AA77"});
+				// Adding data to '_chartData' ArrayCollection object as 'Value' element
+				for (var k:Number = 0; k<ChartArrayGraph_2.length; k++)
+				{
+					var s_col2:String = ChartArrayGraph_2[k].col2;
+					_chartData.addItem({value:s_col2});
+				}
+*/
+//				for( var a_test:int = 0; a_test < _chartData.length; a_test++ ){
+//								Alert.show("row no: " + a_test + " label: " + _chartData[a_test].label + " seriesName: " + _chartData[a_test].seriesName  + " value: " + _chartData[a_test].value );
+//							}
+		//Alert.show(_chartData.length.toString());
+				// Providing data for the chart as ArrayCollection datatype by calling FCData function.
+        		// Providing parameters for the chart as ArrayCollection datatype by calling FCParams function.
+				// Calling FCrender function to take effect visually.
+				
+				fc.FCData(_chartData);
+				fc.FCParams(_chartParam);
+				fc.FCRender();
+			}
+			
+			private function rendered(e:Event):void
+			{
+				fc.FCData(_chartData);
+				fc.FCParams(_chartParam);
+				fc.FCRender(); 
+				
+			}
+			
+			private function change_chart(e:Event):void
+			{
+				// Changing chart type by FCChartType property				
+				// Calling FCrender function to take effect visually with a blank data.
+				fc.FCChartType=e.currentTarget.selectedItem.value;
+				var temp:ArrayCollection=new ArrayCollection([]);
+				fc.FCData(temp);
+			//	fc.FCRender();
+				//fc.FCChartType=e.currentTarget.selectedItem.value;
+				//fc.FCData(_chartData);
+				//fc.FCRender();
+				fc.FCData(_chartData);
+				fc.FCParams(_chartParam);
+				fc.FCRender(); 
+
+										
+			}
+    
+    
+	]]>
+</mx:Script>
+<mx:Style source="css/main.css"/>
+   <!-- will go into the IDeferredInstance slot of the superclass -->
+			<ns1:FusionCharts id="fc" width="391" height="174"  FCChartType="ScrollColumn2D" FCRenderEvent="rendered(event)" FCDataXML=".">
+				<ns1:FCChartData ChartNoDataText="Calculating..." />
+			</ns1:FusionCharts>
+			<mx:ControlBar>
+				<mx:HBox horizontalAlign="left" width="100%">
+					<mx:Button label="Close" click="{titleWindow_close(event)}"/>
+				</mx:HBox>
+				<mx:Spacer width="100%"/>
+				<mx:HBox horizontalAlign="right" width="100%">
+					<mx:Text text="Select chart type:"/>
+					<mx:ComboBox id="chart_combo" change="change_chart(event)" enabled="true">
+						<mx:ArrayCollection>
+							<mx:Object label="Column Chart" value='ScrollColumn2D'/>
+			         		<mx:Object label="Line Chart" value='ScrollLine2D'/>
+			        		<mx:Object label="Area Chart" value='ScrollArea2D'/>
+			        		<mx:Object label="MS Column 3D" value='MSColumn3D'/>
+	      				</mx:ArrayCollection>
+					</mx:ComboBox>
+				</mx:HBox>
+			</mx:ControlBar>
+</mx:Application>
+<!-- /mx:TitleWindow -->			
+

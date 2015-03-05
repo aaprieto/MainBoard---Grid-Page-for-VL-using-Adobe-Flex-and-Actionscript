@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <root>
+ 	<Panel>
+		<code>023</code>
+ 		<title>Unassigned Menu Items</title>
+ 		<type>DDLevel1</type>
+		<refreshall>Y</refreshall>
+	</Panel>
+	<AdvancedDataGridColumnGroup> 
+		<columngroup headerText="Profiles" columnstart="0"/>
+	</AdvancedDataGridColumnGroup>
+		<AdvancedDataGridColumn>
+ 			<column columnId="0" dataField="flag" title_header="Access" width="80" datatype="S"/>
+ 			<column columnId="1" dataField="operator" title_header="Operator Group" width="200" datatype="S"/>
+ 			<column columnId="2" dataField="company" title_header="Company" width="120" datatype="S"/>
+ 			<column columnId="3" dataField="system_code" title_header="System Code" width="140" datatype="S"/>
+ 			<column columnId="4" dataField="subsys_code" title_header="Sub-system Code" width="180" datatype="S" />
+        	<column columnId="5" dataField="subsys_desc" title_header="Sub-system Description" width="280" datatype="S"/> 
+ 			<column columnId="6" dataField="group_code" title_header="Functional Group Code" width="210" datatype="S" />
+ 			<column columnId="7" dataField="group_desc" title_header="Group Description" width="300" datatype="S"/>
+ 			<column columnId="8" dataField="job_code" title_header="Job Code" width="120" datatype="S" />
+ 			<column columnId="9" dataField="job_desc" title_header="Job Description" width="300" datatype="S"/>
+ 			<column columnId="10" dataField="" title_header="" width="1500" datatype="S"/>
+     	</AdvancedDataGridColumn> 
+ </root>
+ 

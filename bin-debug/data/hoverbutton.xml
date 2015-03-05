@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data>
+<row id="0" label="Play Video" address="http://www.yahoo.com" tip="Arnold"/>
+<row id="1" label="Do Something" address="http://www.google.com" tip="Christine"/>
+<row id="2" label="What is this?" address="http://www.maves.com" tip="Matthew"/>
+</data>

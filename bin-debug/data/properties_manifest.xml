@@ -1,0 +1,20 @@
+<root>
+<Panel>
+<code>002</code>
+<title>Manifest WiP Action Grid</title>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="Manifest" columnstart="0"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="manifest" dataField="manifest" title_header="Manifest" width="130" datatype="S"  wordwrap="false" />
+<column columnId="1" columnName="origin" dataField="origin" title_header="Origin" width="80" datatype="S"  wordwrap="false" />
+<column columnId="2" columnName="destin" dataField="destination" title_header="Destination" width="120" datatype="S" wordwrap="false"  />
+<column columnId="3" columnName="ship_date" dataField="ship_date" title_header="Ship Date" width="160" datatype="D"  wordwrap="false" />
+<column columnId="4" columnName="carrier" dataField="carrier" title_header="Carrier" width="165" datatype="S"  wordwrap="false" />
+<column columnId="5" columnName="pallets" dataField="tot_pallets" title_header="Plts" width="160" datatype="N"  wordwrap="false" />
+<column columnId="6" columnName="weight" dataField="tot_weight" title_header="Wgt" width="160" datatype="N"  wordwrap="false" />
+<column columnId="7" columnName="pieces" dataField="tot_pieces" title_header="Pcs" width="160" datatype="N"  wordwrap="false" />
+<column columnId="8" columnName="" dataField="" title_header="" width="1500" datatype="S"   wordwrap="false"  />
+</AdvancedDataGridColumn>
+</root>

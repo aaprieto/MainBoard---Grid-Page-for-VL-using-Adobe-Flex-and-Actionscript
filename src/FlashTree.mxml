@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="10" y="10" width="322" height="575" creationComplete="init(event);btn_exp.setFocus();btn_exp.drawFocus(true);" 
+        dropShadowEnabled="true"
+         
+  		blendMode="normal"
+        layout="horizontal"
+        borderAlpha="1.0"
+    
+        fontSize="12"  fontWeight="bold" color="#010B0D" xmlns:local="*">
+ <mx:Script> 
+ 	<![CDATA[
+ 	[Bindable]
+		private var xm:XML = new XML;
+	[Bindable]
+ 		    public var xml_string:String;	
+ 			import mx.events.CloseEvent; 
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	private var helpWindow:TitleWindow;
+
+ 		    private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+           }
+            private function init(evt:Event):void {
+				var str:String = xml_string;
+				xm = new XML(str); 
+				
+           }
+            public function treeChanged(event:Event):void {
+          		Alert.show(event.currentTarget.selectedItem.@field.toString() + " : " + event.currentTarget.selectedItem.@label.toString());
+            }
+            
+            private function tree_expandChildrenOf(evt:MouseEvent):void {
+           		xmllisttree.selectedIndex = 0;
+           				for (var i:int = 0; i < xmllisttree.dataProvider.length; i ++){ 
+                                xmllisttree.expandChildrenOf(xmllisttree.dataProvider[i], true) 
+                        } 
+           		xmllisttree.selectedIndex = -1;
+           
+                
+        	}
+        	private function tree_collapseChildrenOf(evt:MouseEvent):void {
+           		xmllisttree.selectedIndex = 0;
+           				for (var i:int = 0; i < xmllisttree.dataProvider.length; i ++){ 
+                                xmllisttree.expandChildrenOf(xmllisttree.dataProvider[i], false) 
+                        } 
+          		xmllisttree.selectedIndex = -1;
+          	}
+          	
+          	private function submitFlash(event:Event):void{
+          		for (var i:int=0;i<=xmllisttree.selectedItems.length; i++){
+          		}
+          		
+          	}
+          	
+            
+ 	]]>
+ </mx:Script>
+ 
+    <mx:VBox id="vb" width="289" height="100%">
+    				
+					<mx:HBox width="100%">
+						<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+								   height="27"
+								   width="78"
+								   useHandCursor="true" buttonMode="true"   
+								   mouseChildren="false"
+								   click="{parentApplication.scholarcap_mousehovering(event,'','Flash Filter Console','BUTTON')}"
+								   
+								   />     
+						<mx:Spacer width="50%"/>
+						<mx:Label text="Flash Filter"  fontWeight="bold" fontSize="19" color="#FAFCFC"/>
+						<mx:Spacer width="100%"/>
+						
+					</mx:HBox>
+					
+		
+		<!--
+					<mx:HBox  horizontalAlign="center" height="35" width="100%">
+    					<mx:Image source="image/light_icon.png" width="26" height="30"/>
+    				
+    					<mx:Label text="Flash Filter"  fontWeight="bold" fontSize="19" color="#FAFCFC"/>
+    	
+    				</mx:HBox>
+    	-->
+    				<mx:HBox  horizontalAlign="center" height="30" width="100%">
+    				 
+						<local:HighViewButton id="btn_exp" doc_id="1031" label="Expand All" click="tree_expandChildrenOf(event);" />
+						<local:HighViewButton id="btn_col" doc_id="1032" label="Collapse All" click="tree_collapseChildrenOf(event);" />
+						</mx:HBox>
+        <!-- mx:Tree height="403" width="242" id="xmllisttree" allowMultipleSelection="true" labelField="@label"  change="treeChanged(event)" 
+        		dataProvider="{xm}" showRoot="false"  selectedIndex="0" -->
+        <mx:Tree height="100%" width="100%" id="xmllisttree" allowMultipleSelection="false" labelField="@label"  
+        		 dataProvider="{xm}" showRoot="false"  selectedIndex="-1"  >
+       		 
+       
+        </mx:Tree>
+        <!-- mx:HBox  horizontalAlign="center" height="35" width="100%"> 
+						<mx:Spacer width="80%"/>
+						<mx:Button id="btn_cancel" label="Close" click="titleWindow_close(event);" />
+						</mx:HBox --> 
+    </mx:VBox>
+   
+</mx:TitleWindow>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" initialize="init()" borderStyle="solid" borderThickness="2" click="launchHighView(event)">
+	
+	<mx:Script>
+		<![CDATA[ 
+			import flash.events.Event;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.rpc.events.ResultEvent;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+			
+			
+			[Bindable]
+			public var loc_cybername:String = new String;
+			
+			[Bindable]
+			public var loc_image:String = new String;
+			
+			[Bindable]
+			public var loc_name:String = new String;
+			
+			[Bindable]
+			public var loc_launchHighViewparam:String = new String;
+			
+			[Bindable]
+			public var loc_company:String = new String;
+			
+			private function launchHighView(event:Event):void{
+				
+				navigateToURL(new URLRequest(loc_launchHighViewparam +'&c='+ loc_company + '&app=ml'+ '&cbn=' + loc_cybername),'_self');
+			}
+			
+			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:VBox>
+
+		<mx:Text  id="subsystem_text" width="100%"  textAlign="center" text="{loc_cybername}" color="white" fontWeight="bold" styleName="highResolutionSystemMenu"   height="61"/>
+		<mx:Image id="img"  source="{'../dashhome/image/' + loc_image}" />
+		<mx:Text  id="subsystem_text2" width="100%"  textAlign="center" text="{loc_name}" fontWeight="bold" color="white" styleName="highResolutionSystemMenu"   height="61"/>
+		
+		
+	</mx:VBox>
+</mx:Canvas>
+

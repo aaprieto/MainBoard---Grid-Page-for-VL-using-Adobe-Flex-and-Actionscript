@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10" width="546" height="88" creationComplete="init(event);" 
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundImage=""
+				layout="horizontal"
+				xmlns:local="*" verticalAlign="top" title="Select Reference Column" horizontalAlign="center">
+	<mx:Script> 
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.events.CloseEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;    
+			[Bindable]
+			public var arr_colsorted:ArrayCollection;
+			private function titleWindow_close(evt:Event):void { 
+				PopUpManager.removePopUp(this);
+			}
+			private function init(evt:Event):void {
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%">
+		<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+				   height="27"
+				   width="78"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   click="{parentApplication.scholarcap_mousehovering(event,'','Reference Column','BUTTON')}"
+				   
+				   />
+		
+		<mx:Spacer width="100%"/>
+		<local:HighViewCombobox  id="cb_sort" doc_id="1025" dataProvider="{arr_colsorted}" fontSize="14" color="#040404" width="216"/>
+		<mx:Button id="btn_sc_submit" label="Submit"  />
+		<mx:Button id="btn_sc_cancel" label="Cancel" click="{titleWindow_close(event)}" />
+		<mx:Spacer width="100%"/>
+	</mx:HBox>
+</mx:TitleWindow>

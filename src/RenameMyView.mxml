@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="624" height="277"  verticalScrollPolicy="off"
+				layout="vertical"
+				title="Rename View"
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				borderColor="#DAD8D8"  
+				backgroundColor="#FAFBFC"
+				creationComplete="init()"
+				backgroundImage=""
+				backgroundAlpha="1.0" styleName="glass" xmlns:local="*">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			
+			/*
+			public var save_as:String;
+			[Bindable]
+			public var r_sessid:String;
+			[Bindable]
+			public var r_company_code:String;
+			[Bindable]
+			public var r_user_code:String;
+			[Bindable]
+			public var create_modify:String;
+			*/
+			
+			[Bindable]
+			public var loc_myviewcode:String;
+			[Bindable]
+			public var loc_myviewdescription:String;
+			[Bindable]
+			public var loc_autoapply:String;
+			[Bindable]
+			public var loc_btnlabel:String;
+			
+			//[Bindable]
+			//public var arr_listviews:ArrayCollection;
+			
+			private function init():void{
+				
+				
+				if (loc_myviewcode.substr(0,1) == '*'){
+					gen.selected = false;
+					uoc.selected = true;
+					myviewcode.text = loc_myviewcode.substr(1,loc_myviewcode.length);
+				} else {
+					gen.selected = true;
+					uoc.selected = false;
+					myviewcode.text = loc_myviewcode;
+						
+				}
+				
+				
+				if (loc_btnlabel.substr(0,1) == '*'){
+					
+					btnlabel.text = loc_btnlabel.substr(1,loc_btnlabel.length);
+				} else {
+					
+					btnlabel.text = loc_btnlabel;
+					
+				}
+				
+				
+				gen.enabled = false;
+				uoc.enabled = false
+				    
+					
+					
+					//myviewcode.text = loc_myviewcode;
+					
+				 
+					myviewdescription.text = loc_myviewdescription;
+					myviewcode.setFocus();
+					myviewcode.drawFocus(true);   
+				
+				
+			}
+			
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+		
+		]]>
+	</mx:Script>
+	<mx:Style source="css/main.css"/>
+	
+	<mx:HBox width="100%" id="hbox2">
+		<mx:Label text="View Code" width="138" id="label1" fontWeight="bold" fontSize="14"/>
+		<mx:TextInput  backgroundColor="#85E7FF"  width="232" id="myviewcode" text=""  
+					   maxChars="13" fontSize="14" 
+					  
+					   fontWeight="bold"/>
+	</mx:HBox>
+	<mx:HBox width="100%" id="hboxbtnlabel">
+		<mx:Label text="Button Label" width="138" id="labelbtnlabel" fontWeight="bold" fontSize="14"/>
+		<mx:TextInput  backgroundColor="#85E7FF"  width="232" id="btnlabel" text=""  
+					   maxChars="13" fontSize="14" 
+					   
+					   fontWeight="bold"/>
+	</mx:HBox>
+	<mx:HBox width="100%" height="60" id="hbox3">
+		<mx:Label text="View Description" id="label2" fontWeight="bold" fontSize="14"/>
+		<mx:TextArea  backgroundColor="#85E7FF"  width="324" height="55" id="myviewdescription" text="" fontSize="14" fontWeight="bold"/> 
+	</mx:HBox>
+	<mx:HBox width="100%" id="hbox1">
+		<mx:RadioButtonGroup id="radiogroup3"/>
+		<mx:Label text="Share View?" width="207" fontWeight="bold" fontSize="14"/>
+		<mx:RadioButton id="gen" label="Yes" groupName="radiogroup4" width="149" />
+		<mx:RadioButton id="uoc" label="No" groupName="radiogroup4" width="149" />
+	</mx:HBox>
+	
+	<mx:HBox width="100%" id="hbox_aa">   
+		<mx:RadioButtonGroup id="radiogroup_aa"/>
+		<mx:Label text="Apply Automatically?" width="207" fontWeight="bold" fontSize="14"/>
+		<mx:RadioButton id="aa_yes" label="Yes" groupName="radiogroup_aa" width="149" /> 
+		<mx:RadioButton id="aa_no" label="No" groupName="radiogroup_aa" width="149" />
+	</mx:HBox>
+	
+	<mx:HBox width="100%">
+		<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+				   height="27"
+				   width="78"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   click="{parentApplication.scholarcap_mousehovering(event,'',this.title,'BUTTON')}"
+				   
+				   />     
+		<mx:Spacer width="100%"/>
+		<local:HighViewButton doc_id="1046" label="Submit" id="btn_submit" />
+		<local:HighViewButton label="Cancel" doc_id="1047" id="btn_cancel" click="{titleWindow_close(event)}" />
+	</mx:HBox>
+	
+</mx:TitleWindow>
+
+
+   
+
+
+
+
+
+
+
+
+
+
+

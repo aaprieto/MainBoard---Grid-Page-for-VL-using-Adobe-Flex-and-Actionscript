@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="50" y="70" width="474"  creationComplete="init(event);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        layout="horizontal"
+        color="#B6B9BA" height="297"
+        backgroundImage=""
+        
+        xmlns:local="*"> 
+        
+ <mx:Script> 
+ 	<![CDATA[
+ 			import mx.collections.ArrayCollection;
+ 			import mx.controls.*;
+ 			import mx.events.CloseEvent;
+ 			import mx.events.FlexMouseEvent;
+ 			import mx.events.ItemClickEvent;
+ 			import mx.managers.PopUpManager;
+ 			import mx.rpc.events.*;
+ 			import mx.utils.ArrayUtil;
+ 			import mx.utils.ObjectProxy;
+		 	
+		 	public var ses_id:String;	
+		 	[Bindable]
+		 	public var p_hr:String;
+		 	[Bindable]
+		 	public var p_min:String;
+		 	[Bindable]
+		 	public var p_sec:String;	
+			[Bindable]
+			public var p_mainboardtitlename:String;
+			
+ 		    private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+            }
+            private function init(evt:Event):void {
+            	
+            }
+ 	]]>
+ </mx:Script>
+    <mx:VBox id="vb" width="100%"> 
+   
+		<mx:HBox width="100%">
+			<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'','Auto Refresh Timer Console','BUTTON')}"
+					   
+					   />     
+			<mx:Spacer width="50%"/>
+			<mx:Label text="Auto Refresh Timer" fontSize="20" fontWeight="bold" color="#050505"/>
+			<mx:Spacer width="100%"/>
+			
+		</mx:HBox>
+			
+		
+		
+		
+	<!-- mx:HBox id="hb0" width="100%" >
+    <mx:Spacer width="100%" />
+    	<mx:Label text="Auto Refresh Timer" fontSize="20" fontWeight="bold" color="#050505"/>
+    	<mx:Spacer width="100%" />
+    </mx:HBox -->
+     <mx:HBox id="hb02" width="100%" >
+    <mx:Spacer width="100%" />
+    	<mx:Label text="for ALL ActionGrids" fontSize="18" fontWeight="bold" color="#050505"/>
+    	<mx:Spacer width="100%" />
+    </mx:HBox>
+    	<mx:HBox id="hb1" width="100%" >
+    			<mx:Spacer width="100%" />
+    			<mx:TextInput id="ti_hr" width="43" text="{p_hr}" fontSize="19" fontWeight="normal" 
+    				textAlign="center" color="#040404" maxChars="2"
+    				themeColor="#C9E6F8" backgroundColor="#66FFFF" restrict="0-9"/>
+        		<mx:Label text=":" color="#040404" fontSize="19" fontWeight="bold" width="13"/>
+    			<mx:TextInput id="ti_min" width="43" text="{p_min}" fontSize="19" fontWeight="normal" 
+    				textAlign="center" color="#040404" maxChars="2"
+    				themeColor="#C9E6F8" backgroundColor="#66FFFF" restrict="0-9"/>
+        		<mx:Label text=":" color="#040404" fontSize="19" fontWeight="bold" width="13"/>
+    			<mx:TextInput id="ti_sec" width="43" text="{p_sec}" fontSize="19" fontWeight="normal" 
+    				textAlign="center" color="#010101" maxChars="2"
+    				themeColor="#C9E6F8" backgroundColor="#66FFFF" restrict="0-9"/>
+        		<mx:Spacer width="100%" />
+    			
+    	</mx:HBox>
+    	<mx:HBox id="hblabels" width="100%" >
+    			<mx:Spacer width="100%" />
+    			<mx:Label id="lbl_hr"  text="hr" width="43" fontSize="19" fontWeight="normal" textAlign="center" color="#040404"/>
+        		<mx:Label text=" " color="#040404" fontSize="19" fontWeight="bold" width="13"/>
+    			<mx:Label id="lbl_min"  text="min" width="43" fontSize="19" fontWeight="normal" textAlign="center" color="#040404"/>
+        		<mx:Label text=" " color="#040404" fontSize="19" fontWeight="bold" width="13"/>
+    			<mx:Label id="lbl_sec" width="43" text="sec" fontSize="19" fontWeight="normal" textAlign="center" color="#010101"/>
+        		<mx:Spacer width="100%" />
+    			
+    	</mx:HBox>
+    	<mx:HBox id="isnow" width="100%" >
+    			<mx:Spacer width="100%" />
+    			<mx:Label id="lbl_isnow"  text="{'Enable Auto Refresh for'}" width="100%" fontSize="19" fontWeight="normal" textAlign="center" color="#040404"/>
+        		<mx:Spacer width="100%" />
+    			
+    	</mx:HBox>
+		<mx:HBox id="istitle" width="100%" >
+			<mx:Spacer width="100%" />
+			<mx:Label id="lbl_istitle"  text="{p_mainboardtitlename + '?'}" width="100%" fontSize="19" fontWeight="normal" textAlign="center" color="#040404"/>
+			<mx:Spacer width="100%" />
+			
+		</mx:HBox>
+    	<mx:HBox id="hb3" width="100%" >
+    		<mx:Spacer width="100%" />
+    		<!-- mx:Button id="btn_autorefreshtimer" label="OFF" width="126"
+    			 icon="@Embed('image/button_icon_off.png')"/ -->
+    			 <local:HighViewButton doc_id="1058" id="btn_ok" label="OK" width="126"/>
+    			 <local:HighViewButton doc_id="1059" id="btn_cancel" label="Cancel" width="126" click="{titleWindow_close(event)}"/>
+    		<mx:Spacer width="100%" />
+    	</mx:HBox>
+    </mx:VBox>
+</mx:TitleWindow>

@@ -1,0 +1,27 @@
+<root>
+<Panel>
+<code>020</code>
+<title>Operation Job Setup</title>
+<type>DDLevel1</type>
+<refreshall>Y</refreshall>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="Profiles" columnstart="0"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="mnu_access" dataField="flag" title_header="Access" width="100" datatype="S" />
+<column columnId="1" columnName="job_exec" dataField="job_exec" title_header="Legacy Job" width="150" datatype="S" />
+<column columnId="2" columnName="job_cd" dataField="job_code" title_header="VL Job" width="150" datatype="S" />
+<column columnId="3" columnName="job_desc" dataField="job_desc" title_header="Job Description" width="300" datatype="S" />
+<column columnId="4" columnName="company" dataField="company" title_header="Company" width="100" datatype="S" />
+<column columnId="5" columnName="chain" dataField="chain" title_header="Chain Code" width="100" datatype="S" />
+<column columnId="6" columnName="sys_cd_s" dataField="system_code_s" title_header="System Code" width="140" datatype="S" />
+<column columnId="7" columnName="ssys_cd_s" dataField="subsys_code_s" title_header="Sub-system Code" width="180" datatype="S" />
+<column columnId="8" columnName="subsys_des" dataField="subsys_desc" title_header="Sub-system Description" width="280" datatype="S" />
+<column columnId="9" columnName="group_cd" dataField="group_code" title_header="Functional Group Code" width="250" datatype="S" />
+<column columnId="10" columnName="group_desc" dataField="group_desc" title_header="Group Description" width="300" datatype="S" />
+<column columnId="11" columnName="system_cd" dataField="system_code" title_header="Chain-System" width="140" datatype="S" />
+<column columnId="12" columnName="subsys_cd" dataField="subsys_code" title_header="Chain Sub-system" width="140" datatype="S" />
+<column columnId="13" columnName="" dataField="" title_header="" width="1500" datatype="S" />
+</AdvancedDataGridColumn>
+</root>

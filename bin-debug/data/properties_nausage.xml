@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <root>
+ 	<Panel>
+		<code>011</code>
+ 		<title>Name and Address Usage</title>
+ 	</Panel>
+	<AdvancedDataGridColumnGroup>
+		<columngroup headerText="Name and Address" columnstart="0"/>
+	</AdvancedDataGridColumnGroup>
+	<AdvancedDataGridColumn>
+		<column columnId="0"  dataField="blindcode" title_header="Blind Cd" width="100" datatype="S"/> 
+		<column columnId="1"  dataField="company" title_header="Comp" width="80" datatype="S"/>
+		<column columnId="2"  dataField="client" title_header="Client" width="80" datatype="S"/>
+		<column columnId="3"  dataField="customer" title_header="Cust Cd" width="80" datatype="S"/> 
+		<column columnId="4"  dataField="name" title_header="Name" width="300" datatype="S"/>
+		<column columnId="5"  dataField="name_other" title_header="Other Name" width="200" datatype="S"/> 
+ 	    <column columnId="6"  dataField="postcode" title_header="Zip/Postal" width="100" datatype="S"/>
+		<column columnId="7"  dataField="state" title_header="St" width="100" datatype="S"/>
+		<column columnId="8"  dataField="city" title_header="City" width="140" datatype="S"/> 
+		<column columnId="9"  dataField="streetname" title_header="Street" width="300" datatype="S"/>
+		<column columnId="10"  dataField="streetno" title_header="Str No" width="100" datatype="S"/>	
+        <column columnId="11"  dataField="add_line" title_header="2nd Address Line" width="300" datatype="S"/> 
+		<column columnId="12"  dataField="residential" title_header="Res" width="80" datatype="S"/> 
+		<column columnId="13"  dataField="country" title_header="Country" width="80" datatype="S" />
+		<column columnId="14"  dataField="setupjob" title_header="Setup Job" width="80" datatype="S"/>
+	</AdvancedDataGridColumn>
+ </root>

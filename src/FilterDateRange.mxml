@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ActionCommand.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="700" y="100" width="626" height="430" creationComplete="init(event);btn_keep.setFocus();btn_keep.drawFocus(true);" 
+        dropShadowEnabled="true"
+      
+        
+  
+        layout="horizontal"
+        title="Filter Date Range"
+		
+		backgroundColor="white"
+		backgroundImage="" xmlns:local="*"
+		
+		borderStyle="outset"
+		>
+	<mx:Script source="AlertMessageHandler.as"/>
+ <mx:Script>
+ 	<![CDATA[
+		import com.utilities.Utils;
+		import mx.controls.Alert;
+		import mx.collections.ArrayCollection;
+		import mx.controls.*;
+		import mx.events.CloseEvent;
+		import mx.events.FlexMouseEvent;
+		import mx.managers.PopUpManager;
+		import mx.rpc.events.*;
+		 	private var helpWindow:TitleWindow;
+		 	private var flagfrom:Boolean = false;
+		 	private var flagto:Boolean = false;
+		 	[Bindable]
+			private var date_str:String = new String;
+			[Bindable]
+			public var dateRange:ArrayCollection = new ArrayCollection
+	 		    
+ 		    private function titleWindow_close(evt:Event):void {
+                PopUpManager.removePopUp(this);    
+			}
+             
+            private function init(evt:Event):void {
+            	btn_keep.setFocus();
+            	
+            	var today_date:Date = new Date();
+				var date_month:String = (today_date.getMonth()+1).toString();
+				var date_day:String = (today_date.getDate()).toString();
+				var int_length_date_month:int = date_month.length;
+					if (int_length_date_month == 1){
+						date_month = "0" + date_month.toString();
+					}
+				var int_length_date_day:int = date_day.length;
+					if (int_length_date_day == 1){
+						date_day = "0" + date_day.toString();
+					}	
+				date_str = (today_date.getFullYear()) + "-" + (date_month) + "-" + (date_day);
+			}
+		
+		
+		private function dateValueFrom():void{
+			
+			
+			
+			//from_dateField.text = "";
+			if (datevalue_from.selectedItem.date == null){
+				AlertMessageShow("No date retrieved. Please check with your administrator");
+				from_dateField.text = "";
+				return; 
+			}
+			//from_dateField.text = datevalue_from.selectedItem.date;
+			from_dateField.text = datevalue_from.selectedItem.code;
+
+			
+		} 
+		
+		private function dateValueTo():void{
+			//to_dateField.text = "";
+			if (datevalue_to.selectedItem.date == null){
+				AlertMessageShow("No date retrieved. Please check with your administrator");
+				return;
+			}
+			to_dateField.text = datevalue_to.selectedItem.code;
+		}   
+			 
+		private function fromdatefieldchange():void{
+			datevalue_from.selectedIndex = -1;
+		}
+		private function todatefieldchange():void{
+			datevalue_to.selectedIndex = -1;
+		}
+		
+
+ 	]]>
+ </mx:Script>
+ <mx:Style source="css/main.css"/>
+    <mx:VBox id="vb" width="100%" height="368">
+       
+        <mx:HBox width="100%">
+        	<mx:Label text="From Date" width="92" fontFamily="Verdana" fontSize="14" fontWeight="bold" color="#000000"/>
+        	  <mx:DateField width="135" id="from_dateField" change="fromdatefieldchange()" yearNavigationEnabled="true" formatString="YYYY-MM-DD"  fontFamily="Verdana" fontSize="14"/>
+			<mx:Label text=" OR "  fontFamily="Verdana" fontSize="14" color="#000203" fontWeight="bold"/>
+			<mx:ComboBox editable="false"    
+						 labelField="description"
+						 id="datevalue_from"  width="300"
+						 prompt="Select variable date"  fontSize="14"  
+						 dataProvider="{dateRange}" 
+						 change="{dateValueFrom()}" 
+						 ></mx:ComboBox>
+		
+		</mx:HBox>	
+        
+        
+        <mx:HBox width="100%">
+        	<mx:Label text="To Date" width="92" fontFamily="Verdana" fontSize="14" color="#020202" fontWeight="bold"/>
+        	  <mx:DateField width="135" id="to_dateField"  change="todatefieldchange()"  yearNavigationEnabled="true" formatString="YYYY-MM-DD" fontFamily="Verdana" fontSize="14"/>
+			<mx:Label text=" OR "  fontFamily="Verdana" fontSize="14" color="#000203" fontWeight="bold"/>
+			<mx:ComboBox editable="false"    
+						 labelField="description"
+						 id="datevalue_to"  width="300"
+						 prompt="Select variable date"  fontSize="14"  
+						 dataProvider="{dateRange}" 
+						 change="{dateValueTo()}"
+						 ></mx:ComboBox>
+			
+		
+		</mx:HBox>
+        <mx:HBox>
+        <mx:Spacer width="100%" height="10" />
+        </mx:HBox>
+        	
+        <!--  mx:VBox width="100" -->   
+     		
+     		<local:HighViewButton id="btn_keep" label="Keep" width="100%"/>
+     		<local:HighViewButton id="btn_discard" label="Discard" width="100%"/>
+            <local:HighViewButton id="btn_add" label="Add" width="100%"/>
+            <local:HighViewButton id="btn_slash" label="/" width="100%"/>
+            <local:HighViewButton id="btn_dash" label="-" width="100%"/>
+            <!-- mx:HighViewButton id="btn_cancel" label="Cancel" click="{titleWindow_close(event)}" width="100%"/ -->
+		<mx:HBox width="100%">   
+			<mx:Spacer width="100%"/>
+			<mx:Label  text="- OR -"  fontSize="14" fontWeight="bold"/>
+			<mx:Spacer width="100%"/>
+		</mx:HBox>
+		<local:HighViewButton id="btn_multifilter" doc_id="1054" label="Multi-Column Filter"  width="100%" toolTip="Switches to simultaneous multi-column filtering." textSelectedColor="#1051A2"/>
+
+		<mx:HBox width="100%" height="52">
+			<mx:Spacer width="100%"/>
+			<mx:LinkButton id="lb_filteroperators" label="Filter operators" color="#0000FF" fontSize="16" fontWeight="bold" />
+			<mx:Spacer width="100%"/>
+		</mx:HBox>	
+        <!-- /mx:VBox -->	
+        
+    </mx:VBox>
+
+</mx:TitleWindow>

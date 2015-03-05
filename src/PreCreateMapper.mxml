@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ActionCommand.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="700" y="100" width="452" height="158" creationComplete="init(event);btn_keep.setFocus();btn_keep.drawFocus(true);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        
+  
+        layout="horizontal"
+        title="Filter Date Range">
+ <mx:Script>
+ 	<![CDATA[
+ 			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*;  
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	private var helpWindow:TitleWindow;
+		 	private var flagfrom:Boolean = false;
+		 	private var flagto:Boolean = false;
+		 	[Bindable]
+			private var date_str:String = new String;
+ 		    
+ 		    private function titleWindow_close(evt:Event):void {
+                PopUpManager.removePopUp(this);    
+			}
+             
+            private function init(evt:Event):void {
+            	btn_keep.setFocus();
+            	
+            	var today_date:Date = new Date();
+				var date_month:String = (today_date.getMonth()+1).toString();
+				var date_day:String = (today_date.getDate()).toString();
+				var int_length_date_month:int = date_month.length;
+					if (int_length_date_month == 1){
+						date_month = "0" + date_month.toString();
+					}
+				var int_length_date_day:int = date_day.length;
+					if (int_length_date_day == 1){
+						date_day = "0" + date_day.toString();
+					}	
+				date_str = (today_date.getFullYear()) + "-" + (date_month) + "-" + (date_day);
+			}
+			
+			 
+			 
+
+ 	]]>
+ </mx:Script>
+ <mx:Style source="css/main.css"/>
+    <mx:VBox id="vb" width="100%">
+       
+        <mx:HBox>
+        	<mx:Label text="From Date" width="92" fontFamily="Verdana" fontSize="14" fontWeight="bold" color="#FBFCFC"/>
+        	  <mx:DateField width="135" id="from_dateField"  formatString="YYYY-MM-DD"  fontFamily="Verdana" fontSize="14"/>
+        </mx:HBox>	
+        
+        
+        <mx:HBox >
+        	<mx:Label text="To Date" width="92" fontFamily="Verdana" fontSize="14" color="#FDFDFD" fontWeight="bold"/>
+        	  <mx:DateField width="135" id="to_dateField"   formatString="YYYY-MM-DD" fontFamily="Verdana" fontSize="14"/>
+        </mx:HBox>
+        <mx:HBox>
+        <mx:Spacer width="100" />
+        </mx:HBox>
+        	
+        <mx:HBox horizontalGap="0">
+     
+     		<mx:Button id="btn_keep" label="Keep"/>
+     		<mx:Button id="btn_discard" label="Discard"/>
+            <mx:Button id="btn_add" label="Add"/>
+            <mx:Button id="btn_slash" label="/"/>
+            <mx:Button id="btn_dash" label="-"/>
+            <mx:Button id="btn_cancel" label="Cancel" click="{titleWindow_close(event)}"/>
+            
+        
+        </mx:HBox>	
+        
+    </mx:VBox>
+
+</mx:TitleWindow>

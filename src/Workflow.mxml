@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="10" y="10" width="604" height="470" creationComplete="init(event);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        backgroundImage=""
+        layout="horizontal"
+       
+       
+       xmlns:local="*">
+        
+        
+ 	<mx:HTTPService 
+		id="retrieve_rendition" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerRendition(event)"
+		fault="FaultRendition(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="delete_rendition" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerRenditionDelete(event)"
+		fault="FaultRenditionDelete(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParmsdelete}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="update_default_rendition" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerRenditionUpdate(event)"
+		fault="FaultRenditionUpdate(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParmsupdate}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:Script source="AlertMessageHandler.as"/>
+ <mx:Script> 
+ 	<![CDATA[
+ 			import mx.collections.ArrayCollection;
+ 			import mx.controls.*;
+ 			import mx.events.CloseEvent;
+ 			import mx.events.FlexMouseEvent;
+ 			import mx.managers.PopUpManager;
+ 			import mx.rpc.events.*;
+ 			import mx.utils.ArrayUtil;
+ 			import mx.utils.ObjectProxy; 
+		 	[Bindable]
+		 	private var loc_reqParms:String = new String();
+			[Bindable]
+			private var loc_reqParmsdelete:String = new String();
+			[Bindable]
+			private var loc_reqParmsupdate:String = new String();
+		 	[Bindable]
+		 	public var loc_mbdcode:String = new String();
+        	[Bindable]
+        	public var loc_user:String = new String();
+        	[Bindable]
+        	public var loc_ccode:String = new String();
+        	[Bindable]
+        	public var loc_sid:String = new String();
+        	[Bindable]
+        	private var RenditionCollection:ArrayCollection = new ArrayCollection;
+        	
+		 	private var helpWindow:TitleWindow;
+
+ 		   private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+           }
+           private function init(evt:Event):void {
+			   httpRequestRenditionUrl(parentApplication.application_entry);
+            	loc_reqParms = "REFRESH,RETRIEVE|GRIDRENDITIONS|" +  loc_user + "|" + loc_mbdcode + "|";
+				//Alert.show(parentApplication.application_entry);
+            	//retrieve_rendition.send();
+           }
+           
+		private function ResultHandlerRendition(evt:ResultEvent):void{
+			
+			if (evt.result.ezware_response.status == 'OK' ) {
+			
+					RenditionCollection = new ArrayCollection();
+					
+					if (evt.result.ezware_response.refresh_data.gridrenditions.data == null)
+					{
+						RenditionCollection=new ArrayCollection()
+					}
+					else if (evt.result.ezware_response.refresh_data.gridrenditions.data is ArrayCollection)
+					{
+						RenditionCollection=evt.result.ezware_response.refresh_data.gridrenditions.data;
+					}
+					else if (evt.result.ezware_response.refresh_data.gridrenditions.data is ObjectProxy)
+					{
+						RenditionCollection = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.gridrenditions.data)); 
+					}
+					RenditionCollection.refresh();
+					
+			} else	{
+				
+				var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+				AlertMessageShow(s_ret);
+				return;
+			}				
+			
+
+			
+		}
+           
+         
+			private function ResultHandlerRenditionDelete(evt:ResultEvent):void{
+			
+				if (evt.result.ezware_response.status == "OK"){
+					
+						retrieve_rendition.send(); 
+			
+				
+				} else	{
+					
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}	
+				
+				
+			}
+			private function ResultHandlerRenditionUpdate(evt:ResultEvent):void{
+			
+				if (evt.result.ezware_response.status == "OK"){
+					AlertMessageShow("Default will take effect the next time you enter the HighView. Otherwise, re-select the record and click on 'Apply' for the rendition to take effect without reloading. ");
+					retrieve_rendition.send(); 
+				} else	{
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}		
+					
+			}
+           	private function FaultRendition(evt:FaultEvent):void
+			{
+				//var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow("Rendition Error");
+			}
+			private function FaultRenditionDelete(evt:FaultEvent):void
+			{
+				AlertMessageShow("Delete Rendition Error");
+			}
+			private function FaultRenditionUpdate(evt:FaultEvent):void
+			{
+				AlertMessageShow("Update Default Rendition Error");
+			}
+		import mx.core.Application;
+	
+		private function RefreshPage(evt:Event):void{
+		/*
+			var urlRequest:URLRequest = new URLRequest(Application.application.url);
+		
+				navigateToURL(urlRequest,"_self");
+				PopUpManager.removePopUp(this);
+		*/	
+		}
+		private function deleteRendition(evt:Event):void{
+			loc_reqParmsdelete = "REFRESH,DELETE|RENDITION|" +  loc_user + "|" + loc_mbdcode + "|" + dg_rendition.selectedItem.rendcode + "|";
+			delete_rendition.send();
+		}
+		private var pop_deleteconfirm:DeleteConfirm;
+		private function validateRendition(evt:Event):void{
+			if (dg_rendition.selectedItems.length == 0){
+				AlertMessageShow("Please select a row to delete.");
+				return;
+			}
+			
+			/*
+			if (  (inputcode.text.toUpperCase()).substr(0,4) == "BASE"){
+				AlertMessageShow("'BASE' Code is not allowed");
+				return;
+			}
+			*/
+			
+			if (loc_user.toUpperCase() !=  'MAVES'){
+				
+				if (((dg_rendition.selectedItem.rendcode).toUpperCase()).substr(0,4) == 'BASE'){
+					AlertMessageShow("'BASE' delete not allowed.");
+					return;
+				}
+				
+			}
+			 
+			if (dg_rendition.selectedItem.rendcode == 'MASTER'){
+						AlertMessageShow("'MASTER' delete not allowed.");
+						return;
+			}
+			
+			
+			
+			// Check user Permission.
+			if ( Application.application.parameters.ar == 'O'){
+				 if((dg_rendition.selectedItem.rendcode).substr(0,1) != '*'){
+					 AlertMessageShow("You are not allowed to delete a Generic Rendition");
+					 return;
+				 }
+			}
+			
+			'REFRESH,UPDATE|DFLTRENDITION|maves|RPTSCH|*abc|'
+				pop_deleteconfirm = DeleteConfirm(
+				PopUpManager.createPopUp(this, DeleteConfirm, true));
+				pop_deleteconfirm.del_filtercode = dg_rendition.selectedItem.rendcode;
+				pop_deleteconfirm["btn_ok"].addEventListener("click",  handleDeleteConfirm);
+				pop_deleteconfirm["inputcode"].addEventListener("enter", handleDeleteConfirm);
+			
+		}
+			
+		public function handleDeleteConfirm( event:Event ) : void
+		{
+			if (pop_deleteconfirm.inputcode.text == "YES"){
+				PopUpManager.removePopUp(pop_deleteconfirm);	
+				deleteRendition(event);
+			}	
+			if (pop_deleteconfirm.inputcode.text != "YES"){
+				
+				pop_deleteconfirm.inputcode.setFocus();
+				pop_deleteconfirm.inputcode.drawFocus(true);
+				return;
+				
+			}
+		}	
+		public function updateDefaultRendition( event:Event ) : void
+		{
+			if (dg_rendition.selectedItems.length == 0){
+				AlertMessageShow("Please select a row to change default.");
+				return;
+			}
+			loc_reqParmsupdate = "REFRESH,UPDATE|DFLTRENDITION|" +  loc_user + "|" + loc_mbdcode + "|" + dg_rendition.selectedItem.rendcode + "|";
+			update_default_rendition.send();
+		}
+		public function httpRequestRenditionUrl(str_app:String):void{
+			if (str_app == 'ml'){
+				retrieve_rendition.url = 'ae_tlch_ml_req.php'; 
+				delete_rendition.url = 'ae_tlch_ml_req.php'; 
+				update_default_rendition.url = 'ae_tlch_ml_req.php'; 
+				
+				
+			} 
+		}
+		
+		private function resultStatusRendition(string_result:String, string_reason:String):String{
+			var retstr:String = new String;
+			if (string_result == "EXPIRED"){
+				retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+			} 
+			if (string_result == "FAIL"){
+				retstr = string_reason;
+			} 
+			return retstr;
+		}
+ 	]]>
+ </mx:Script>
+    <mx:VBox width="100%" height="100%">
+		<mx:HBox width="100%">
+			<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'','Workflows','BUTTON')}"
+					   
+					   />     
+			<mx:Spacer width="50%"/>
+			<mx:Label text="Workflows" width="100%" textAlign="center"  fontSize="19" color="#364D6A" fontWeight="bold"
+					  rollOver="{parentApplication.mbdg_mousehovering(event,event.currentTarget.text,'Renditions','RENDITIONS')}"
+					  rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+					  />
+			<mx:Spacer width="100%"/>
+			
+		</mx:HBox>
+  	
+ 	
+	 <local:ActionGridADGRendition
+	 	 id="dg_rendition"
+                width="100%"
+                height="100%"
+                rowHeight="22"
+                dataProvider="{RenditionCollection}"
+                dragEnabled="false"
+                dropEnabled="false" dragMoveEnabled="false"
+                verticalScrollPolicy="auto"
+                 allowMultipleSelection="false"
+                variableRowHeight="true"
+				headerStyleName="centerAlignDataGridCol"
+				horizontalGridLines="true"
+            	verticalGridLines="true"
+            	horizontalGridLineColor="black"
+            	verticalGridLineColor="black" borderColor="#010101" borderThickness="1"
+            	
+				
+				
+              >
+            <local:columns>
+                <mx:AdvancedDataGridColumn id="rnd_rendcode" dataField="rendcode" headerText="Code" width="150" wordWrap="true"  editable="false" />
+		        <mx:AdvancedDataGridColumn id="rnd_renddesc" dataField="renddesc" headerText="Description"   editable="false" wordWrap="true" />
+				<mx:AdvancedDataGridColumn id="rnd_default" dataField="default_rendition" headerText="Order" width="100" wordWrap="true"  editable="false" />
+            </local:columns>
+        </local:ActionGridADGRendition>
+	
+	
+	
+	<mx:HBox horizontalGap="0">
+		
+		<mx:Button id="btn_workflow_create" label="Create"
+			rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+				 		rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+		<mx:Button id="btn_workflow_modify" label="Modify"
+			rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+				 		rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+		<mx:Button id="btn_workflow_delete" label="Delete"  click="{validateRendition(event)}"
+				   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+				   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+		<mx:Button id="btn_workflow_moveup" label="Move Up"  click="{validateRendition(event)}"
+				   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+				   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+		<mx:Button id="btn_workflow_movedown" label="Move Down"  click="{validateRendition(event)}"
+				   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+				   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+		<mx:Button label="Close" click="{titleWindow_close(event)}"
+				   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+				   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+  		
+  	</mx:HBox>
+	</mx:VBox>
+  	
+
+</mx:TitleWindow>

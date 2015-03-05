@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="500" y="180" width="638" height="280" creationComplete="init(event);" 
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				
+				layout="horizontal" xmlns:s="library://ns.adobe.com/flex/spark"
+				>
+	<mx:Script> 
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*; 
+			import mx.controls.*;
+			import mx.events.FlexMouseEvent;
+			import mx.collections.ArrayCollection;
+			[Bindable]
+			public var headertitle:String;
+			[Bindable]
+			public var dataelement:String;
+			
+			private function titleWindow_close(evt:Event):void { 
+				PopUpManager.removePopUp(this);
+			}
+			private function init(evt:Event):void {
+				      
+				
+			}
+			/*
+			private function replace(evt:Event):void{
+				Alert.show(from_params.text + " : " + to_params.text);
+				dataelement.replace(from_params.text ,to_params.text);
+				
+				from_params.text = "";
+				to_params.text = "";
+			}
+			
+			
+			*/
+			
+			private function testFlexStringReplaceAll():void {
+				var strSource:String = "Li_guo_Liang.com";
+				trace(strSource + " - " + replaceAllBySplit(strSource, "_", ""));
+				trace(strSource + " - " + replaceAllByRegex(strSource, "_", ""));
+			}
+			
+			/**
+			 * Repalce all by split and join;
+			 */
+			public static function replaceAllBySplit(strSource:String, strReplaceFrom:String, strRepalceTo:String):String {
+				return strSource == null ? null : strSource.split(strReplaceFrom).join(strRepalceTo);
+			}
+			
+			/**
+			 * Replace all by RegEx;
+			 */
+			public static function replaceAllByRegex(strSource:String, strReplaceFrom:String, strRepalceTo:String):String {
+				return strSource == null ? null : strSource.replace(new RegExp(strReplaceFrom, 'g'), strRepalceTo);
+			}
+			
+			
+			private function replace(event:Event):void{
+				
+				
+				dataelement = replaceAllBySplit(dataelement, from_params.text, to_params.text);
+				
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Style source="css/main.css"/>
+	<mx:VBox width="100%" height="100%">
+		<mx:HBox width="100%">
+			<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"     
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'','Clipboard Editor','BUTTON')}"
+					   
+					   />
+			<mx:Spacer width="100%"/>
+			
+			
+			
+			
+			<mx:Label id="dataelementlabel" text="Clipboard" width="100%" textAlign="center"  fontSize="19" color="#FDFCFC" fontWeight="bold"/>
+			<mx:Spacer width="100%"/>
+			<mx:Spacer width="78"/>
+		</mx:HBox>	
+			
+		<mx:TextArea id="clipboardtextarea" width="100%" height="100%" wordWrap="false" 
+					 editable="true" htmlText="{dataelement}" fontSize="16" borderColor="black"
+					 fontWeight="bold" horizontalScrollPolicy="on" verticalScrollPolicy="on"/>
+		<mx:HBox width="100%">
+			<mx:Label text="Change Delimeter" fontSize="19" color="#FDFCFC" fontWeight="bold"/>
+			<mx:TextInput id="from_params" width="37" fontSize="16" borderColor="black"
+						  fontWeight="bold" text=";"/>
+			<mx:Label text="To" fontSize="19" color="#FDFCFC" fontWeight="bold"/>
+			<mx:TextInput id="to_params" width="37" fontSize="16" borderColor="black"
+						  fontWeight="bold" />
+			<mx:Button id="btn_replace" label="Change" click="{replace(event)}"/>
+			<mx:Spacer width="100%"/>
+			<mx:Button id="btn_close" label="Close" click="{titleWindow_close(event)}"/>
+		</mx:HBox>	
+	</mx:VBox>
+	
+	
+	
+</mx:TitleWindow>

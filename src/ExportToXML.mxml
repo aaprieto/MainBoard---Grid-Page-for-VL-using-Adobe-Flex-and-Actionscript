@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10" width="568" height="276" creationComplete="init(event);" 
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundImage=""
+				layout="horizontal"
+				
+				xmlns:local="*">
+	
+	<mx:HTTPService 
+		id="retrieve_datagrid" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerExportGrid(event)"       
+		fault="FaultExport(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{loc_reqParms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="retrieve_filename" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerFilename(event)"       
+		fault="FaultExport(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>REFRESH,GET|EXPORTFILENAME</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>     
+	</mx:HTTPService>
+	
+	
+	<mx:Script source="AlertMessageHandler.as"/>
+	<mx:Script> 
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.events.CloseEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy; 
+			[Bindable]
+			private var loc_reqParms:String = new String();
+			[Bindable]
+			private var loc_reqParmsheadermap:String = new String();
+			[Bindable]
+			public var loc_mbcode:String = new String();
+			
+			[Bindable]
+			public var loc_mbdcode:String = new String();
+			[Bindable]
+			public var loc_sid:String = new String();
+			[Bindable]
+			public var loc_user:String = new String();
+			[Bindable]
+			public var loc_ccode:String = new String();
+			
+			[Bindable]
+			private var ExportDatagridCollection:ArrayCollection = new ArrayCollection;
+			//[Bindable]
+			//private var MapperCollection:ArrayCollection = new ArrayCollection;
+			
+			private var helpWindow:TitleWindow;
+			private var mapObject:String = new String;
+			
+			private function titleWindow_close(evt:Event):void { 
+				PopUpManager.removePopUp(this);
+			}
+			private function init(evt:Event):void { 
+				httpRequestRenditionUrl(parentApplication.application_entry);
+				//getCurrentDate();
+				runHttp(evt);
+			}    
+			public var popetxd:ExportToXMLDatagrid;
+				
+			public function httpRequestRenditionUrl(str_app:String):void{
+				if (str_app == 'ml'){
+					retrieve_datagrid.url = 'ae_tlch_ml_req.php';
+					
+				} 
+			}
+			private function FaultExport(evt:FaultEvent):void
+			{
+				var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow(faultMessage);
+			}
+		
+			private function FaultExportMap(evt:FaultEvent):void
+			{
+				var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow(faultMessage);
+			}
+			
+			
+			private function ResultHandlerExportGrid(evt:ResultEvent):void{
+				     
+				if (evt.result.ezware_response.status == 'OK' ) {
+					
+					ExportDatagridCollection = new ArrayCollection();
+					
+					if (evt.result.ezware_response.refresh_data.mappers.data == null)
+					{
+						ExportDatagridCollection=new ArrayCollection();
+					}
+					else if (evt.result.ezware_response.refresh_data.mappers.data is ArrayCollection)
+					{
+						ExportDatagridCollection=evt.result.ezware_response.refresh_data.mappers.data;
+					}
+					else if (evt.result.ezware_response.refresh_data.mappers.data is ObjectProxy)
+					{
+						ExportDatagridCollection = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.mappers.data)); 
+					}
+					ExportDatagridCollection.refresh();
+				
+					retrieve_filename.send();
+				} else	{
+					
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}				
+			}
+			private function ResultHandlerFilename(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == 'OK' ) {
+					if ((evt.result.ezware_response.refresh_data).length > 0){  	
+					
+						ti_filename.text = evt.result.ezware_response.refresh_data;
+					} else {
+						AlertMessageShow("XML FileNameError: Unable to retrieve generated XML Filename.");
+						return;
+					}	
+				} else	{
+					
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}				
+			}
+			private function getCurrentDate():void{
+				var currentDate=new Date();
+				var month=currentDate.getMonth();
+				var day=currentDate.getDate();
+				var year=currentDate.getFullYear();
+				var d:String = new String();
+				var t:String = new String()
+			
+				month = int(month) + 1;
+				if (month<10) {
+					month = "0" + month;
+				} else {
+					month = month;
+				}
+					
+				if (day<10) {
+					day = "0" + day;
+				} else {
+					day = day;
+				}
+					
+				d = "XML-" + year + "-" + month +"-"+ day;
+				                     
+				      
+				/*  get the time */
+				
+				//get date info from system
+				var mydate_ist = new Date();
+				var hrs_ist = mydate_ist.getHours();
+				var mins_ist = mydate_ist.getMinutes();
+				var sec_ist = mydate_ist.getSeconds();
+				//put zeros where needed
+				
+				if (hrs_ist<10) {
+					hrs_ist = "0" + hrs_ist;
+				} else {
+					hrs_ist = hrs_ist;
+				}
+				
+
+				if (mins_ist<10) {
+					mins_ist = "0" + mins_ist;
+				} else {
+					mins_ist = mins_ist;
+				}             
+				
+				
+				if (sec_ist<10) {
+					sec_ist = "0" + sec_ist;
+				} else {
+					sec_ist = sec_ist;
+				}    
+				
+				
+				
+				
+				//send to text field
+				//t = hrs_ist+":"+mins_ist+":"+sec_ist;
+				t = hrs_ist.toString()+mins_ist.toString()+sec_ist.toString();
+				ti_filename.text = d+"-"+t + ".xml";
+				
+			}     
+			     
+			private function runHttp(evt:Event):void{
+				
+				loc_reqParms = "REFRESH,RETRIEVE|GDXMLMAPPERS|" + loc_mbdcode + "|"+ loc_user+"|";
+				
+				retrieve_datagrid.send()
+			}
+			private function resultStatusRendition(string_result:String, string_reason:String):String{
+				var retstr:String = new String;
+				if (string_result == "EXPIRED"){
+					retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+				} 
+				if (string_result == "FAIL"){
+					retstr = string_reason;
+				} 
+				return retstr;
+			}
+			
+			private function LaunchExportToXMLDatagridList(event:Event):void{
+				
+				popetxd = ExportToXMLDatagrid(
+					PopUpManager.createPopUp(this, ExportToXMLDatagrid, true)); 
+				popetxd.Arr_mr = ExportDatagridCollection;
+				popetxd["adg1"].addEventListener(MouseEvent.CLICK, ClickDatagridExportListHeader);
+				PopUpManager.centerPopUp(popetxd);   
+				
+			}
+		         
+			private function ClickDatagridExportListHeader(event:Event):void{
+				detail_grid.text =  popetxd.adg1.selectedItem.mapper_cd
+				ti_tradingpartner.text= popetxd.adg1.selectedItem.tp_code
+				PopUpManager.removePopUp(popetxd);
+				
+			}
+		
+			
+				
+				
+		]]>
+	</mx:Script>
+	<mx:VBox width="100%" height="100%">
+		<mx:HBox width="100%">
+			<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'','Export to XML Dialog','BUTTON')}"
+					      
+					   />     
+			<mx:Spacer width="50%"/>
+			<mx:Label text="Export To XML" width="100%" textAlign="center"  fontSize="19" color="#364D6A" fontWeight="bold"
+					  rollOver="{parentApplication.mbdg_mousehovering(event,event.currentTarget.text,'Renditions','RENDITIONS')}"
+					  rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+					  />
+			<mx:Spacer width="100%"/>
+			
+		</mx:HBox>
+		<mx:Form width="100%"
+				 height="152">
+			<mx:HBox width="100%" fontSize="12" fontWeight="bold">
+				
+				<mx:FormItem label="         Map Name:" width="297" >
+					<mx:TextInput id="detail_grid" editable="false"/>
+				</mx:FormItem>
+				<mx:Button id="btn_browsedetailgrid" 
+						   icon="@Embed('image/icon_lookup.png')"
+						   width="33"
+						   click="{LaunchExportToXMLDatagridList(event)}"
+						   />
+			</mx:HBox>
+			
+			
+			<mx:FormItem label="Trading Partner:" width="100%" fontSize="12" fontWeight="bold">
+				<mx:TextInput id="ti_tradingpartner" width="261" editable="false"/>
+			</mx:FormItem>
+			
+			<mx:FormItem label="Company:" width="100%" fontSize="12" fontWeight="bold">
+				<mx:TextInput id="ti_company" width="261" text="{loc_ccode}" editable="false"/>
+			</mx:FormItem>
+			<mx:FormItem label="Filename:" width="100%" fontSize="12" fontWeight="bold">
+				<mx:TextInput id="ti_filename" width="261" editable="false"/>
+			</mx:FormItem>
+		</mx:Form>
+		        
+		     
+		     
+		<mx:HBox horizontalGap="0" width="100%" height="29">
+			
+			
+			<mx:Button id="btn_export_to_xml" label="Export" 
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Spacer width="50"/>     
+			<mx:ProgressBar
+				id="exp_pbar"
+				x="260" y="480" height="7" width="100%"
+				indeterminate="true" minimum="0" maximum="100"
+				label="Exporting..."
+				visible="false"
+				/>
+			<mx:Spacer width="50"/>
+			<mx:Button label="Close" click="{titleWindow_close(event)}"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			
+		</mx:HBox>
+	</mx:VBox>
+	
+	
+</mx:TitleWindow>

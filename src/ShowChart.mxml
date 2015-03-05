@@ -1,0 +1,929 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"   xmlns:ns1="com.fusioncharts.components.*"
+width = "{flash.system.Capabilities.screenResolutionX}"
+height = "{flash.system.Capabilities.screenResolutionY - 200}"
+
+-->
+<!--
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="1152" height="748"   xmlns:ns1="com.fusioncharts.components.*"
+-->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"    xmlns:ns1="com.fusioncharts.components.*"
+				width = "{FlexGlobals.topLevelApplication.width}"
+				height = "{FlexGlobals.topLevelApplication.height}"
+				
+				
+				  
+creationComplete="init(event)"
+			initialize="i_init(event)"
+			  
+      showCloseButton="false"
+      close="titleWindow_close(event);"
+      
+      
+         dropShadowEnabled="true"
+        borderAlpha="1.0"
+      backgroundColor="white"
+      backgroundImage=""
+        
+        xmlns:local="*">
+	<mx:Style source="css/main.css"/>
+	<mx:Script source="AlertMessageHandler.as"/>
+	<mx:Script>
+		<![CDATA[
+			import com.events.FCEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.AdvancedDataGrid;
+			import mx.controls.Alert;
+			import mx.controls.Text;
+			import mx.core.FlexGlobals;
+			import mx.core.mx_internal;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.messaging.SubscriptionInfo;
+		
+			[Bindable]
+			public var ObjectCollection_mfArray:ArrayCollection = new ArrayCollection;
+			[Bindable]
+			public var par_select:int = 0;; 
+			[Bindable]
+			public var par_type:int = 0; 
+			[Bindable]
+			public var par_maxnum:int = 0;
+			
+			[Bindable]
+      		public var mfArray:ArrayCollection;
+      		[Bindable]
+      		public var cap_title:String;
+      		[Bindable]  
+      		public var adv_mfArray:AdvancedDataGrid;
+      		 [Bindable]
+ 		    public var ca_xlcColumn:Object = new Object; 
+ 		    [Bindable]
+ 		    private var ac_populatedd:ArrayCollection = new ArrayCollection; 
+			[Bindable]
+			public var showlocal_crunch:String;
+      		public var my_xml:String = new String;
+      		public var pie_xml:String = new String;
+      		private var obj:Object = new Object;
+      		[Bindable]
+      		private var xm:XML = new XML;
+      		[Bindable]
+      		private var pie_xm:XML = new XML;
+      		[Bindable]
+      		private var _chartParam:ArrayCollection=new ArrayCollection;
+      		/*
+      		private var _chartParam:ArrayCollection=new ArrayCollection([
+ 		    {xAxisName:'Client'},
+			{yAxisName:'Instance'},
+			{showShadow:'1'},
+			{useRoundEdges:'1'},
+			{numVisiblePlot:'14'},
+			{plotGradientColor:''},
+			{legendPosition:'RIGHT'},
+			{showValues:'0'},
+			{baseFont:'13'},
+			{bold:'1'},
+			{plotSpacePercent:'80'},
+			{chartLeftMargin :'2'},
+			{chartRightMargin :'2'} ])
+			;
+			*/
+			 private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+           }
+           
+           [Bindable]
+			private var chartStyle:ArrayCollection=new ArrayCollection ([
+  					//{name: 'CaptionSize', type: 'font', size: '17'},
+  					//{name: 'X-AxisNameSize', type: 'font', size: '17'},
+  					//{name: 'Y-AxisNameSize', type: 'font', size: '17'},  
+					/*
+					{name: 'CaptionSize', type: 'font', size: '17'},
+					{name: 'X-AxisNameSize', type: 'font', size: '50'}, 
+					{name: 'Y-AxisNameSize', type: 'font', size: '50'},
+					*/
+				{name: 'CaptionSize', type: 'font', size: '17'},
+				{name: 'Y-AxisValue', type: 'font', size: '14'},
+				{name: 'X-AxisValue', type: 'font', size: '14'},
+				{name: 'X-AxisNameSize', type: 'font', size: '1000'},
+				{name: 'Y-AxisNameSize', type: 'font', size: '1000'},  
+				
+				{ name:'xAxisLabelsFont',type:'font',size:'14',bold:'1' , color:'000000'},
+				{ name:'xAxisLabelsFontValue',type:'font',size:'12',bold:'1' , color:'000000'},
+				
+				{name:'MyFirstFontStyle',type:'font',font:'Verdana',size:'12',color:'FF0000', bgColor:'FFFFDD',borderColor:'666666'},
+				{name: 'MyFirstGlow', type: 'Glow', color:'FF5904', alpha:'75'},  
+				
+				
+				
+				
+					{name: 'myBevel', type: 'bevel', distance: '3'},
+					{name: 'myShadow', type: 'shadow', angle:'45', distance:'3'},
+					 /*
+  					
+  					{toObject: 'Caption', styles: 'CaptionSize'},
+  					{toObject: 'X-AxisName', styles: 'X-AxisNameSize'},
+  					{toObject: 'Y-AxisName', styles: 'Y-AxisNameSize'},
+					{toObject: 'DATAPLOT', styles: 'myBevel, myShadow'},
+					
+					*/
+					{toObject: "DATALABELS", styles: 'xAxisLabelsFont'},
+					{toObject: "DATAVALUES", styles: 'xAxisLabelsFontValue'},
+					{toObject: "TOOLTIP", styles: 'xAxisLabelsFontValue'},
+					
+					{toObject:"CAPTION",styles:'CaptionSize'}, 
+					
+			
+					
+					
+					{toObject:"XAXISNAME",styles:'CaptionSize'},
+					{toObject:"YAXISNAME",styles:'CaptionSize'}, 
+					{toObject:"YAXISVALUES",styles:'xAxisLabelsFont'}
+			//	{toObject:"XAXISVALUES",styles:'X-AxisValue'}
+					 
+			]);
+  
+/*  <style name='myBevel' type='bevel' distance='3'/>
+            <style name='myShadow' type='shadow' angle='45' distance='3'/>
+        </definition>
+        <application>
+            <apply toObject='DATAPLOT' styles='myBevel, myShadow' /> 
+*/
+/*
+			[Bindable]
+			private var chartStyle:ArrayCollection=new ArrayCollection([           
+			{name: 'CaptionSize', type: 'font', size: '17'},           
+			{name: 'MyShadow', type: 'shadow'},               
+			{toObject: 'Caption', styles: 'CaptionSize'},   
+			{toObject: 'Caption', styles: 'MyShadow'},        
+			{toObject: 'Dataplot', styles: 'MyShadow'}])
+	*/
+		/*
+		[Bindable] private var chartStyle: ArrayCollection = new ArrayCollection ([
+			(name: 'CaptionSize', type: 'font', size: '17 '), 
+			(name:' MyShadow ', type:' shadow '), 
+			(toObject: 'Caption', styles: 'CaptionSize'), 
+			(toObject: 'Caption', styles: 'MyShadow'), 
+			(toObject: 'Dataplot', styles: 'MyShadow'}])
+*/
+
+           
+         /*
+           private var _chartParam:ArrayCollection=new ArrayCollection([
+ 		    {xAxisName:'Client'},
+			{yAxisName: 'Instance'},
+			{showShadow:'1'},
+			{numVisiblePlot:'28'},
+			{rotateLabels:'1'},
+			{labelDisplay:'ROTATE'},
+			{useRoundEdges:'1'}]);
+		*/
+		   /*
+			private var _chartParam:ArrayCollection=new ArrayCollection([
+ 		    {xAxisName:'Client'},
+			{yAxisName:'Instance'},
+			{showShadow:'1'},
+			{numVisiblePlot:'28'},
+			{rotateLabels:'1'},
+			{slantLabels:'1'},
+			{labelDisplay:'ROTATE'},
+			{useRoundEdges:'1'}]);
+			*/
+			private function i_init(event:Event):void{
+				
+			//	this.parentApplication.mainView.height = formWindow.getExplicitOrMeasuredHeight(); 
+			//	this.parentApplication.mainView.validateNow(); 
+				 
+				  
+				//Alert.show(Application.application.width.toString());
+				//Alert.show(FlexGlobals.topLevelApplication.width.toString());
+				
+				/*
+				
+      			if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+      				this.width = 1000;
+      				this.height = 575;
+      			}      
+      			*/
+      		}
+			
+      		private function init(event:Event):void{
+				
+				lbl_shownumber.text = "Show # of " + ca_xlcColumn[0].title_header;
+				of_row.text = ObjectCollection_mfArray.length.toString();
+      			// Populate the drop down combo box 
+				
+      			populateCB(event);
+				
+				
+				// select 
+				cb_forchart.selectedIndex = par_select;   
+				
+				// type 
+				chart_combo.selectedIndex = par_type;
+				number_of_row.text = par_maxnum.toString();
+				
+				pre_timer_prepopulateFChart(event);
+				//populateFChart(event);
+				
+				
+      		//	rendered(event);     
+				
+      		}
+			 
+			     
+			       
+			
+			
+		/*
+			private function init(event:Event):void{
+				// Populate the drop down combo box W
+				populateCB();
+				cb_forchart.selectedIndex = 0;
+				populateFChart(event);
+				//rendered(event);
+			}
+			*/    
+      		private function populateFCParams(loc_xm:XML):void{
+      		
+      			_chartParam = new ArrayCollection;
+      			var obj:Object = new Object;
+      			obj.showShadow = '1';
+      			_chartParam.addItemAt(obj,0);
+      			obj = new Object
+      			obj.numVisiblePlot = '28';
+      			_chartParam.addItemAt(obj,1);
+      			obj = new Object
+      			obj.slantLabels = '1';
+      			_chartParam.addItemAt(obj,2);
+      			obj = new Object
+      			obj.labelDisplay = 'ROTATE';
+      			_chartParam.addItemAt(obj,3);
+      			obj = new Object
+      			obj.useRoundEdges = '1';
+      			_chartParam.addItemAt(obj,4);
+      			obj = new Object
+      			obj.yAxisName = cb_forchart.selectedLabel;
+      			_chartParam.addItemAt(obj,5);
+      		
+      			var x_axis_value:String = new String;
+				
+      			for (var i_ctr:int = 0; i_ctr < (adv_mfArray.columns.length - 2); i_ctr++){
+      				for (var ix:int=0;ix< ca_xlcColumn.length;ix++){
+      						/* looking for String Datatype.  The way I see it is that there
+      							will always be a column of a String Datatype on the first succeeding columns.
+      						*/
+      						if (adv_mfArray.columns[i_ctr].dataField == ca_xlcColumn[ix].dataField){
+      							/* get only the String datatype for preparation on the 'categories' */
+      							if ((ca_xlcColumn[ix].datatype == "S")|| (ca_xlcColumn[ix].datatype == "D")){
+      									x_axis_value = x_axis_value + 	adv_mfArray.columns[i_ctr].headerText + " " ;	
+      							}   
+      							break; 
+      						}
+      				}
+      			}
+				 
+				x_axis_value = x_axis_value.substr(0, x_axis_value.length - 1); 
+      			obj = new Object
+      			obj.xAxisName = x_axis_value;
+      			_chartParam.addItemAt(obj,6);
+      			
+      			obj = new Object
+      			obj.caption = cap_title;
+      			_chartParam.addItemAt(obj,7);
+      			
+      			obj = new Object
+      			obj.canvasBorderColor='666666';
+      			_chartParam.addItemAt(obj,8);
+      			obj = new Object
+      			obj.canvasBorderThickness='1';
+      			_chartParam.addItemAt(obj,9);
+      			obj = new Object
+      			obj.showPercentageValues='0';
+      			_chartParam.addItemAt(obj,10);
+      			obj = new Object
+      			obj.exportEnabled='0';
+      			_chartParam.addItemAt(obj,11);
+				obj = new Object
+      			obj.exportFileName='myExportFile';
+      			_chartParam.addItemAt(obj,12);
+				obj = new Object
+				obj.showLegend='0';
+				_chartParam.addItemAt(obj,13);
+				
+				
+				obj = new Object
+				obj.showExportDataMenuItem='1';
+				_chartParam.addItemAt(obj,14);
+			//	obj = new Object
+			//	obj.showPrintMenuItem='1';
+			//	_chartParam.addItemAt(obj,15);
+				
+				//displayAlert(); 
+      		//	_chartParam.refresh();
+				//Alert.show(_chartParam.length.toString()); 
+				//Alert.show(loc_xm.toString());
+				//PopUpManager.removePopUp(myAlert);
+				rendered(loc_xm);
+      			//return;         
+      		  
+			}
+			[Embed(source='image/Lightning3.png')]
+			private var confirmIcon:Class;
+			private var myAlert:Alert =  new Alert;
+			private function displayAlert():void{
+			
+				//////////////////////////////////////
+				//  Fire Alert for Waiting Display //
+				Alert.buttonWidth =141; 
+				myAlert = Alert.show("","Plotting Chart...",0,this,null,confirmIcon);  
+				
+				// modify the look of the Alert box
+				myAlert.setStyle("backgroundColor", '#C3D9FA');
+				myAlert.setStyle("borderColor", 0xffffff);
+				myAlert.setStyle("borderAlpha", 0.75);
+				myAlert.setStyle("fontSize", 14); 
+				myAlert.setStyle("fontWeight", "bold");
+				myAlert.setStyle("color", 0x000000); // text color
+				///////////////////////////////////////
+			}
+			
+			private function pre_timer_prepopulateFChart(event:Event):void{
+				
+				fc.FCDebugMode = false;  
+					//fc.FCRender();     
+				 
+				displayAlert();
+				
+				   
+				
+				btn_show.label = "Charting....";
+				btn_show.enabled = false;
+				
+				
+				var nr:int = int(number_of_row.text);
+				//Alert.show(ObjectCollection_mfArray.length.toString() + " : " +mfArray.length.toString() );
+				
+				mfArray = new ArrayCollection();
+				for( var i:int = 0; i < nr; i++ ){
+					var obj:Object = new Object();	
+					for (var ix:int=0;ix< ca_xlcColumn.length; ix++)  { 
+						var datafield:String = (ca_xlcColumn[ix]["dataField"]).toString();
+						obj[datafield] = ObjectCollection_mfArray[i][datafield];
+					}
+					mfArray.addItem(obj);
+				}
+				mfArray.refresh;
+				ntchart = new Timer(TIMER_INTERVAL_CHART);
+				ntchart.addEventListener(TimerEvent.TIMER, nt_updatechart); 
+				ntchart.start();
+				
+			}
+			
+			private function pre_timer_prepopulateFChart_pass2():void{
+				ntchart = new Timer(TIMER_INTERVAL_CHART);
+				ntchart.addEventListener(TimerEvent.TIMER, nt_updatechart_pass2); 
+				ntchart.start();
+				
+			}
+			 
+			
+			
+			
+			
+      		private function populateFChart(event:Event):void{
+      		
+      		
+      		if (chart_combo.selectedItem.value == 'Pie3D'){
+					forPieChart(event);
+			}else{
+      		
+      			var chart_head:String = "<chart>" ;
+      			
+      			var categories_head:String = "<categories>";
+				var categories_main:String = new String;
+				var categories_tail:String = "</categories>"; 
+				var total_categories:String = new String;
+	    
+	
+	
+				var dataset_head:String = "<dataset seriesName='" + cb_forchart.selectedLabel + "'>" ;
+				var dataset_main:String = new String;	
+				var dataset_tail:String = "</dataset>"; 
+				var total_dataset:String = new String;
+	
+	
+	
+	
+				var chart_tail:String = "</chart>";
+	
+	
+	
+				
+      				// Compute for Categories.
+      				//Alert.show(ca_xlcColumn.length.toString());
+					
+					
+					
+      			/* get row from array */
+      			for (var ctr_arr:int=0; ctr_arr<mfArray.length; ctr_arr++){
+      				/* get the number of columns on the datagrid */
+      				//var rowvalue:String = new String;
+      				var category:String = "<category label='";
+      				var data_set:String = "<set value='";
+					
+					//category = category + mfArray[ctr].client + "'/>";
+					//categories_main = categories_main + category;
+					// remove the Unique key and a trailing space (-2)
+      				for (var i_column_ctr:int = 0; i_column_ctr < (adv_mfArray.columns.length - 2); i_column_ctr++){
+      					
+      						//if (adv_mfArray.columns[i_column_ctr].dataField == "upd_unique"){
+							//	Alert.show(adv_mfArray.columns[i_column_ctr].dataField);
+							//} 
+		      					/* search for the colums on the xmlheaderdoc */
+		      					for (var ix:int=0;ix< ca_xlcColumn.length;ix++){
+									
+									
+		      						/* looking for String Datatype.  The way I see it is that there
+		      							will always be a column of a String Datatype on the first succeeding columns.
+		      						*/
+		      						if (adv_mfArray.columns[i_column_ctr].dataField == ca_xlcColumn[ix].dataField){
+		      							/* get only the String datatype for preparation on the 'categories' */
+		      							if ((ca_xlcColumn[ix].datatype == "S") || (ca_xlcColumn[ix].datatype == "D")){
+		      									if (mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] == null){
+		      											mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] = "";
+		      									}
+												//Alert.show(mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField]);
+		      									// Remove the single quote , just in case there are.
+												mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] = strReplace(mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField], "'", " ")
+												
+												category = category + mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] + " "  ;
+		      									
+												//				Alert.show(mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField]);					
+		      									break; 
+		      								
+		      							} 
+		      						 
+		      						} 
+		      					}
+								
+      				}
+      				categories_main = categories_main + category + "'/>";
+      				
+					data_set = data_set + mfArray[ctr_arr][cb_forchart.selectedItem.data]  + "'/>"
+      				dataset_main = dataset_main + data_set;
+      				
+      			}	
+      				/* save this is a string variable for category */
+      				total_categories = categories_head + categories_main + categories_tail;    
+					total_dataset = dataset_head + dataset_main + dataset_tail;
+					my_xml = chart_head + total_categories + total_dataset + chart_tail;
+					//Alert.show(my_xml);
+					
+					xm = new XML(my_xml); 
+					populateFCParams(xm);
+					
+				/* Now Check for numeric selected from the ComboBox */	
+      		 }
+      		}
+      		/*
+      		private function populateCB(event:Event):void{
+			
+      			//  First get the colums from the AdvancedDataGrid to populate the drop down list box.
+      			for (var i_column_ctr:int = 0; i_column_ctr < (adv_mfArray.columns.length - 1); i_column_ctr++){
+					
+      				for (var ix:int=0;ix< ca_xlcColumn.length;ix++){
+						
+      					if (adv_mfArray.columns[i_column_ctr].dataField == ca_xlcColumn[ix].dataField){
+      						if (ca_xlcColumn[ix].datatype == "N"){
+      							obj = new Object
+      							obj.data = ca_xlcColumn[ix].dataField;
+      							
+      							if (ca_xlcColumn[ix].title_header == '%'){
+      								obj.headertitle = '% ' + ca_xlcColumn[ix-1].title_header;
+      							} 
+      							else{
+      								obj.headertitle = ca_xlcColumn[ix].title_header;
+      							}
+      							ac_populatedd.addItem(obj);
+      						} 
+      						break;
+      					} 
+      				}
+      				
+      				
+      				
+      			}
+				  
+			
+      		}
+			
+			
+			*/
+			private function strReplace(str:String, search:String, replace:String):String {
+					return str.split(search).join(replace);
+			}
+			private function populateCB(event:Event):void{
+				
+				//  First get the colums from the AdvancedDataGrid to populate the drop down list box.
+				for (var i_column_ctr:int = 0; i_column_ctr < (adv_mfArray.columns.length - 1); i_column_ctr++){
+					for (var ix:int=0;ix< ca_xlcColumn.length;ix++){
+						
+						if (adv_mfArray.columns[i_column_ctr].dataField == ca_xlcColumn[ix].dataField){
+							if (ca_xlcColumn[ix].datatype == "N"){
+								obj = new Object
+								obj.data = ca_xlcColumn[ix].dataField;
+								
+								if (ca_xlcColumn[ix].title_header == '%'){
+									obj.headertitle = '% ' + ca_xlcColumn[ix-1].title_header;
+								} 
+								else{
+									obj.headertitle = ca_xlcColumn[ix].title_header;
+								}
+								ac_populatedd.addItem(obj);
+							} 
+							break;
+						} 
+					}
+					
+					
+					/*
+					// check for "Instance"
+					if (adv_mfArray.columns[i_column_ctr].dataField == "instance"){
+					obj = new Object
+					obj.data = "instance";
+					obj.headertitle = "Instance";
+					ac_populatedd.addItem(obj);
+					}
+					// check for "Instance Percent"
+					if (adv_mfArray.columns[i_column_ctr].dataField == "pct_instance"){
+					obj = new Object
+					obj.data = "pct_instance";
+					obj.headertitle = "% Instance";
+					ac_populatedd.addItem(obj);
+					}
+					// check for all numerics that has instance
+					// check first for non "pct_instance"
+					if (adv_mfArray.columns[i_column_ctr].dataField != "pct_instance"){
+					if ((adv_mfArray.columns[i_column_ctr].dataField).substr(0,4) == "pct_" ){
+					obj = new Object
+					obj.data = adv_mfArray.columns[i_column_ctr].dataField;
+					obj.headertitle = "% " + adv_mfArray.columns[i_column_ctr].dataField;
+					ac_populatedd.addItem(obj); 
+					}
+					}
+					*/
+				}
+				ac_populatedd.refresh();
+				
+				return;
+			}
+			 
+			
+      			private function rendered(loc_xm:XML):void
+			{ 
+					
+					
+					fc.FCChartType = chart_combo.selectedItem.value;
+				fc.FCData(loc_xm);
+				fc.FCParams(_chartParam);
+				fc.visible = false;
+				fc.FCRender(); 
+				
+			//	PopUpManager.removePopUp(myAlert);
+				pre_timer_prepopulateFChart_pass2();
+			}
+			
+			
+			private function render2():void{
+				
+				fc.FCChartType='Pie3D';
+				fc.FCData(pie_xm);
+				fc.FCParams(_chartParam); 
+				fc.FCRender();   
+				
+				fc.FCChartType = chart_combo.selectedItem.value;
+				fc.FCData(xm);
+				fc.FCParams(_chartParam);
+				fc.FCRender();   
+				
+			}
+			
+			private function computemaxrows(event:Event):void{
+				
+				
+				/* 
+				var nr:int = int(number_of_row.text);
+				//Alert.show(ObjectCollection_mfArray.length.toString() + " : " +mfArray.length.toString() );
+				
+				mfArray = new ArrayCollection();
+				for( var i:int = 0; i < nr; i++ ){
+					var obj:Object = new Object();	
+					for (var ix:int=0;ix< ca_xlcColumn.length; ix++)  { 
+						var datafield:String = (ca_xlcColumn[ix]["dataField"]).toString();
+						obj[datafield] = ObjectCollection_mfArray[i][datafield];
+					}
+					mfArray.addItem(obj);
+				}
+				
+				*/
+				//Alert.show(mfArray.length.toString());
+				//pre_timer_prepopulateFChart_pass2(event);
+				populateFChart(event);     
+				/*
+				mfArray = new ArrayCollection;
+				mfArray = ObjectCollection_mfArray;
+				Alert.show(ObjectCollection_mfArray.length.toString() + " : " + mfArray.length.toString());
+				
+				
+				 
+				 
+				
+				
+				
+				for (var i:int=mfArray.length - 1; i>nr; i--){ 
+					mfArray.removeItemAt(i);  
+				}
+				   
+				Alert.show(mfArray.length.toString());
+				
+				populateFChart(event);  
+			*/
+			} 
+			
+			
+				// Function invoked when chart type get changed by selecting conbo-box
+			private function change_chart(e:Event):void
+			{
+				// Changing chart type by FCChartType property				
+				// Calling FCrender function to take effect visually with a blank data.
+				
+				//populateFChart(e);
+				
+				if (e.currentTarget.selectedItem.value == 'Pie3D'){
+					forPieChart(e);
+					
+				}
+				if (e.currentTarget.selectedItem.value != 'Pie3D'){
+					populateFChart(e);  
+				fc.FCChartType=e.currentTarget.selectedItem.value;
+				fc.FCData(xm);
+				fc.FCParams(_chartParam);
+				fc.FCRender();
+				}   
+			}
+			
+			
+			private const TIMER_INTERVAL_CHART:int = 1000;
+			private var ntchart:Timer;   
+			private function nt_updatechart(evt:TimerEvent):void {
+				ntchart.stop();
+				/*
+				btn_show.enabled = true;
+			    btn_show.label = "Change Chart";
+				*/
+				computemaxrows(evt);
+				//populateFChart(evt);
+			}
+
+
+			private function nt_updatechart_pass2(evt:TimerEvent):void {
+				
+				ntchart.stop();
+				
+				btn_show.enabled = true;
+				btn_show.label = "Change Chart";
+				/*     
+				populateFChart(evt);
+				*/ 
+				fc.visible = true;
+					fc.FCRender();     
+					PopUpManager.removePopUp(myAlert);
+				
+				   
+			}
+
+			
+			
+			
+			private function forPieChart(event:Event):void{
+		
+		
+				var chart_head:String = "<chart>" ;
+				var set_head:String = "<set label='>";
+				var set_main:String = new String;
+				var set_tail:String = "</>"; 
+				var total_set:String = new String;
+	      			
+				var chart_tail:String = "</chart>";
+				
+				for (var ctr_arr:int=0; ctr_arr<mfArray.length; ctr_arr++){
+					var set_:String = "<set label='";
+      				var data_set_:String = "value='";
+					
+					//category = category + mfArray[ctr].client + "'/>";
+					//categories_main = categories_main + category;
+					
+      				for (var i_column_ctr:int = 0; i_column_ctr < (adv_mfArray.columns.length - 2); i_column_ctr++){
+      					
+      						
+      					/* search for the colums on the xmlheaderdoc */
+      					for (var ix:int=0;ix< ca_xlcColumn.length;ix++){
+      						/* looking for String Datatype.  The way I see it is that there
+      							will always be a column of a String Datatype on the first succeeding columns.
+      						*/
+      						if (adv_mfArray.columns[i_column_ctr].dataField == ca_xlcColumn[ix].dataField){
+      							/* get only the String datatype for preparation on the 'categories' */
+      							if ((ca_xlcColumn[ix].datatype == "S") || (ca_xlcColumn[ix].datatype == "D")){
+      									if (mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] == null){
+      											mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] = "";
+      									}
+      									set_ = set_ + mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] + " "  ;
+      					//				Alert.show(mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField]);					
+      									break;
+      								
+      							} 
+      					/*
+								if (ca_xlcColumn[ix].datatype == "N"){
+      									if (mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] == null){
+      											mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] = "";
+      									}
+      									set_ = set_ + mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField] + " "  ;
+      					//				Alert.show(mfArray[ctr_arr][adv_mfArray.columns[i_column_ctr].dataField]);					
+      									break;
+      								
+      							} 
+      						*/
+      						} 
+      					}
+      					data_set_ = "' value='" + mfArray[ctr_arr][cb_forchart.selectedItem.data]  + "'/>"
+      				}
+					set_main = set_main + set_ + data_set_;
+				}
+      				
+      				pie_xml = chart_head + set_main + chart_tail;
+					//Alert.show(pie_xml);
+					//Alert.show(cb_forchart.selectedIndex.toString());
+					pie_xm = new XML(pie_xml); 
+					
+					//Alert.show("checkpoint 1");
+					populateFCParams(pie_xm);
+					//fc.FCChartType=event.currentTarget.selectedItem.value;
+					/*
+					fc.FCChartType='Pie3D';
+					fc.FCData(pie_xm);
+					fc.FCParams(_chartParam);
+					fc.FCRender();   
+					*/
+					/*
+					populateFCParams();  
+					*/
+					//rendered(event);
+					
+					
+			}
+			
+			
+			private function callBack(e:FCEvent):void { 
+				
+				if (e.param.success == true){
+					AlertMessageShow("File Downloaded");
+				} 
+				
+				/*
+				AlertMessageShow(
+					"File : " + e.param.success + "\n" 
+					
+					+ "File Format: "+ e.param.fileFormat);
+					//+ e.param.fileName);
+				*/
+			}     
+			
+		]]>
+	</mx:Script>
+	
+	<!-- mx:AdvancedDataGrid id="adg1" dataProvider="{_chartParam}" width="100%">
+		
+	</mx:AdvancedDataGrid -->
+
+	
+	
+	
+	
+	
+	<mx:HBox width="100%">
+		<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+				   height="27"
+				   width="78"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   click="{parentApplication.scholarcap_mousehovering(event,'',showlocal_crunch + ' Chart Console','BUTTON')}"
+				   
+				   />
+		<mx:Spacer width="5%"/>
+	<mx:Label text="Selection:  " fontSize="16" fontWeight="bold"/>
+		<local:HighViewCombobox id="cb_forchart" doc_id="1037" dataProvider="{ac_populatedd}" labelField="headertitle"
+								fontSize="14" color="#030000" prompt="No Selection"
+								/>
+		<!-- local:HighViewCombobox id="cb_forchart" doc_id="1037" dataProvider="{ac_populatedd}" labelField="headertitle"
+		fontSize="14" color="#030000" prompt="No Selection" change="{populateFChart(event)}"
+		/ -->
+	 
+					<mx:Label text="Select chart type:" fontSize="16" fontWeight="bold"/>
+					<!-- local:HighViewCombobox id="chart_combo" doc_id="1038" change="change_chart(event)" fontSize="14" color="#030000"  -->
+					<local:HighViewCombobox id="chart_combo" doc_id="1038" fontSize="14" color="#030000" >
+							
+						<mx:ArrayCollection>
+							<mx:Object label="Column3D" value='MSColumn3D'/>
+							<mx:Object label="Column Chart" value='ScrollColumn2D'/>
+			         		<mx:Object label="Line Chart" value='ScrollLine2D'/>
+			        		<mx:Object label="Area Chart" value='ScrollArea2D'/>
+			        		<mx:Object label="Pie Chart" value='Pie3D'/>
+			        		<!-- mx:Object label="Combi 2D" value='ScrollColumn2D'/ -->
+			        		<!-- mx:Object label="Combi DY 2D" value='ScrollCombiDY2D'/ -->
+	      				</mx:ArrayCollection>
+					</local:HighViewCombobox >
+					<!-- mx:Button label="Button" click="{init(event);}"/ -->
+				
+		<!-- mx:Spacer width="5%"/ -->
+		<mx:Label id="lbl_shownumber" fontSize="16" fontWeight="bold"/>
+		
+		<!-- mx:TextInput id="number_of_row" restrict="0-9" 
+					  width="46"  color="#000606" fontWeight="bold" maxChars="5" 
+					  editable="true" enabled="true" themeColor="#C9E6F8" backgroundColor="#85e7ff" 
+					  fontSize="14" height="25"   
+					 
+					  cornerRadius="4" 
+					  borderStyle="inset"
+					  enter="computemaxrows(event)" 
+					  
+					  / -->  
+		<mx:TextInput id="number_of_row" restrict="0-9" 
+					  width="46"  color="#000606" fontWeight="bold" maxChars="5" 
+					  editable="true" enabled="true" themeColor="#C9E6F8" backgroundColor="#85e7ff" 
+					  fontSize="14" height="25"   
+					  
+					  cornerRadius="4" 
+					  borderStyle="inset"
+					  
+					  />
+		<mx:Label text="of " fontSize="16" fontWeight="bold"/>
+		<mx:Label id="of_row"  fontSize="16" fontWeight="bold"/>
+		<local:HighViewButton id="btn_show" doc_id="1040" label="Change Chart" click="pre_timer_prepopulateFChart(event);"/> 
+		<mx:Spacer width="100%"/>
+		<mx:Label text="Export To:" fontSize="16" fontWeight="bold"/>
+		<local:HighViewButton id="btn_saveasJPEG" label="JPEG" click="fc.FCExportChart('JPG','myChart')"/>
+		<local:HighViewButton id="btn_saveasPNG" label="PNG" click="fc.FCExportChart('PNG','myChart')"/>
+		<local:HighViewButton id="btn_saveasPDF" label="PDF" click="fc.FCExportChart('PDF','myChart')"/>
+		
+		
+</mx:HBox>
+	   
+	
+	<!-- ns1:FusionCharts id="fc" FCChartType="MSColumn3D" width="100%" height="100%"
+			FCRenderEvent="rendered(event)"  FCDataXML="." 
+			
+		 -->
+	<!--   
+	<ns1:FusionCharts id="fc" FCChartType="MSColumn3D" width="100%" height="100%"
+			FCDataXML="." 
+		>	
+		<ns1:FCChartData  FCStyles="{chartStyle}"  ChartNoDataText="Please select a numeric value from the Selection Box" />
+	</ns1:FusionCharts>	
+	-->
+		<!-- ns1:FusionCharts id="fc" FCChartType="MSColumn3D" width="100%" height="100%"
+			FCDataXML="." 
+		-->	
+			<ns1:FusionCharts id="fc" FCChartType="Pie3D" width="100%" height="100%"
+							  FCDataXML="."  FCExported="callBack(event)"
+							  >	      
+		<ns1:FCChartData  FCStyles="{chartStyle}"  ChartNoDataText="Loading .... " PBarLoadingText="Error Loading, Please Refresh." />
+	</ns1:FusionCharts>	
+	
+	
+	
+<mx:HBox width="100%">
+	<!-- local:HighViewButton id="btn_viewSettings" doc_id="1039" label="View Settings"
+		useHandCursor="true"
+		buttonMode="true"
+		mouseChildren="false"
+ 
+		
+		/ -->
+	<!-- local:HighViewButton id="btn_close" doc_id="1040" label="Back" click="{titleWindow_close(event)}"/ -->
+	<local:ActionGridImageButton id="btn_close" source="image/ico_back1_red.png" 
+								 height="28" 
+								 
+								 />     
+	
+	<local:HighViewButton id="btn_close_back" doc_id="1040" label="Back"/>  
+	<local:HighViewButton id="btn_savechart" doc_id="1040" label="Create View"/>
+	<mx:Spacer width="100%"/>
+	<!-- local:HighViewButton id="btn_close" doc_id="1040" label="Close" click="{titleWindow_close(event)}"/ -->
+	
+</mx:HBox>
+
+</mx:TitleWindow> 

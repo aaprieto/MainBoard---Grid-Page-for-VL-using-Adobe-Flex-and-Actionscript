@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"	width="518" height="510"  verticalScrollPolicy="off"
+				layout="vertical"
+				showCloseButton="true"
+			 x="10" y="10"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				close="titleWindow_close(event);"
+				creationComplete="init()"
+				xmlns:local="*" >    
+	<!-- mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"	width="748" height="408"  verticalScrollPolicy="off"
+	layout="vertical"
+	showCloseButton="true"
+	close="titleWindow_close(event);" x="10" y="10"  
+	dropShadowEnabled="true"
+	borderAlpha="1.0"
+	creationComplete="init()" 
+	xmlns:local="*" xmlns:s="library://ns.adobe.com/flex/spark" -->
+	
+	<mx:HTTPService 
+		id="retrieve_passphraseconfig" 
+		url="ae_tlch_ml_req.php" 
+		useProxy="false" 
+		method="POST"        
+		result="{passphraseconfigHandler(event)}"
+		fault="{faultpassphraseconfig(event)}"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_c_code}</company>
+				<sid>{loc_ses_id}</sid>
+				<parameters>REFRESH,RETRIEVE|CONFIGPARAMS|</parameters>
+				<systemAndJob></systemAndJob>     
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="update_passphraseconfig" 
+		url="ae_tlch_ml_req.php" 
+		useProxy="false" 
+		method="POST"        
+		result="{updatepassphraseconfigHandler(event)}"
+		fault="{faultupdatepassphraseconfig(event)}"
+		contentType="application/xml"  
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_c_code}</company>
+				<sid>{loc_ses_id}</sid>
+				<parameters>{loc_params}</parameters>
+				<systemAndJob></systemAndJob>     
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:Script>
+		<![CDATA[
+			import flashx.textLayout.formats.BackgroundColor;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			[Bindable]
+			public var loc_ses_id:String;  
+			[Bindable]
+			public var loc_c_code:String;
+			[Bindable]
+			public var loc_user:String;  
+			[Bindable]
+			public var loc_str_app:String;
+			[Bindable]
+			private var loc_params:String;
+			private function init():void {
+			
+				//ti_bc_count.setFocus();
+				ti_fail_max.setFocus();
+				lochttpRequestUrlDatagrid();
+				
+			}
+				   
+			private function locresultStatus(string_result:String, string_reason:String):String{
+				var retstr:String = string_reason;
+				
+				if (string_result == "EXPIRED"){
+					retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+				} 
+				if (string_result == "FAIL"){
+					retstr = string_reason;
+				} 
+				
+				return retstr;
+			}
+			private function updatepassphraseconfigHandler(event:ResultEvent):void{
+				
+				
+					if ( event.result.ezware_response.status != 'OK' ) {
+						var s_ret:String = locresultStatus(event.result.ezware_response.status, event.result.ezware_response.reason);  
+						AlertMessageShow(s_ret);
+						return;
+					}    
+				/*	
+					if (event.result.ezware_response.refresh_data.configparams.success == 'N'){
+						AlertMessageShow(event.result.ezware_response.refresh_data.configparams.message);
+						return;
+					}else{
+						titleWindow_close(event);
+					}
+					*/
+					else {
+						titleWindow_close(event);
+					}
+			}
+			private function passphraseconfigHandler(event:ResultEvent):void{
+				
+				if ( event.result.ezware_response.status != 'OK' ) {
+					var s_ret:String = locresultStatus(event.result.ezware_response.status, event.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}
+					
+					//if (event.result.ezware_response.refresh_data.operator.data.message_flag == 'N'){
+					//	ti_bc_count.text = event.result.ezware_response.refresh_data.operator.data.bc_count;
+						ti_fail_max.text = event.result.ezware_response.refresh_data.operator.data.fail_max;
+						ti_pp_words.text = event.result.ezware_response.refresh_data.operator.data.pp_words;
+						ti_pp_min.text = event.result.ezware_response.refresh_data.operator.data.pp_min;
+						ti_pw_min_1.text = event.result.ezware_response.refresh_data.operator.data.pw_min_1;
+						ti_pw_min_2.text = event.result.ezware_response.refresh_data.operator.data.pw_min_2;
+						ti_pw_min_3.text = event.result.ezware_response.refresh_data.operator.data.pw_min_3;
+						ti_pw_min_4.text = event.result.ezware_response.refresh_data.operator.data.pw_min_4;
+						ti_pp_max.text = event.result.ezware_response.refresh_data.operator.data.pp_max;
+						ti_pp_match.text = event.result.ezware_response.refresh_data.operator.data.pp_match;
+						ti_pp_random.text = event.result.ezware_response.refresh_data.operator.data.pp_random;
+						ti_pp_denysim.text = event.result.ezware_response.refresh_data.operator.data.pp_denysim;
+							
+					//}else {
+					//	AlertMessageShow(event.result.ezware_response.refresh_data.operator.data.message);
+					//}
+					
+			}
+			private function lochttpRequestUrlDatagrid():void{
+				
+				if (loc_str_app == 'ml'){
+					retrieve_passphraseconfig.url = 'ae_tlch_ml_req.php'; 
+					update_passphraseconfig.url = 'ae_tlch_ml_req.php'; 
+				} else {    
+					retrieve_passphraseconfig.url = 'ae_tlch_xmlreq.php'; 
+					update_passphraseconfig.url = 'ae_tlch_xmlreq.php'; 
+				}
+				
+				retrieve_passphraseconfig.send();    
+			}
+			
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			private function updatePassphrase(evt:Event):void {
+				loc_params =  "REFRESH,UPDATE|CONFIGPARAMS|" + 
+					//loc_user + "|" +     
+					//ti_bc_count.text + "|" +
+					ti_fail_max.text + "|" +
+					ti_pp_words.text + "|" +
+					ti_pp_min.text + "|" +
+					ti_pw_min_1.text + "|" +
+					ti_pw_min_2.text + "|" +
+					ti_pw_min_3.text + "|" +
+					ti_pw_min_4.text + "|" +
+					ti_pp_max.text + "|" +
+					ti_pp_match.text + "|" +
+					ti_pp_random.text + "|" +
+					ti_pp_denysim.text + "|";
+				update_passphraseconfig.send();
+				
+			}
+			
+			private function faultpassphraseconfig(event:FaultEvent):void{
+				var faultMessage:String = "Unable to retrieve Passphrase Configuration.  Please check with your System Administrator.";
+				AlertMessageShow(faultMessage);
+			}
+			private function faultupdatepassphraseconfig(event:FaultEvent):void{
+				var faultMessage:String = "Unable to update Passphrase Configuration.  Please check with your System Administrator.";
+				AlertMessageShow(faultMessage);
+			}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////			
+			
+			private function bc_count_FocusIn(event:Event):void{
+				txt_content.text = "Value representing the encryption level associated with passwords/passphrases; i.e., higher " + 
+									"values will dictate stronger security.  Recommend value is 8 (default). Note that encryption levels greater " + 
+									"than 12 may take much longer to decipher at login time."
+				//ti_bc_count.setStyle("backgroundColor","#66FFFF");
+			}
+			private function bc_count_FocusOut(event:Event):void{
+				txt_content.text = "";
+				//ti_bc_count.setStyle("backgroundColor","white")
+			}           
+
+			
+			
+			
+			private function ti_fail_max_FocusIn(event:Event):void{
+				txt_content.text = "Value representing the maximum number of failed login attempts permitted before locking " + 
+					"the account."
+				ti_fail_max.setStyle("backgroundColor","#66FFFF");
+			}
+			private function ti_fail_max_FocusOut(event:Event):void{
+				txt_content.text = "";
+				ti_fail_max.setStyle("backgroundColor","white")
+			}           
+
+		
+			
+			private function ti_pp_words_FocusIn(event:Event):void{
+				txt_content.text = "Value representing the minimum number of words required to determine if an entry is a " + 
+					"'passphrase' instead of a 'password' and will be subject to passphrase quality checking rules. Entries " + 
+					"with less than this many words will be considered a 'password' instead of a passphrase."
+				ti_pp_words.setStyle("backgroundColor","#66FFFF");
+			}
+			private function ti_pp_words_FocusOut(event:Event):void{
+				txt_content.text = "";
+				ti_pp_words.setStyle("backgroundColor","white")
+			}   
+			
+			
+			
+			
+			
+			private function ti_pp_min_FocusIn(event:Event):void{
+				txt_content.text = "Value representing the minimum number of characters required for a valid passphrase."; 
+					
+				ti_pp_min.setStyle("backgroundColor","#66FFFF");
+			}
+			private function ti_pp_min_FocusOut(event:Event):void{
+				txt_content.text = "";
+				ti_pp_min.setStyle("backgroundColor","white")
+			}   
+			
+			
+			
+			      
+			
+			private function ti_pw_min_1_FocusIn(event:Event):void{
+				txt_content.text = "Value representing the minimum length for a valid password when a single class of " + 
+					"characters (digits, lower case letters, upper-case letters, other characters, etc.) are used; e.g., 'fluffy'. If " + 
+					"set to 0, passwords of only one class of characters are disabled (not allowed at all, regardless of length).";
+				ti_pw_min_1.setStyle("backgroundColor","#66FFFF");
+			}
+			private function ti_pw_min_1_FocusOut(event:Event):void{
+				txt_content.text = "";
+				ti_pw_min_1.setStyle("backgroundColor","white")
+			}   
+			
+			
+			private function ti_pw_min_2_FocusIn(event:Event):void{
+				txt_content.text = "Value representing the minimum length for a valid password when 2 classes of " + 
+					"characters (digits, lower case letters, upper-case letters, other characters, etc.) are used; e.g., 'Fluffy'.  If " + 
+					"set to 0, passwords of 2 classes of characters are disabled (not allowed at all, regardless of length)."
+				ti_pw_min_2.setStyle("backgroundColor","#66FFFF");
+			}
+			private function ti_pw_min_2_FocusOut(event:Event):void{
+				txt_content.text = "";
+				ti_pw_min_2.setStyle("backgroundColor","white")
+			}   
+			
+			
+			private function ti_pw_min_3_FocusIn(event:Event):void{
+				txt_content.text = "Value representing the minimum length for a valid password when 3 classes of " + 
+					"characters (digits, lower case letters, upper-case letters, other characters, etc.) are used; e.g., 'Fluffy1'. If " + 
+					"set to 0, passwords of 3 classes of characters are disabled (not allowed at all, regardless of length)."
+				ti_pw_min_3.setStyle("backgroundColor","#66FFFF");
+			}
+			private function ti_pw_min_3_FocusOut(event:Event):void{
+				txt_content.text = "";
+				ti_pw_min_3.setStyle("backgroundColor","white")
+			}   
+			
+			
+			
+			private function ti_pw_min_4_FocusIn(event:Event):void{
+				txt_content.text = "Minimum length for a valid password when 4 classes of characters (digits, lower case " + 
+					"letters, upper-case letters, other characters, etc.) are used; e.g., 'Fluffy-1'. If set to 0, passwords of 4 " + 
+					"classes of characters are disabled (not allowed at all, regardless of length)."
+				ti_pw_min_4.setStyle("backgroundColor","#66FFFF");
+			}
+			private function ti_pw_min_4_FocusOut(event:Event):void{
+				txt_content.text = "";
+				ti_pw_min_4.setStyle("backgroundColor","white")
+			}   
+			
+			
+			private function ti_pp_max_FocusIn(event:Event):void{
+				txt_content.text = "Value representing the minimum number of characters allowed for any passphrase/password. " + 
+					"Not configurable.";
+				ti_pp_max.setStyle("backgroundColor","#66FFFF");
+			}
+			private function ti_pp_max_FocusOut(event:Event):void{
+				txt_content.text = "";
+				ti_pp_max.setStyle("backgroundColor","#A7CEC4")
+			}  
+			    
+			private function ti_pp_denysim_FocusIn(event:Event):void{
+				txt_content.text = "Boolean switch used to deny (or allow) a new passphrase/password that is too similar to the " + 
+					"previous passphrase/password; i.e., 1 = Deny,  0 = allow.";
+				ti_pp_denysim.setStyle("backgroundColor","#66FFFF");
+			}
+			private function ti_pp_denysim_FocusOut(event:Event):void{
+				txt_content.text = "";
+				ti_pp_denysim.setStyle("backgroundColor","white")
+			}  
+			
+			
+			private function ti_pp_match_FocusIn(event:Event):void{
+				txt_content.text = "Value representing the length of any sequence of characters in a new " + 
+					"passphrase/password that will be used to determine similarity with the previous passphrase/password.";
+				ti_pp_match.setStyle("backgroundColor","#66FFFF");
+			}
+			private function ti_pp_match_FocusOut(event:Event):void{
+				txt_content.text = "";
+				ti_pp_match.setStyle("backgroundColor","white")
+			}  
+			
+			private function ti_pp_random_FocusIn(event:Event):void{
+				txt_content.text = "Value representing the amount of randomness (in bits) when using system-generated " +
+					"passphrases. Recommend value is 47 (default).";
+				ti_pp_random.setStyle("backgroundColor","#66FFFF");
+			}       
+			private function ti_pp_random_FocusOut(event:Event):void{
+				txt_content.text = "";
+				ti_pp_random.setStyle("backgroundColor","white")
+			}  
+			
+			//////////////////////////////////////////////////////////////
+			
+			
+			private function keydown_bc_count(event:KeyboardEvent):void{
+				
+				        if (event.keyCode == 13 || event.keyCode == 40){
+							ti_fail_max.drawFocus(true);
+							ti_fail_max.setFocus();
+						}
+			}	
+			
+		
+			
+			private function keydown_fail_max(event:KeyboardEvent):void{
+				
+				if (event.keyCode == 13 || event.keyCode == 40){
+					ti_pp_words.drawFocus(true);
+					ti_pp_words.setFocus();
+				}
+				if (event.keyCode == 38){
+				//	ti_bc_count.drawFocus(true);
+				//	ti_bc_count.setFocus();
+				}
+			}   
+			
+			private function keydown_pp_words(event:KeyboardEvent):void{
+				
+				if (event.keyCode == 13 || event.keyCode == 40){
+					ti_pp_min.drawFocus(true);
+					ti_pp_min.setFocus();
+				}
+				if (event.keyCode == 38){
+					ti_fail_max.drawFocus(true);
+					ti_fail_max.setFocus();
+				}
+			}  
+			
+			private function keydown_pp_min(event:KeyboardEvent):void{
+				
+				if (event.keyCode == 13 || event.keyCode == 40){
+					ti_pw_min_1.drawFocus(true);
+					ti_pw_min_1.setFocus();
+				}
+				if (event.keyCode == 38){
+					ti_pp_words.drawFocus(true);
+					ti_pp_words.setFocus();
+				}
+			}  
+			private function keydown_pw_min_1(event:KeyboardEvent):void{
+				
+				if (event.keyCode == 13 || event.keyCode == 40){
+					ti_pw_min_2.drawFocus(true);
+					ti_pw_min_2.setFocus();
+				}
+				if (event.keyCode == 38){
+					ti_pp_min.drawFocus(true);
+					ti_pp_min.setFocus();
+				}
+			}  
+			private function keydown_pw_min_2(event:KeyboardEvent):void{
+				
+				if (event.keyCode == 13 || event.keyCode == 40){
+					ti_pw_min_3.drawFocus(true);
+					ti_pw_min_3.setFocus();
+				}
+				if (event.keyCode == 38){
+					ti_pw_min_1.drawFocus(true);
+					ti_pw_min_1.setFocus();
+				}
+			}  
+			private function keydown_pw_min_3(event:KeyboardEvent):void{
+				
+				if (event.keyCode == 13 || event.keyCode == 40){
+					ti_pw_min_4.drawFocus(true);
+					ti_pw_min_4.setFocus();
+				}
+				if (event.keyCode == 38){
+					ti_pw_min_2.drawFocus(true);
+					ti_pw_min_2.setFocus();
+				}
+			}  
+			private function keydown_pw_min_4(event:KeyboardEvent):void{
+				
+				if (event.keyCode == 13 || event.keyCode == 40){
+					ti_pp_max.drawFocus(true);
+					ti_pp_max.setFocus();
+				}
+				if (event.keyCode == 38){
+					ti_pw_min_3.drawFocus(true);
+					ti_pw_min_3.setFocus();
+				}
+			}  
+			
+			
+			private function keydown_pp_max(event:KeyboardEvent):void{
+				if (event.keyCode == 13 || event.keyCode == 40){
+					ti_pp_denysim.drawFocus(true);
+					ti_pp_denysim.setFocus();
+				}
+				if (event.keyCode == 38){
+					ti_pw_min_4.drawFocus(true);
+					ti_pw_min_4.setFocus();
+				}
+			}
+			
+			
+			private function keydown_pp_denysim(event:KeyboardEvent):void{
+				if (event.keyCode == 13 || event.keyCode == 40){
+					ti_pp_match.drawFocus(true);
+					ti_pp_match.setFocus();
+				}
+				if (event.keyCode == 38){
+					ti_pp_max.drawFocus(true);
+					ti_pp_max.setFocus();
+				}
+			}
+			private function keydown_pp_match(event:KeyboardEvent):void{
+				if (event.keyCode == 13 || event.keyCode == 40){
+					ti_pp_random.drawFocus(true);
+					ti_pp_random.setFocus();
+				}
+				if (event.keyCode == 38){
+					ti_pp_denysim.drawFocus(true);
+					ti_pp_denysim.setFocus();
+				}
+			}
+			private function keydown_pp_random(event:KeyboardEvent):void{
+				if (event.keyCode == 13 || event.keyCode == 40){
+					btn_update.drawFocus(true);       
+					btn_update.setFocus();
+				}
+				if (event.keyCode == 38){
+					ti_pp_match.drawFocus(true);
+					ti_pp_match.setFocus();
+				}
+			}     
+			private function keydown_btn_update(event:KeyboardEvent):void{
+				
+				if (event.keyCode == 13){
+					updatePassphrase(event)
+					
+				}
+					if (event.keyCode == 39){
+						btn_cancel.drawFocus(true);       
+						btn_cancel.setFocus();
+					}
+					if (event.keyCode == 38){
+						ti_pp_random.drawFocus(true);
+						ti_pp_random.setFocus();
+					}
+			}
+			private function keydown_btn_cancel(event:KeyboardEvent):void{
+				
+				if (event.keyCode == 13){
+					titleWindow_close(event)
+					
+				}
+				if (event.keyCode == 37){
+					btn_update.drawFocus(true);       
+					btn_update.setFocus();    
+				}
+				if (event.keyCode == 38){
+					ti_pp_random.drawFocus(true);
+					ti_pp_random.setFocus();
+				}
+			}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////			
+			
+			
+			
+			
+		]]>
+	</mx:Script>
+	<mx:Script source="AlertMessageHandler.as"/>     
+	<!-- mx:Style source="css/main.css"/ -->
+	<mx:VBox width="100%">   
+		<mx:HBox width="100%">
+			<mx:Button id="img_ezlearnswitch_interactive" icon="@Embed('image/scholar_cap_special.png')"             
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"        
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'',headlabel.text,'BUTTON')}"
+					   />
+			<mx:Spacer width="100%"/>
+			<mx:Label id="headlabel" text="Passphrase Configuration" width="100%" textAlign="center"  fontSize="19" color="#FCFAFA" fontWeight="bold"/>
+			<mx:Spacer width="100%"/>
+		</mx:HBox>
+	</mx:VBox>
+	<mx:HBox width="100%" height="100%" id="hbox1">
+		<mx:VBox width="100%" height="100%">
+		  <mx:HBox width="100%" horizontalGap="0">   	
+			
+			
+			<mx:Form id="form_passphrase_configuration" width="50%" height="100%">
+				<!--
+				<mx:FormItem label="Encryption:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="50%">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_bc_count"  width="50%" color="#000000" 
+									  restrict="0-9"
+									
+									  borderColor="#050505"
+									  
+									  focusIn="bc_count_FocusIn(event)" 
+									  focusOut="bc_count_FocusOut(event)"
+									  keyDown="{keydown_bc_count(event)}"
+									  />
+						
+						
+					</mx:HBox>
+				</mx:FormItem>
+				-->
+				<mx:FormItem label="Max Attempts:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="50%">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_fail_max"  width="50%" color="#000000" 
+									  restrict="0-9"
+									 
+									  borderColor="#050505"
+									  
+									  focusIn="ti_fail_max_FocusIn(event)" 
+									  focusOut="ti_fail_max_FocusOut(event)"
+									  keyDown="{keydown_fail_max(event)}"
+									  />
+						
+						
+					</mx:HBox>
+				</mx:FormItem> 
+				<mx:FormItem label="PassPhrase:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="50%">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_pp_words"  width="50%" color="#000000" 
+									  restrict="0-9"
+									
+									  borderColor="#050505"
+									  
+									  focusIn="ti_pp_words_FocusIn(event)" 
+									  focusOut="ti_pp_words_FocusOut(event)"
+									  keyDown="{keydown_pp_words(event)}"
+									  />
+						
+						
+					</mx:HBox>
+				</mx:FormItem>  
+				<mx:FormItem label="Min PassPhrase:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="50%">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_pp_min"  width="50%" color="#000000" 
+									  restrict="0-9"
+									  mouseEnabled="false" 
+									  borderColor="#050505"
+									  focusIn="ti_pp_min_FocusIn(event)" 
+									  focusOut="ti_pp_min_FocusOut(event)"
+									  keyDown="{keydown_pp_min(event)}"
+									  />
+						
+						
+					</mx:HBox>
+				</mx:FormItem>  
+				<mx:FormItem label="Min PassWord 1:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="50%">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_pw_min_1"  width="50%" color="#000000" 
+									  restrict="0-9"
+									  
+									  borderColor="#050505"
+									  
+									  focusIn="ti_pw_min_1_FocusIn(event)" 
+									  focusOut="ti_pw_min_1_FocusOut(event)"
+									  keyDown="{keydown_pw_min_1(event)}"
+									  />
+						
+						
+					</mx:HBox>
+				</mx:FormItem>  
+				<mx:FormItem label="Min PassWord 2:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="50%">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_pw_min_2"  width="50%" color="#000000" 
+									  restrict="0-9"
+									  
+									  borderColor="#050505"
+									  focusIn="ti_pw_min_2_FocusIn(event)" 
+									  focusOut="ti_pw_min_2_FocusOut(event)"
+									  keyDown="{keydown_pw_min_2(event)}"
+									  />
+						
+						
+					</mx:HBox>
+				</mx:FormItem>  
+				<mx:FormItem label="Min PassWord 3:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="50%">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_pw_min_3"  width="50%" color="#000000" 
+									  restrict="0-9"
+									  
+									  borderColor="#050505"
+									  focusIn="ti_pw_min_3_FocusIn(event)" 
+									  focusOut="ti_pw_min_3_FocusOut(event)"
+									  keyDown="{keydown_pw_min_3(event)}"
+									  />
+						
+						
+					</mx:HBox>
+				</mx:FormItem>  
+				<mx:FormItem label="Min PassWord 4:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="50%">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_pw_min_4"  width="50%" color="#000000" 
+									  restrict="0-9"
+									  
+									  borderColor="#050505"
+									  
+									  focusIn="ti_pw_min_4_FocusIn(event)" 
+									  focusOut="ti_pw_min_4_FocusOut(event)"
+									  keyDown="{keydown_pw_min_4(event)}"
+									  />
+						
+						
+					</mx:HBox>
+				</mx:FormItem>  
+				<mx:FormItem label="Max Pass:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="50%">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_pp_max"  width="50%" color="#000000" 
+									  restrict="0-9"
+									  
+									  borderColor="#050505"
+									  editable="false"
+									  focusIn="ti_pp_max_FocusIn(event)" 
+									  focusOut="ti_pp_max_FocusOut(event)"
+									   backgroundColor="#A7CEC4"
+									   keyDown="{keydown_pp_max(event)}"
+									   />
+						
+						
+					</mx:HBox>
+				</mx:FormItem>  
+				<mx:FormItem label="Similarity:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="50%">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_pp_denysim"  width="50%" color="#000000" 
+									  restrict="0-9"
+									  
+									  borderColor="#050505"
+									  focusIn="ti_pp_denysim_FocusIn(event)" 
+									  focusOut="ti_pp_denysim_FocusOut(event)"
+									  keyDown="{keydown_pp_denysim(event)}"
+									  />
+						
+						
+					</mx:HBox>
+				</mx:FormItem>  
+				<mx:FormItem label="Match Length:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="50%">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_pp_match"  width="50%" color="#000000" 
+									  restrict="0-9"
+									  
+									  borderColor="#050505"
+									  focusIn="ti_pp_match_FocusIn(event)" 
+									  focusOut="ti_pp_match_FocusOut(event)"
+									  keyDown="{keydown_pp_match(event)}"
+									  />
+						
+						
+					</mx:HBox>
+				</mx:FormItem>  
+				<mx:FormItem label="System Gen:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="50%">
+					<mx:HBox width="100%">   
+						<mx:TextInput id="ti_pp_random"  width="50%" color="#000000" 
+									  restrict="0-9"
+									  
+									  borderColor="#050505"
+									  focusIn="ti_pp_random_FocusIn(event)" 
+									  focusOut="ti_pp_random_FocusOut(event)"
+									 
+									  keyDown="{ keydown_pp_random(event)}"
+									  />
+						
+						
+					</mx:HBox>
+				</mx:FormItem>  
+				
+				<!-- mx:HRule width="100%" strokeColor="#000000"/ -->
+				
+			</mx:Form>
+			  
+			  <mx:VBox width="100%" height="100%">
+				  <mx:Spacer width="100%" height="30"/>
+				  <mx:Text id="txt_content" text="" 
+						   width="100%" height="100%" fontSize="12" fontFamily="Arial" 
+						   fontWeight="bold" color="#FCFAFA" />	  
+			  </mx:VBox>
+			 
+		  </mx:HBox>
+			<mx:HBox width="100%" horizontalGap="0">         
+				
+				
+				<local:InteractiveButton
+					id="btn_update"  
+					text="Update"
+					keyDown="{keydown_btn_update(event)}"		
+					click="{updatePassphrase(event)}" 
+					>
+					
+					
+					
+					
+				</local:InteractiveButton>
+				
+			
+				<mx:Spacer width="100%"/>
+				
+				<local:InteractiveButton
+					id="btn_cancel"  
+					text="Cancel"
+					click="titleWindow_close(event)"
+					keyDown="{keydown_btn_cancel(event)}"	
+					>
+				</local:InteractiveButton>   
+				
+				
+			</mx:HBox>
+		</mx:VBox>	
+		
+		
+		
+	</mx:HBox>
+	
+</mx:TitleWindow>
+

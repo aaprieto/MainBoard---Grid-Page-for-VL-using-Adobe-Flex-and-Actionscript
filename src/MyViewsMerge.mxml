@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="752" height="285"  verticalScrollPolicy="off"
+				layout="vertical"
+				title="Create View - Merge Legacy Settings"
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				borderColor="#DAD8D8"  
+				backgroundColor="#FAFBFC"
+				creationComplete="init()"
+				backgroundImage=""
+				backgroundAlpha="1.0" styleName="glass" xmlns:local="*">
+	<mx:Script>
+		<![CDATA[ 
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			public var save_as:String;
+			[Bindable]
+			public var r_sessid:String;
+			[Bindable]
+			public var r_company_code:String;
+			[Bindable]
+			public var r_user_code:String;
+			[Bindable]
+			public var r_actiongricode:String;
+			[Bindable]
+			public var create_modify:String;
+			
+			[Bindable]
+			public var r_ag_application_entry:String;
+			
+			
+			//[Bindable] 
+			//public var arr_listviews:ArrayCollection;
+			
+			private function init():void{
+				
+				//Alert.show(r_actiongricode);
+				if ( Application.application.parameters.av == 'O'){
+					gen.enabled = false;
+					uoc.selected = true
+				} else{
+					uoc.enabled = true;
+					gen.enabled = true;
+					uoc.selected = true
+						
+				}
+				
+				/*
+				if ( Application.application.parameters.av == 'O'){
+					gen.enabled = false;
+					uoc.selected = true
+				}
+				
+				  
+				
+				if (create_modify == 'C'){
+					uoc.enabled = true;
+					gen.enabled = true;
+					uoc.selected = true
+					if ( Application.application.parameters.av == 'O'){
+						gen.enabled = false;
+						uoc.selected = true
+					}
+					
+					
+				} 
+				*/
+				
+				
+				
+				
+				
+			}
+			
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			private function validateCode(event:KeyboardEvent):void{
+				
+				//if(((inputcode.text).toUpperCase()).substr(0,4) == 'BASE'){	
+					
+					/*
+					hbox1.enabled = false;
+					uoc.selected = false;
+					gen.selected = true;
+					*/
+				//} else {
+					/*
+					hbox1.enabled = true;
+					uoc.selected = true;
+					gen.selected = false;
+					*/
+				//}     
+			}
+			
+			private var _callbackFunctionImplement:Function;
+			
+			public function set callbackFunctionImplement( value:Function ):void {
+				_callbackFunctionImplement = value;
+			}
+			 
+			
+			private var _callbackFunction:Function;
+			
+			public function set callbackFunction( value:Function ):void {
+				_callbackFunction = value;
+			}
+			
+			protected function buttonClickedInpopup():void {
+				_callbackFunction(null);
+			}
+			
+			
+			
+			public var poprenditionold:RenditionOld;
+			
+			private function mergeMyViews(event:Event):void {    
+			
+				
+				
+				poprenditionold = RenditionOld(
+					PopUpManager.createPopUp(this, RenditionOld, true));
+				
+				     
+				
+				poprenditionold.tp_user_code = r_user_code;
+				poprenditionold.tp_sessid = r_sessid;
+				poprenditionold.tp_company_code = r_company_code;
+				poprenditionold.tp_actiongricode = r_actiongricode;
+				poprenditionold.tp_type = "rendition";
+				poprenditionold.tp_application_entry = r_ag_application_entry;
+				poprenditionold["adg_tp"].addEventListener(MouseEvent.CLICK, GetChosenDataViews); 
+				
+				/*
+				popcmmyviewsmerge.r_sessid = my_sid;
+				popcmmyviewsmerge.r_company_code = my_c_code1;
+				popcmmyviewsmerge.r_user_code = myName_main;
+				popcmmyviewsmerge.create_modify = "C"; 
+				*/
+				//popcmmyviewsmerge["btn_cancel"].addEventListener("click", closeMyViewMerge);
+				
+				
+				
+				
+			}
+			
+			
+			private function GetChosenDataViews(event:Event):void{
+			
+				rendcode.text = poprenditionold.adg_tp.selectedItem.code;
+				//ti_shortcutdescription.text = popallactiongrids.adg_tp.selectedItem.mbddescription;				
+				renddesc.text = poprenditionold.adg_tp.selectedItem.desc;
+				persistentviewcode.text = "";
+				persistentviewdescription.text = "";
+				
+				PopUpManager.removePopUp(poprenditionold);
+				
+			}     
+			
+			
+			private function mergeMyViewspopPersistentView(event:Event):void {    
+				
+				
+				
+				poprenditionold = RenditionOld(
+					PopUpManager.createPopUp(this, RenditionOld, true));
+				
+				
+				
+				poprenditionold.tp_user_code = r_user_code;
+				poprenditionold.tp_sessid = r_sessid;
+				poprenditionold.tp_company_code = r_company_code;
+				poprenditionold.tp_actiongricode = r_actiongricode;
+				poprenditionold.tp_rendcode = rendcode.text;
+				poprenditionold.tp_type = "persistent";
+				poprenditionold.tp_application_entry = r_ag_application_entry
+				poprenditionold["adg_tp"].addEventListener(MouseEvent.CLICK, GetChosenDataViewsPersistent); 
+				
+				/*
+				popcmmyviewsmerge.r_sessid = my_sid;
+				popcmmyviewsmerge.r_company_code = my_c_code1;
+				popcmmyviewsmerge.r_user_code = myName_main;
+				popcmmyviewsmerge.create_modify = "C"; 
+				*/
+				//popcmmyviewsmerge["btn_cancel"].addEventListener("click", closeMyViewMerge);
+				
+				
+				
+				
+			}
+			private function GetChosenDataViewsPersistent(event:Event):void{
+				
+				persistentviewcode.text = poprenditionold.adg_tp.selectedItem.code;
+				persistentviewdescription.text = poprenditionold.adg_tp.selectedItem.desc;
+				
+				PopUpManager.removePopUp(poprenditionold);
+				
+			}     
+		]]>
+	</mx:Script>
+	<mx:Style source="css/main.css"/>
+	
+	<mx:HBox width="100%" id="hbox2">
+		<mx:Label text="View Code" width="138" id="label1" fontWeight="bold" fontSize="14"/>
+		<mx:TextInput  backgroundColor="#85E7FF"  width="100%" id="inputcode" text=""  
+					   maxChars="13" fontSize="14" 
+					   keyUp="{validateCode(event)}"
+					   fontWeight="bold"/>
+	</mx:HBox>
+	
+		
+	<mx:HBox width="100%" height="60" id="hbox3">
+		<mx:Label text="View Description" width="138" id="label2" fontWeight="bold" fontSize="14"/>
+		<mx:TextArea  backgroundColor="#85E7FF"  width="100%" height="55" id="inputdescription" text="" fontSize="14" fontWeight="bold"/> 
+	</mx:HBox>
+	
+	<mx:HBox width="100%" id="hboxrendition">
+		<mx:Label text="Rendition" width="138" id="labelrend" fontWeight="bold" fontSize="14"/>
+		<mx:TextInput  backgroundColor="#85E7FF"  width="182" id="rendcode" text=""  
+					   maxChars="13" fontSize="14" 
+					  editable="false"
+					   fontWeight="bold"/>
+		
+		<mx:Button id="img_rend" icon="@Embed('image/icon_lookup.png')"         
+				   click="{mergeMyViews(event)}"
+				   height="27"
+				   width="50"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				  
+				    
+				   />     
+		<mx:TextInput  backgroundColor="#85E7FF"  width="100%" id="renddesc" text=""  
+					   maxChars="13" fontSize="14" 
+					   editable="false"
+					   fontWeight="bold"/>
+		
+	</mx:HBox>
+
+	<mx:HBox width="100%" id="hboxpersistentview">
+		<mx:Label text="Persistent View" width="138" id="labelpersistentview" fontWeight="bold" fontSize="14"/>
+		<mx:TextInput  backgroundColor="#85E7FF"  width="182" id="persistentviewcode" text=""  
+					   maxChars="13" fontSize="14" 
+					   editable="false"
+					   fontWeight="bold"/>
+		
+		<mx:Button id="img_persistentview" icon="@Embed('image/icon_lookup.png')"  
+				   click="{mergeMyViewspopPersistentView(event)}"
+				   height="27"
+				   width="50"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   
+				   
+				   />     
+		<mx:TextInput  backgroundColor="#85E7FF"  width="100%" id="persistentviewdescription" text=""  
+					   maxChars="13" fontSize="14" 
+					   editable="false"
+					   fontWeight="bold"/>
+		
+	</mx:HBox>
+	
+	
+	<mx:HBox width="100%" id="hbox1">
+		<mx:RadioButtonGroup id="radiogroup3"/>
+		<mx:Label text="Share View?" width="207" fontWeight="bold" fontSize="14"/>
+		<mx:RadioButton id="gen" label="Yes" groupName="radiogroup4" width="149" />
+		<mx:RadioButton id="uoc" label="No" groupName="radiogroup4" width="149" />
+	</mx:HBox>
+	<!-- mx:HBox width="100%" id="hbox_aa">   
+		<mx:RadioButtonGroup id="radiogroup_aa"/>
+		<mx:Label text="Apply Automatically?" width="207" fontWeight="bold" fontSize="14"/>
+		<mx:RadioButton id="aa_yes" label="Yes" groupName="radiogroup_aa" width="149" /> 
+		<mx:RadioButton id="aa_no" label="No" groupName="radiogroup_aa" width="149" />
+	</mx:HBox -->
+	<mx:HBox width="100%">
+		<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+				   height="27"
+				   width="78"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   click="{parentApplication.scholarcap_mousehovering(event,'',this.title,'BUTTON')}"
+				   
+				   />     
+		<mx:Spacer width="100%"/>
+		<local:HighViewButton doc_id="1046" label="Save" id="btn_save_current" />
+		<local:HighViewButton label="Cancel" doc_id="1047" id="btn_cancel" />
+	</mx:HBox>
+	
+</mx:TitleWindow>
+

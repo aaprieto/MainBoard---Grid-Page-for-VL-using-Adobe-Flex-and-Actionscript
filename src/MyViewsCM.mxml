@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="624" height="289"  verticalScrollPolicy="off"
+				layout="vertical"
+				title="Create View - Save Current Settings"
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				borderColor="#DAD8D8"  
+				backgroundColor="#FAFBFC"
+				creationComplete="init()"
+				backgroundImage=""
+				backgroundAlpha="1.0" styleName="glass" xmlns:local="*">
+	
+	<mx:HTTPService 
+		id="retrieve_rendition" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerRendition(event)"
+		fault="FaultRendition(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{r_company_code}</company>
+				<sid>{r_sessid}</sid>
+				<parameters>{loc_reqParms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:Script source="AlertMessageHandler.as"/>
+	<mx:Script>
+		<![CDATA[ 
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+			public var save_as:String;
+			[Bindable]
+			public var r_sessid:String;
+			[Bindable]
+			public var r_company_code:String;
+			[Bindable]
+			public var r_user_code:String;
+			[Bindable]
+			public var create_modify:String;
+			[Bindable] 
+			public var loc_mbdcode:String;
+			[Bindable]
+			public var arr_columns:ArrayCollection;
+			private var currentstateflag:String = "OFF";
+			[Bindable]
+			private var loc_reqParms:String;
+			//[Bindable]
+			//public var arr_listviews:ArrayCollection;
+			public var inUse:Boolean = false;
+			private function init():void{
+			
+					if ( Application.application.parameters.av == 'O'){
+						gen.enabled = false;
+						uoc.selected = true
+					}
+					
+					
+					
+					if (create_modify == 'C'){
+						uoc.enabled = true;
+						gen.enabled = true;
+						uoc.selected = true
+						if ( Application.application.parameters.av == 'O'){
+							gen.enabled = false;
+							uoc.selected = true
+						}
+						
+						
+					} 
+					
+					
+					
+					httpRequestRenditionUrl(parentApplication.application_entry);
+					
+					
+					loc_reqParms = "REFRESH,RETRIEVE|MYVIEWS|" +  r_user_code + "|" + loc_mbdcode + "|";
+					
+					
+					retrieve_rendition.send();  
+					
+					
+					
+			}
+			//private function FaultRendition(evt:FaultEvent):void
+			private function FaultRendition(evt:FaultEvent):void
+			{
+				//var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow("MyView Error");  
+			}
+			private function ResultHandlerRendition(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == 'OK' ) {
+					
+					arr_columns = new ArrayCollection();
+					
+					if (evt.result.ezware_response.refresh_data.myviews.myview == null)
+					{    
+						arr_columns=new ArrayCollection()
+					}
+					else if (evt.result.ezware_response.refresh_data.myviews.myview is ArrayCollection)
+					{
+						arr_columns=evt.result.ezware_response.refresh_data.myviews.myview;
+					}
+					else if (evt.result.ezware_response.refresh_data.myviews.myview is ObjectProxy)
+					{
+						arr_columns = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.myviews.myview)); 
+					}
+					arr_columns.refresh();
+					
+				} else	{
+					
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}				
+				
+				
+				
+			}
+			private function resultStatusRendition(string_result:String, string_reason:String):String{
+				var retstr:String = new String;
+				if (string_result == "EXPIRED"){
+					retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+				} 
+				if (string_result == "FAIL"){
+					retstr = string_reason;
+				} 
+				return retstr;
+			}
+			
+			public function httpRequestRenditionUrl(str_app:String):void{
+				if (str_app == 'ml'){
+					retrieve_rendition.url = 'ae_tlch_ml_req.php';
+					
+					
+				} 
+			}  
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			private function validateCode(event:KeyboardEvent):void{
+				
+				if(((inputcode.text).toUpperCase()).substr(0,4) == 'BASE'){	
+					
+					/*
+					hbox1.enabled = false;
+					uoc.selected = false;
+					gen.selected = true;
+					*/
+				} else {
+					/*
+					hbox1.enabled = true;
+					uoc.selected = true;
+					gen.selected = false;
+					*/
+				}
+			}
+			
+			private var _callbackFunctionImplement:Function;
+			
+			public function set callbackFunctionImplement( value:Function ):void {
+				_callbackFunctionImplement = value;
+			}
+			
+			
+			private var _callbackFunction:Function;
+			
+			public function set callbackFunction( value:Function ):void {
+				_callbackFunction = value;
+			}
+			
+			protected function buttonClickedInpopup():void {
+				_callbackFunction(null);
+			}
+			
+			private function browselist(event:Event):void{
+				//currentState = 'listview';
+				if (currentstateflag == "OFF"){
+				currentState = 'listview';
+				currentstateflag = "ON"
+				} else {
+					currentState	= '';
+					currentstateflag = "OFF"
+				}
+				/*
+				if (currentstateflag == "ON"){
+					currentState	= '';
+					currentstateflag = "OFF"
+				}
+				*/
+					
+			}
+			private function doubleclickHandler(event:Event):void {
+				//Alert.show(adg1.selectedItem.viewcode);
+				
+				inputcode.text = adg1.selectedItem.viewcode;
+				
+				inputdescription.text = adg1.selectedItem.viewdesc;    
+				
+				ti_btnlabel.text = adg1.selectedItem.btnlabel;
+				
+				
+				if ((adg1.selectedItem.viewcode).substr(0,1) == "*"){
+					gen.selected = false;
+					uoc.selected = true;
+				} else {
+					gen.selected = true;
+					uoc.selected = false;
+					
+				}
+				
+				if (adg1.selectedItem.auto_apply == "Y"){
+					aa_yes.selected = true;
+					aa_no.selected = false;
+				} else {
+					aa_yes.selected = false;
+					aa_no.selected = true;
+					
+				}
+				
+				
+				
+				
+			}
+		]]>
+	</mx:Script>
+	<mx:Style source="css/main.css"/>
+	<mx:states>
+		<mx:State name="listview">
+			<mx:SetProperty name="height" value="525"/>
+			<mx:AddChild position="lastChild">
+				<mx:AdvancedDataGrid id="adg1" designViewDataType="tree"
+									height="100%" width="100%" dataProvider="{arr_columns}"
+									itemClick="doubleclickHandler(event)"
+									
+									>
+					<mx:columns>
+						<mx:AdvancedDataGridColumn headerText="Code" width="150" dataField="viewcode"/>
+						<mx:AdvancedDataGridColumn headerText="Button Label" dataField="btnlabel" />
+						<mx:AdvancedDataGridColumn headerText="Description" dataField="viewdesc" />
+						
+					</mx:columns>
+				</mx:AdvancedDataGrid>
+			</mx:AddChild>
+		</mx:State>
+	</mx:states>
+	
+	<mx:HBox width="100%" id="hbox2">
+		<mx:Label text="View Code" width="138" id="label1" fontWeight="bold" fontSize="14"/>
+		<mx:TextInput  backgroundColor="#85E7FF"  width="232" id="inputcode" text=""  
+					   maxChars="13" fontSize="14" 
+					   keyUp="{validateCode(event)}"
+					   fontWeight="bold"/>
+		<mx:Button id="img_browse" icon="@Embed('image/icon_lookup.png')"            
+				   height="27"
+				   width="78"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   click="{browselist(event)}"
+				   
+				   />
+	</mx:HBox>
+	
+	
+	<mx:HBox width="100%" id="hbox_buttontitle">
+		<mx:Label text="Button Title" width="138" id="lbl_btntitle" fontWeight="bold" fontSize="14"/>
+		<mx:TextInput  backgroundColor="#85E7FF"  width="232" id="ti_btnlabel" text=""  
+					   maxChars="25" fontSize="14" 
+					   keyUp="{validateCode(event)}"
+					   fontWeight="bold"/>
+		
+	</mx:HBox>
+	
+	
+	
+	<mx:HBox width="100%" height="60" id="hbox3">
+		<mx:Label text="View Description" id="label2" fontWeight="bold" fontSize="14"/>
+		<mx:TextArea  backgroundColor="#85E7FF"  width="324" height="55" id="inputdescription" text="" fontSize="14" fontWeight="bold"/> 
+	</mx:HBox>
+	<mx:HBox width="100%" id="hbox1">     
+		<mx:RadioButtonGroup id="radiogroup3"/>
+		<mx:Label text="Share View?" width="207" fontWeight="bold" fontSize="14"/>
+		<mx:RadioButton id="gen" label="Yes" groupName="radiogroup4" width="149" />
+		<mx:RadioButton id="uoc" label="No" groupName="radiogroup4" width="149" />
+	</mx:HBox>
+	<mx:HBox width="100%" id="hbox_aa">   
+		<mx:RadioButtonGroup id="radiogroup_aa"/>   
+		<mx:Label text="Apply Automatically?" width="207" fontWeight="bold" fontSize="14"/>
+		<mx:RadioButton id="aa_yes" label="Yes" groupName="radiogroup_aa" width="149" /> 
+		<mx:RadioButton id="aa_no" label="No" groupName="radiogroup_aa" width="149" />
+	</mx:HBox>
+	<mx:HBox width="100%">
+		<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+				   height="27"
+				   width="78"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   click="{parentApplication.scholarcap_mousehovering(event,'',this.title,'BUTTON')}"
+				   
+				   />     
+		<mx:Spacer width="100%"/>
+		<local:HighViewButton doc_id="1046" label="Save" id="btn_save_current" />
+		<local:HighViewButton label="Cancel" doc_id="1047" id="btn_cancel" />
+	</mx:HBox>
+	
+</mx:TitleWindow>
+

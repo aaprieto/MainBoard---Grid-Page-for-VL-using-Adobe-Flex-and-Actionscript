@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="700"  y="10" width="188" height="344" creationComplete="init(event);btn_ac_keepsel.setFocus();btn_ac_keepsel.drawFocus(true);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+   		backgroundImage=""
+  
+        layout="horizontal"
+        color="#B6B9BA" xmlns:local="*"
+        >
+
+ <mx:Script> 
+ 	<![CDATA[
+ 		import mx.collections.ArrayCollection;
+ 			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	
+		 	
+		 	[Bindable]
+		 	public var cb_subtotalarray:ArrayCollection;
+		 	
+		 	private var helpWindow:TitleWindow;
+
+ 		    private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+           }
+            private function init(evt:Event):void {
+          				btn_ac_keepsel.setFocus();
+           }
+           public function setNewStyles(event:Event):void {
+           //Alert.show("go");
+           //this.setStyle('fillAlphas','1, 1, 1, 1');
+         //  this.setStyle('fillColors','#66FFFF, #66FFFF, #66FFFF, #66FFFF');
+         //dgc.setStyle('color','#0000FF');
+         btn_ac_clear.setStyle("color","Red");
+       	
+        		//this.setStyle("color", "#66FFFF");
+       			//this.setStyle('color','Red');
+        	//this.styleName = "jobButton101";
+        //	Alert.show(event.currentTarget.id);
+        		//event.currentTarget.styleName = "jobButton101";
+     	}
+
+  		public function returnStyles(event:Event):void {
+        
+        	//this.styleName = "jobButton10";
+        	//event.currentTarget.setStyle("color", "Black");
+        	 //this.setStyle("color","Black");
+        	    btn_ac_clear.setStyle("color","Black");
+        		//event.currentTarget.styleName = "jobButton10";
+     	}	            
+ 	]]>
+ </mx:Script>
+   
+    <mx:VBox id="vb" width="100%">  
+         <mx:Label text="Actions" width="100%" textAlign="center"  fontSize="19" color="#040404" fontWeight="bold"/>
+        <!-- mx:Button id="btn_ok" label="OK" / -->
+        
+        <local:HighViewButton id="btn_ac_clear" label="Clear"  width="{vb.width}" rollOver="setNewStyles(event)"
+		rollOut="returnStyles(event)"/>
+        <local:HighViewButton id="btn_ac_reset" label="Reset"  width="{vb.width}" /> 
+        <local:HighViewButton id="btn_ac_keepsel" label="Keep Sel"  width="{vb.width}" />
+        <local:HighViewButton id="btn_ac_discardsel" label="Discard Sel"  width="{vb.width}"  />
+        <local:HighViewButton id="btn_ac_selectall" label="Select All"  width="{vb.width}"  />
+        <local:HighViewButton id="btn_ac_multifilter" label="Multi Filter"  width="{vb.width}" />
+        <local:HighViewButton id="btn_ac_unsort" label="Unsort"  width="{vb.width}" />
+        <local:HighViewButton id="btn_ac_totalsel" label="Total Sel"  width="{vb.width}" />
+        
+          
+        <!--
+        <local:HighViewButton id="btn_flash" doc_id="1022" label="Flash Filter"  width="{vb.width}"  /> 
+        <local:HighViewButton id="btn_gt" doc_id="1023" label="Crunch: % Grand Totals"  width="{vb.width}"  />  
+        <local:HighViewButton id="btn_st" doc_id="1024" label="Crunch: % SubTotals"  width="{vb.width}" />
+       
+        <local:HighViewButton id="btn_tca" doc_id="1026" label="Time Chart Analysis"  width="{vb.width}" enabled="false"  />  
+        <local:HighViewButton id="btn_render" doc_id="1027" label="Renditions"  width="{vb.width}" enabled="false" />
+        <local:HighViewButton id="btn_op" doc_id="1028" label="Operator Profile"  width="{vb.width}"  enabled="false" />  
+        
+        <local:HighViewButton id="btn_e2e" doc_id="1029" label="Export to Excel"  width="{vb.width}" />
+        <local:HighViewButton id="btn_ptp" doc_id="1030" label="Print to PDF"  width="{vb.width}"  enabled="false"/>  
+        -->
+
+    </mx:VBox>
+
+
+</mx:TitleWindow>

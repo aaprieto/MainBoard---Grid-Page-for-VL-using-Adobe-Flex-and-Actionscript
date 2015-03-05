@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        showCloseButton="true"
+        close="titleWindow_close(event);"  width="902" height="644" 
+        creationComplete="init(event);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        layout="horizontal"   
+		
+        color="#0C4E66" title="MyLogistics Menu" fontSize="14" fontWeight="bold" xmlns:local="*">
+ 
+ <mx:HTTPService
+		id="httpp_kpi_srv"
+		url="ae_tlch_xmlreq.php" 
+		result="RetChickletsPopUpHandler(event)"
+		fault="RetChickletsHandlerfaultHandler(event)" 
+		method="POST"
+		contentType="application/xml"
+		
+		  
+>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{req_parms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:Script source="AlertMessageHandler.as"/>   	
+ <mx:Script> 
+ 	<![CDATA[
+		import mx.collections.ArrayCollection;
+		import mx.controls.*;
+		import mx.core.Application;
+		import mx.events.CloseEvent;
+		import mx.events.FlexMouseEvent;
+		import mx.managers.CursorManager;
+		import mx.managers.PopUpManager;
+		import mx.rpc.AsyncToken;
+		import mx.rpc.Fault;
+		import mx.rpc.events.*;
+		import mx.rpc.xml.SimpleXMLDecoder;
+		import mx.utils.ArrayUtil;
+		import mx.utils.ObjectProxy;
+		 	
+		 	[Bindable]
+		 	public var helpfortitle:String;
+		 	[Bindable]
+		 	public var helpfortitleheader:String;
+		 	[Bindable]
+		 	public var object_type:String;
+		 	
+		 
+		 	[Bindable]
+		 	public var req_parms:String;
+		 	/* passed object_type:
+		 		1.  BUTTON
+		 		2.  COLUMN
+		 		3.  ROW
+		 		4.  BUTTON_AG
+		 	*/
+		 	[Bindable]
+		 	public var loc_ccode:String;
+		 	[Bindable]
+		 	public var loc_sid:String;
+		[Bindable]
+		public var loc_username:String;
+		[Bindable]
+		public var loc_xmljobs:XML;
+		[Bindable]
+		public var loc_appcode:String;
+		 
+ 		    private function titleWindow_close(evt:Event):void { 
+ 				parentApplication.mbctr = 0;
+                PopUpManager.removePopUp(this);
+           }
+            private function init(evt:Event):void {
+            
+				httpRequestUrlMouseHoverMenu(loc_appcode);
+			//	req_parms = "REFRESH,RETRIEVE|JOB_ML|" + loc_username + "|10|";
+			//	httpp_kpi_srv.send();
+          				/*
+				arr_kpimenu = new ArrayCollection(ArrayUtil.toArray(loc_xmljobs));
+				Alert.show(arr_kpimenu.length.toString());
+				for (var ib:int=0;ib<arr_kpimenu.length;ib++){
+					newObjectMyLogMenu = new MyLogButtonMenu();
+					
+					
+					
+					newObjectMyLogMenu.loc_cybername = arr_kpimenu[ib].cybername;
+					newObjectMyLogMenu.loc_name = arr_kpimenu[ib].name;
+					newObjectMyLogMenu.loc_image = arr_kpimenu[ib].image;
+					newObjectMyLogMenu.loc_launchHighViewparam = arr_kpimenu[ib].job_program
+					newObjectMyLogMenu.loc_company = arr_kpimenu[ib].company
+					vb.addChild(newObjectMyLogMenu); 
+					
+				}
+				*/
+				
+				arr_kpimenu = convertXmlToArrayCollection(loc_xmljobs);
+				for (var ib:int=0;ib<arr_kpimenu.length;ib++){
+					newObjectMyLogMenu = new MyLogButtonMenu();
+					
+					
+					
+					newObjectMyLogMenu.loc_cybername = arr_kpimenu[ib].cybername;
+					newObjectMyLogMenu.loc_name = arr_kpimenu[ib].name;
+					newObjectMyLogMenu.loc_image = arr_kpimenu[ib].image;
+					newObjectMyLogMenu.loc_launchHighViewparam = arr_kpimenu[ib].job_program
+					newObjectMyLogMenu.loc_company = arr_kpimenu[ib].company
+					vb.addChild(newObjectMyLogMenu); 
+					
+				}
+           }
+		
+		import mx.utils.ArrayUtil;
+		import mx.rpc.xml.SimpleXMLDecoder;
+		import mx.collections.ArrayCollection;
+		
+		private function convertXmlToArrayCollection( file:String ):ArrayCollection
+		{
+			var xml:XMLDocument = new XMLDocument( file );
+			
+			var decoder:SimpleXMLDecoder = new SimpleXMLDecoder();
+			var data:Object = decoder.decodeXML( xml );
+			var array:Array = ArrayUtil.toArray( data.ezware_response.refresh_data.mljobs.mljob );
+			
+			return new ArrayCollection( array );
+		}
+	
+		
+		
+		
+			private var arr_kpimenu:ArrayCollection = new ArrayCollection;
+		private var newObjectMyLogMenu:MyLogButtonMenu;
+          	private function RetChickletsPopUpHandler(event:ResultEvent):void
+			{
+				if (event.result.ezware_response.status == 'OK'){
+					arr_kpimenu=new ArrayCollection();
+					if (event.result.ezware_response.refresh_data.mljobs == null)
+					{
+						arr_kpimenu=new ArrayCollection()
+					}
+					
+					if (event.result.ezware_response.refresh_data.mljobs.mljob != null) {
+						
+						if (event.result.ezware_response.refresh_data.mljobs.mljob == null)
+						{
+							arr_kpimenu=new ArrayCollection()
+						}
+						else if (event.result.ezware_response.refresh_data.mljobs.mljob is ArrayCollection)
+						{
+							arr_kpimenu=event.result.ezware_response.refresh_data.mljobs.mljob;
+						}
+						else if (event.result.ezware_response.refresh_data.mljobs.mljob is ObjectProxy)
+						{
+							arr_kpimenu = new ArrayCollection(ArrayUtil.toArray(event.result.ezware_response.refresh_data.mljobs.mljob));
+						}
+						arr_kpimenu.refresh();
+					}
+					
+					
+					
+					
+					//	detectScreenResolutionforSystem();   
+					/* Time to refresh the KPI Menu records. */
+					
+					//currentState	='main_dashhome';
+				//	kpi.pass_url = my_pass_url;
+				//	mylog_kpi.pass_arr_kpimenu = arr_kpimenu;
+					//Alert.show("go here");
+					
+					
+					for (var ib:int=0;ib<arr_kpimenu.length;ib++){
+						newObjectMyLogMenu = new MyLogButtonMenu();
+						
+						
+						
+						newObjectMyLogMenu.loc_cybername = arr_kpimenu[ib].cybername;
+						newObjectMyLogMenu.loc_name = arr_kpimenu[ib].name;
+						newObjectMyLogMenu.loc_image = arr_kpimenu[ib].image;
+						newObjectMyLogMenu.loc_launchHighViewparam = arr_kpimenu[ib].job_program
+						newObjectMyLogMenu.loc_company = arr_kpimenu[ib].company
+						vb.addChild(newObjectMyLogMenu); 
+						
+					}
+						
+						/*
+						newObjectBtn.group_code = arr_kpimenu[i]["id"];   
+						newObjectBtn.custombtn_code = arr_kpimenu[i].job[ib].code;
+						newObjectBtn.custombtn_name = arr_kpimenu[i].job[ib].name;
+						newObjectBtn.custombtn_image = arr_kpimenu[i].job[ib].image;
+						newObjectBtn.custombtn_jobid = arr_kpimenu[i].job[ib].job_id;
+						newObjectBtn.custombtn_jobprogram = arr_kpimenu[i].job[ib].job_program;
+						newObjectBtn.custombtn_viewcode = arr_kpimenu[i].job[ib].job_viewcode;
+						
+						
+						
+						
+						newObjectBtn.custombtn_usercode = g_usercode;
+						newObjectBtn.custombtn_company = g_changed_m_code;
+						newObjectBtn.custombtn_company_description = g_changed_m_codedescription;
+						
+						
+						
+						newObjectBtn.custombtn_chain = ChainCombo.selectedItem.id;
+						
+						newObjectBtn.system_code = arr_kpimenu[i].job[ib].syscode;   
+						newObjectBtn.subsystem_code = arr_kpimenu[i].job[ib].subsyscode;
+						
+						
+						if(myfav_dom == true){
+							newObjectBtn.styleName="jobButton10";
+						}else {
+							
+							newObjectBtn.styleName="jobButton" + ChainCombo.selectedItem.id;
+						}
+						newObjectBtn.connection = (cb_speedoptions.selectedItem.data).toString();
+						
+						DisplayToColumnObjectButton(row_ctr, ib, (arr_kpimenu[i].job).length);
+						row_ctr = row_ctr + 1;
+					}
+					
+					*/
+					
+					
+					
+				} else if (event.result.ezware_response.status == 'EXPIRED'){
+					AlertMessageShow("Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.");
+					return;
+				}	else {
+					
+					AlertMessageShow(event.result.ezware_response.status);
+					return; 
+				}		
+		
+			}
+		private function RetChickletsHandlerfaultHandler(evt:FaultEvent):void
+		{     
+			
+			AlertMessageShow	(
+				'HTTP request failed'
+			);	
+			
+			
+		} 
+       
+       	public var newObject:HoverButton;
+		private function DrawButton(event:Event):void{
+			
+			/*
+			for (var i:int=0;i<ArrMH.length;i++){
+				
+				newObject = new HoverButton;
+				newObject.id = ArrMH[i].id;
+				newObject.label = ArrMH[i].label;
+				newObject.toolTip = ArrMH[i].tip;
+				newObject.linktype = ArrMH[i].linktype;
+				newObject.address = ArrMH[i].address;
+				newObject.dataelement = ArrMH[i].dataelement;
+				newObject.jobcode = ArrMH[i].jobcode;
+				newObject.flexcode = ArrMH[i].flexcode;
+				
+				newObject.ir_sid = loc_sid;
+				newObject.my_c_code = loc_ccode;
+				
+				vb.addChild(newObject);
+			}
+			*/
+		}    
+		private function httpRequestUrlMouseHoverMenu(str_app:String):void{
+		
+			//  I will just leave this for vl and ml for now.  I believe there will be another one coming for the mobileweb
+			
+			if (str_app == 'ml'){
+				httpp_kpi_srv.url = 'ae_tlch_ml_req.php'; 
+			} else {
+				httpp_kpi_srv.url = 'ae_tlch_xmlreq.php'; 
+			}
+			
+		} 
+		private function resultStatusmhm(string_result:String, string_reason:String):void{
+			/*
+			var retstr:String = new String;
+			if (string_result == "EXPIRED"){
+				retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+			} 
+			if (string_result == "FAIL"){
+				retstr = string_reason;
+			} 
+			return retstr;
+			*/
+		}
+ 	]]>
+ </mx:Script>
+	<mx:Canvas id="canv_mylog" height="100%" width="100%" horizontalScrollPolicy="off">
+    <!-- mx:VBox id="vb" width="100%" -->
+		
+		
+		
+		
+		<mx:Tile
+			id="vb" 
+			width="100%"
+			height="100%"
+			direction="horizontal" borderStyle="inset" 
+			horizontalGap="10" verticalGap="15"
+			paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10"
+			>
+		</mx:Tile>
+		
+		
+    <!-- /mx:VBox -->
+	</mx:Canvas>
+</mx:TitleWindow>

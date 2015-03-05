@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="50" y="70" width="474"  creationComplete="init(event);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        layout="horizontal"
+        color="#B6B9BA" height="209" xmlns:local="*">
+ <mx:Script> 
+ 	<![CDATA[
+ 			import mx.collections.ArrayCollection; 
+ 			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+		 	import mx.events.ItemClickEvent;
+		 	[Bindable]
+		 	public var e_z_learn_link:String = new String;
+		 	[Bindable]
+		 	public var mh_res:String = new String;
+		 	 [Embed(source='image/Icon_help_on.png')]
+ 				private var iconON:Class;
+   
+ 			 [Embed(source='image/Icon_help.png')]
+ 				private var iconOFF:Class;
+ 				
+		 	public var ses_id:String;	
+			
+ 		    private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+            }
+            private function init(evt:Event):void {
+            	/*
+            	 if (mh_res == "NO"){
+            	 	hoverswitch.label = "OFF"
+            	 	hoverswitch.setStyle("icon",this["iconOFF"]);
+            	 	
+            	 }
+            	 if (mh_res == "YES"){
+            	 	hoverswitch.label = "ON"
+            	 	hoverswitch.setStyle("icon",this["iconON"]);
+            	 }
+            	 */
+            }
+ 	]]>
+ </mx:Script>
+    <mx:VBox id="vb" width="100%"> 
+       	<mx:Label text="{'e-Z Learn Menu'}" width="100%" textAlign="center"  fontSize="19" color="#F9FBFB" fontWeight="bold"/>
+			<!--  Changed to look at the way how the Main System calls the e-z learn -->
+       	<!-- local:HighViewButton doc_id="1055" label="Continue to e-Z Learn" width="100%" 
+       				icon="@Embed('image/scholar_cap.png')"
+       				fontSize="19" fontWeight="bold" height="28"
+       				click="navigateToURL(new URLRequest('../../e-Z_Learn2/Web%20Pages/HighView%20Menu.htm'), 'quote')"
+       				/ -->
+       	<local:HighViewButton doc_id="1055" label="Continue to e-Z Learn" width="100%" 
+       				icon="@Embed('image/scholar_cap.png')"
+       				fontSize="19" fontWeight="bold" height="28"
+       				click="navigateToURL(new URLRequest(e_z_learn_link), 'quote')"
+       				/>
+
+       				
+       		<mx:Spacer width="100%" height="10"/>			
+		<mx:Label text="{'Enable Hover Help?'}" width="100%" textAlign="center"  fontSize="19" color="#F9FBFB" fontWeight="bold"/>
+		<mx:HBox width="100%">
+		<mx:Spacer width="100%"/>	
+		<mx:VBox>
+		<mx:HBox width="100%">
+		
+		<!-- mx:Button id="hoverswitch"  
+       				fontSize="20" fontWeight="bold" height="28"
+       				 width="122"/ -->
+
+		<local:HighViewButton doc_id="1056" id="btn_ok"   label="OK"
+       				fontSize="20" fontWeight="bold" height="28"
+       				 width="122"/>
+       	<local:HighViewButton doc_id="1057" id="btn_cancel"  label="Cancel"
+       				fontSize="20" fontWeight="bold" height="28"
+       				 width="122" click="{titleWindow_close(event)}"/>
+       	</mx:HBox>
+					 			 
+
+		<!-- mx:Button id="hoverswitch"  icon="@Embed('image/Icon_help_on.png')" 
+       				fontSize="20" fontWeight="bold" height="28"
+       				 width="122"/ -->
+				</mx:VBox>
+		<mx:Spacer width="100%"/>			
+		</mx:HBox>
+    </mx:VBox>
+</mx:TitleWindow>

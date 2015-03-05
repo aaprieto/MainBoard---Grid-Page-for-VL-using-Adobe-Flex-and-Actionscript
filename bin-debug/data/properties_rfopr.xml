@@ -1,0 +1,17 @@
+<root>
+<Panel>
+<code>026</code>
+<title>RF Operators</title>
+<type>RFOperator</type>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="General" columnstart="0"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="operator" dataField="operator" title_header="Operator" width="180" datatype="S" docid="" wordwrap="false" />
+<column columnId="1" columnName="warehouse" dataField="warehouse" title_header="Warehouse" width="150" datatype="S" docid="" wordwrap="false" />
+<column columnId="2" columnName="ord_docs" dataField="ord_docs" title_header="Asgnd Orders" width="300" datatype="S" docid="" wordwrap="true" />
+<column columnId="3" columnName="rec_docs" dataField="rec_docs" title_header="Asgnd Receipts" width="300" datatype="S" docid="" wordwrap="true" />
+<column columnId="4" columnName="" dataField="" title_header="" width="1500" datatype="S" />
+</AdvancedDataGridColumn>
+</root>

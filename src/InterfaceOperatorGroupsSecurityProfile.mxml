@@ -1,0 +1,853 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"	width="748" height="364"  verticalScrollPolicy="off"
+				layout="vertical"
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				creationComplete="init()" 
+				
+				xmlns:local="*" >
+<!-- mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"	width="748" height="408"  verticalScrollPolicy="off"
+				layout="vertical"
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				creationComplete="init()" 
+				xmlns:local="*" xmlns:s="library://ns.adobe.com/flex/spark" -->
+
+	<mx:Script>
+		<![CDATA[
+			import flashx.textLayout.formats.BackgroundColor;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			public var user:String;
+			public var headtitle:String;
+			public var maintenance_code:String;
+			public var group_code:String;
+			public var group_description:String;
+			public var maintain_renditions:String;
+			public var maintain_views:String;
+			public var upd_date:String;
+			public var upd_time:String;
+			public var unique_key:String;
+			
+			[Embed(source="image/bullet_check.png")] 
+			[Bindable] private var check:Class; 
+			[Embed(source="image/button_spacer.png")] 
+			[Bindable] private var cross:Class;
+			
+			
+			//private var RENDITION_ARRAY:Array= 
+			//	[{label:"Allow creation of Renditions for use by other operators", data:"G"},
+			//		{label:"Allow creation of Renditions for personal use only", data:"O"},
+			//		{label:"Disallow creation of Renditions", data:"N"}];
+			// Declare an ArrayCollection variable for the colors.
+			// Make it Bindable so it can be used in bind 
+			// expressions ({colorAC}).
+			[Bindable]
+			public var renditionAC:ArrayCollection;
+			
+			//private var VIEW_ARRAY:Array= 
+			//	[{label:"Allow creation of Views for use by other operators", data:"G"},
+			//		{label:"Allow creation of Views for personal use only", data:"O"},
+			//		{label:"Disallow creation of Views", data:"N"}];
+			// Declare an ArrayCollection variable for the colors.
+			// Make it Bindable so it can be used in bind 
+			// expressions ({colorAC}).
+			[Bindable]
+			public var viewAC:ArrayCollection;
+			[Bindable]
+			public var Array0:ArrayCollection;
+			
+			
+			private var btn_add_arr:Array = new Array;
+			private var btn_update_arr:Array = new Array;
+			private var btn_delete_arr:Array = new Array;
+			private var btn_cancel_arr:Array = new Array;   
+			private var btn_add_upskin:Array= new Array;
+			
+			private function ValidaterGroupCodeSuffix(event:KeyboardEvent){
+				
+				if (event.keyCode == 27){
+					titleWindow_close(event);
+					
+				}   
+				if (event.keyCode == 13 || event.keyCode == 9 || event.keyCode == 40){
+					//Alert.show(ti_groupcodesuffix.text.length.toString());
+						if (ti_groupcodesuffix.text.length > 1){
+							if (maintenance_code == "A"){
+								
+								var locgroupcode = ti_groupcodeprefix.text + ti_groupcodesuffix.text;
+								var flag:Boolean = false
+								
+								for (var i:int=0;i<Array0.length;i++)  { 
+									
+									if (locgroupcode.toUpperCase() == Array0[i]['group_code'].toUpperCase()){
+										
+										
+										flag = true;
+										break;
+									}	
+								}
+								
+								if (flag == true){
+									
+									ti_groupcodesuffix.setFocus();
+									ti_groupcodesuffix.setStyle("backgroundColor","#66FFFF");
+									AlertMessageShow("Group code already exists");
+								}
+							}
+							
+							
+							
+						}else {
+						
+							
+							ti_groupcodesuffix.setFocus();
+							ti_groupcodesuffix.setStyle("backgroundColor","#66FFFF");
+							AlertMessageShow("Please Enter the 2 character Group Code");
+						}		
+					
+				}
+			} 
+			
+			
+			
+			private function BtnCancelChangeStyleDown(event:Event):void{
+			//	btn_cancel.setStyle("backgroundColor","green");
+			//	btn_cancel.setStyle("shadowDistance", "0");
+			}
+			
+			private function BtnCancelChangeStyleUp(event:Event):void{
+			//	btn_cancel.setStyle("backgroundColor","#66FFFF");
+			//	btn_cancel.setStyle("shadowDistance", "10");
+				titleWindow_close(event);    
+			}
+			
+			private function init():void {
+				
+				//btn_cancel.setStyle("themeColor", 0x6666CC);
+			//	Alert.show("go here 1");
+				//renditionAC 		= new ArrayCollection(RENDITION_ARRAY);
+				//viewAC      		= new ArrayCollection(VIEW_ARRAY);
+				ti_groupcodesuffix.addEventListener(KeyboardEvent.KEY_DOWN, ValidaterGroupCodeSuffix);
+			//	btn_cancel.addEventListener(MouseEvent.MOUSE_DOWN, BtnCancelChangeStyleDown);
+			//	btn_cancel.addEventListener(MouseEvent.MOUSE_UP, BtnCancelChangeStyleUp);
+					
+				
+				
+				
+				   
+				if (maintenance_code == "A"){
+					ti_groupcodeprefix.text = "XG" + user.substr(2,2).toUpperCase();
+					ti_groupcodeprefix.setStyle("backgroundColor",'#BEC5AA');
+					ti_groupcodeprefix.editable = false;
+					ti_groupcodesuffix.editable = true;
+					btn_add.visible = true;
+					btn_delete.visible = false;
+					btn_update.visible = false;
+					headlabel.text = headtitle + " a New Operator Group";
+					label_validation.text = "[Any 2 Characters or Numbers]";
+					ti_groupcodesuffix.setFocus();
+					ti_groupcodesuffix.setStyle("backgroundColor","#66FFFF")
+						
+					btn_add_arr = btn_add.getStyle("fillColors");
+			//		btn_cancel_arr = btn_cancel.getStyle("fillColors");
+					
+					//Alert.show(btn_add.getStyle("upSkin"));
+					btn_add_upskin = (btn_add.getStyle("upSkin"));
+					
+				}  
+				if (maintenance_code == "U"){
+					ti_groupcodeprefix.text = group_code.substr(0,4);
+					ti_groupcodeprefix.setStyle("backgroundColor",'#BEC5AA');
+					ti_groupcodesuffix.text = group_code.substr(4,2);
+					ti_groupcodesuffix.setStyle("backgroundColor",'#BEC5AA');
+					
+					btn_update_arr = btn_update.getStyle("fillColors");
+					btn_delete_arr = btn_delete.getStyle("fillColors");
+				//	btn_cancel_arr = btn_cancel.getStyle("fillColors");
+					
+					ti_groupcodeprefix.editable = false;
+					ti_groupcodesuffix.editable = false;
+					//ti_groupcodesuffix.enabled = false;
+					ti_groupcodesuffix.setStyle("backgroundColor",'#BEC5AA');
+					btn_add.width=0; 
+					btn_add.visible = false;
+					btn_delete.visible = true;
+					btn_update.visible = true;
+					headlabel.text = headtitle + " an Operator Group";
+					label_validation.text = "";
+					ti_groupdescription.setFocus();
+			//		Alert.show("maintain" + maintain_renditions);
+				//	for( var i:int = 0; i < renditionAC.length; i++ ){
+				//		Alert.show(renditionAC[i]['description']);
+				//		
+				//	}
+					//cb_maintainrenditions.selectedItem.data = maintain_renditions;
+					for( var i:int = 0; i < renditionAC.length; i++ ){
+						if (maintain_renditions == renditionAC[i]['description']){
+							ti_maintainrenditions.text = maintain_renditions;
+							rendition_hidden_code.text = renditionAC[i]['code']
+							break;
+						}
+						
+					}
+					for( var i:int = 0; i < viewAC.length; i++ ){
+						if (maintain_views == viewAC[i]['description']){
+							//cb_maintainviews.selectedIndex = i;
+							ti_maintainviews.text = maintain_views;
+							view_hidden_code.text = viewAC[i]['code']
+							break;
+						}
+						
+					}
+				
+				}       
+				ti_groupdescription.text = group_description;
+		//		cb_maintainrenditions.text =  maintain_renditions;
+		//		cb_maintainviews.text =   maintain_views;
+				ti_upddate.text =   upd_date;
+				ti_updtime.text =  upd_time;
+			//	ti_uniquekey.text =  unique_key;
+				
+				
+				
+			}    
+			
+			
+			private function GroupDescriptionFocus(event:Event):void{
+				ti_groupdescription.setStyle("backgroundColor","#66FFFF");
+				ti_maintainrenditions.setStyle("backgroundColor","white");
+				ti_maintainviews.setStyle("backgroundColor","white");
+			}
+			private function GroupDescriptionFocusOut(event:Event):void{
+				ti_groupdescription.setStyle("backgroundColor","white")
+			}      
+			private function GroupSuffixFocusIn(event:Event):void{
+			 
+				if (maintenance_code == "A"){
+				
+				
+				ti_groupcodesuffix.setStyle("backgroundColor","#66FFFF");
+				ti_maintainrenditions.setStyle("backgroundColor","white")
+				ti_maintainviews.setStyle("backgroundColor","white")
+				}	
+				if (maintenance_code == "U"){
+					ti_groupdescription.setFocus();
+					ti_groupdescription.drawFocus(true);
+				}	
+			}   
+			private function GroupSuffixFocusOut(event:Event):void{
+				
+				if (maintenance_code == "A"){
+					ti_groupcodesuffix.setStyle("backgroundColor","white")
+				}
+			}
+			private function MaintainRenditionsFocusIn(event:Event):void{
+				LaunchOperatorGroupMaintenance(event);
+				ti_maintainrenditions.setStyle("backgroundColor","#66FFFF")
+				ti_maintainviews.setStyle("backgroundColor","white")
+				
+			}     
+			private function MaintainRenditionsFocusOut(event:Event):void{
+				ti_maintainrenditions.setStyle("backgroundColor","white")
+			}//
+			
+			
+			private function MaintainViewsFocusIn(event:Event):void{
+				LaunchOperatorGroupMaintenanceViews(event);
+				ti_maintainviews.setStyle("backgroundColor","#66FFFF")
+				ti_maintainrenditions.setStyle("backgroundColor","white")
+				
+			}     
+			private function MaintainViewsFocusOut(event:Event):void{
+				ti_maintainviews.setStyle("backgroundColor","white")
+			}
+				
+			private function ButtonBrowseFocusIn(event:Event):void{
+				
+				ti_maintainrenditions.setStyle("backgroundColor","#66FFFF")
+				ti_maintainviews.setStyle("backgroundColor","white")
+				
+			}     
+			private function ButtonBrowseFocusOut(event:Event):void{
+				//ti_maintainrenditions.setStyle("backgroundColor","white")
+			}
+			
+			
+			private function ButtonBrowseViewsFocusIn(event:Event):void{
+				
+				ti_maintainviews.setStyle("backgroundColor","#66FFFF")
+				ti_maintainrenditions.setStyle("backgroundColor","white")
+				
+			}     
+			private function ButtonBrowseViewsFocusOut(event:Event):void{
+				//ti_maintainviews.setStyle("backgroundColor","white")
+			}
+			
+			public var popogm:OperatorGroupMaintenance;
+			private function LaunchOperatorGroupMaintenance(event:Event):void{
+				btn_browse.setFocus();
+				popogm = OperatorGroupMaintenance(
+					PopUpManager.createPopUp(this, OperatorGroupMaintenance, true)); 
+				
+				popogm.Arr_mr = renditionAC;
+				popogm.maintain = "Select one for Maintain Renditions";
+				popogm.g_code = rendition_hidden_code.text;
+				popogm.g_description = 	ti_maintainrenditions.text;
+				
+				
+				
+				popogm["adg1"].addEventListener(MouseEvent.CLICK, ClickDatagrid);
+				popogm["adg1"].addEventListener(KeyboardEvent.KEY_DOWN, EnterDatagrid);
+			
+			//	PopUpManager.centerPopUp(popogm);
+				   
+			}
+			private function LaunchOperatorGroupMaintenanceViews(event:Event):void{
+				btn_browseviews.setFocus();
+				popogm = OperatorGroupMaintenance(
+					PopUpManager.createPopUp(this, OperatorGroupMaintenance, true)); 
+				
+				popogm.Arr_mr = viewAC;
+				popogm.maintain = "Select one for Maintain Views";
+				popogm.g_code = view_hidden_code.text;
+				popogm.g_description = 	ti_maintainviews.text;
+				
+				
+				popogm["adg1"].addEventListener(MouseEvent.CLICK, ClickDatagridViews);
+				popogm["adg1"].addEventListener(KeyboardEvent.KEY_DOWN, EnterDatagridViews);
+				
+			//	PopUpManager.centerPopUp(popogm);
+				
+			}
+			
+			private function ClickDatagrid(event:Event){
+				GetChosenData(event);
+				
+			}
+			private function EnterDatagrid(event:KeyboardEvent){
+				 
+				if (event.keyCode == 27){
+					PopUpManager.removePopUp(popogm);
+					btn_browse.setFocus();
+				}
+				if (event.keyCode == 13){
+					GetChosenData(event);
+				}
+			}    
+			    
+			
+			private function GetChosenData(event:Event):void{
+				rendition_hidden_code.text = popogm.adg1.selectedItem.code;
+				ti_maintainrenditions.text = popogm.adg1.selectedItem.description;
+				PopUpManager.removePopUp(popogm);
+				ti_maintainviews.setFocus();
+			}
+			
+			private function ClickDatagridViews(event:Event){
+				GetChosenDataViews(event);
+				
+				
+			}
+			private function EnterDatagridViews(event:KeyboardEvent){
+				
+				if (event.keyCode == 27){
+					PopUpManager.removePopUp(popogm);
+					btn_browseviews.setFocus();
+				}
+				if (event.keyCode == 13){
+					GetChosenDataViews(event);
+				}
+			}    
+			
+			
+			private function GetChosenDataViews(event:Event):void{
+				view_hidden_code.text = popogm.adg1.selectedItem.code;
+				ti_maintainviews.text = popogm.adg1.selectedItem.description;
+				PopUpManager.removePopUp(popogm);
+				if (maintenance_code == "A"){
+					btn_add.setFocus();	
+				} else {
+					btn_update.setFocus();
+				}
+				
+			}   
+			private function titleWindow_close(evt:Event):void {
+				
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function BtnAddFocusIn(event:Event):void{
+				btn_add.setFocus();
+				btn_add.drawFocus(true);
+				btn_add.setStyle("backgroundColor","#85e7ff");
+				
+				
+				
+				
+				//btn_add.setStyle("overSkin", "Button_overSkin");
+				//overSkin: Embed(source="blue_plastic.swf", symbol="Button_overSkin");
+				//btn_add.setStyle("fillColors", ["#66FFFF", "#66FFFF", "#66FFFF", "#66FFFF"]);
+				//btn_add.styleDeclaration.setStyle("icon",check);
+			} 
+			private function BtnAddFocusOut(event:Event):void{
+				//btn_add.setStyle("fillColors", btn_add_arr);
+				
+				btn_add.drawFocus(false);
+				btn_add.styleDeclaration.setStyle("backgroundColor","#DFF1F1");
+				
+			}
+			
+			
+			
+			private function BtnCancelFocusIn(event:Event):void{   
+				//btn_cancel.setStyle("fillColors",["#66FFFF", "#66FFFF", "#66FFFF", "#66FFFF"]);
+				
+				//btn_cancel.styleDeclaration.setStyle("icon",check);
+	//			btn_cancel.setFocus();
+	//			btn_cancel.drawFocus(true);
+	//			btn_cancel.setStyle("backgroundColor","#85e7ff");
+			} 
+			private function BtnCancelFocusOut(event:Event):void{
+				//btn_cancel.setStyle("fillColors", btn_cancel_arr);
+				//btn_cancel.styleDeclaration.setStyle("icon",cross);
+	//			btn_cancel.drawFocus(false);
+	//			btn_cancel.styleDeclaration.setStyle("backgroundColor","#DFF1F1");
+			}
+			private function BtnUpdateFocusIn(event:Event):void{
+				//btn_update.setStyle("fillColors", ["#66FFFF", "#66FFFF", "#66FFFF", "#66FFFF"]);
+				//btn_update.styleDeclaration.setStyle("icon",check);
+				btn_update.setFocus();
+				btn_update.drawFocus(true);
+				btn_update.setStyle("backgroundColor","#85e7ff");
+			} 
+			private function BtnUpdateFocusOut(event:Event):void{
+				//btn_update.setStyle("fillColors", btn_update_arr);
+				//btn_update.styleDeclaration.setStyle("icon",cross);
+				btn_update.drawFocus(false);
+				btn_update.styleDeclaration.setStyle("backgroundColor","#DFF1F1");
+			}
+			private function BtnDeleteFocusIn(event:Event):void{
+				//btn_delete.setStyle("fillColors",["#66FFFF", "#66FFFF", "#66FFFF", "#66FFFF"]);
+				//btn_delete.styleDeclaration.setStyle("icon",check);
+				btn_delete.setFocus();
+				btn_delete.drawFocus(true);
+				btn_delete.setStyle("backgroundColor","#85e7ff");
+			} 
+			private function BtnDeleteFocusOut(event:Event):void{
+				//btn_delete.setStyle("fillColors", btn_delete_arr);
+				//btn_delete.styleDeclaration.setStyle("icon",cross);
+				btn_delete.drawFocus(false);
+				btn_delete.styleDeclaration.setStyle("backgroundColor","#DFF1F1");
+			}   
+			private function LastChangeFocus(event:Event):void{
+				
+				if (maintenance_code == "A"){
+					btn_add.setFocus();
+					btn_add.drawFocus(true);
+					
+				}
+				if (maintenance_code == "U"){
+					btn_update.setFocus();
+					btn_update.drawFocus(true);
+					
+				}
+				
+				
+			}   
+			private function GroupCodePrefixFocus(event:Event):void{
+				//btn_delete.setStyle("fillColors", btn_delete_arr);
+				//btn_delete.styleDeclaration.setStyle("icon",cross);
+			
+				if (maintenance_code == "A"){
+					
+					ti_groupcodesuffix.drawFocus(true);
+					ti_groupcodesuffix.setFocus();
+				}
+				if (maintenance_code == "U"){
+					ti_groupdescription.setFocus();
+					ti_groupdescription.drawFocus(true);
+					
+				}
+				
+				
+			}   
+			
+			private function keydownGroupSuffix(event:KeyboardEvent){
+				if (event.keyCode == 40){
+					ti_groupdescription.setFocus();
+				}
+			}  
+			private function keydownGroupDescription(event:KeyboardEvent){
+				if (event.keyCode == 38){
+					ti_groupcodesuffix.drawFocus(true);
+					ti_groupcodesuffix.setFocus();
+				}
+				
+				if (event.keyCode == 40){
+					ti_maintainrenditions.setFocus();
+				}
+			}  
+			private function keydownRendition(event:KeyboardEvent){
+				if (event.keyCode == 38){
+					ti_groupdescription.setFocus();
+				}
+				
+				if (event.keyCode == 40){
+					ti_maintainviews.setFocus();
+				}
+			}  
+			
+		]]>
+	</mx:Script>
+	<mx:Script source="AlertMessageHandler.as"/>
+	<!-- mx:Style source="css/main.css"/ -->
+	<mx:VBox width="100%">
+		
+		<mx:HBox width="100%">
+			<mx:Button id="img_ezlearnswitch_interactive" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.scholarcap_mousehovering(event,'',headlabel.text,'BUTTON')}"
+					   
+					   />
+			<mx:Spacer width="100%"/>
+			<mx:Label id="headlabel"  width="100%" textAlign="center"  fontSize="19" color="#FCFAFA" fontWeight="bold"/>
+			<mx:Spacer width="100%"/>
+			
+		</mx:HBox>
+		
+	</mx:VBox>
+	<mx:HBox width="100%" height="100%" id="hbox1">
+		
+		<!-- mx:AdvancedDataGrid id="dg_testing"  width="100%" height="100%"  verticalScrollPolicy="on" horizontalScrollPolicy="on">
+		
+		</mx:AdvancedDataGrid -->
+		
+		<mx:VBox width="100%" height="100%">
+			<mx:Form id="operatorgroup_form" width="100%" height="100%">
+				<mx:FormItem label="Group Code:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA" width="635">
+					<mx:HBox width="100%">   
+					<mx:TextInput id="ti_groupcodeprefix"  width="76" color="#000000" 
+								  maxChars="4" 
+								  mouseEnabled="false" 
+								  borderColor="#050505"
+								  focusIn="{GroupCodePrefixFocus(event)}"
+								  
+								  />
+						
+					<!-- mx:TextInput id="ti_groupcodesuffix"  width="65" restrict="0-9" color="#000000" maxChars="2" focusIn="{GroupSuffixFocusIn(event)}" focusOut="{GroupSuffixFocusOut(event)}"/ -->
+					<mx:TextInput id="ti_groupcodesuffix"  click="{GroupSuffixFocusIn(event)}" 
+								  width="65" color="#000000" 
+								  enter="{ti_groupdescription.setFocus()}" 
+								  maxChars="2" 
+								  focusIn="{GroupSuffixFocusIn(event)}" 
+								  focusOut="{GroupSuffixFocusOut(event)}"
+								  keyDown="{keydownGroupSuffix(event)}"
+								  
+								  />
+					<mx:Label id="label_validation" color="#FCFAFA" width="307" />	
+					</mx:HBox>
+				</mx:FormItem>  
+				<mx:FormItem label="Group Description:" fontSize="14" fontFamily="Arial" fontWeight="bold" width="510" color="#FCFAFA">
+					<mx:TextInput id="ti_groupdescription" 
+								  enter="{ti_maintainrenditions.setFocus()}" 
+								  width="346" color="#000000"  
+								  focusIn="GroupDescriptionFocus(event)" 
+								  focusOut="{GroupDescriptionFocusOut(event)}"
+								  keyDown="{keydownGroupDescription(event)}"
+								  />
+				</mx:FormItem>
+				<mx:FormItem label="Maintain Renditions:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+					<!-- mx:TextInput id="ti_maintainrenditions" width="61" color="#000000"/ -->
+					<mx:HBox width="100%" horizontalGap="0"> 
+					<mx:TextInput id="ti_maintainrenditions" width="415" color="#000000" editable="false" 
+								  focusIn="MaintainRenditionsFocusIn(event)" focusOut="{MaintainRenditionsFocusOut(event)}"
+								  enter="{ti_maintainviews.setFocus()}"
+								  keyDown="{keydownRendition(event)}"
+								  />    
+						<mx:Button id="btn_browse" icon="@Embed('image/icon_lookup.png')"  click="{ButtonBrowseFocusIn(event), LaunchOperatorGroupMaintenance(event)}"
+								   focusIn="ButtonBrowseFocusIn(event)" focusOut="{ButtonBrowseFocusOut(event)}" width="33"/>
+					</mx:HBox>	
+					<!-- mx:ComboBox id="cb_maintainrenditions" dataProvider="{renditionAC}"  labelField="description" width="475" color="#000000" / -->
+					
+					
+					   
+					
+				</mx:FormItem>    
+				<mx:FormItem label="Maintain Views:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+					<!-- mx:TextInput id="ti_maintainviews" width="60" color="#000000"/ --> 
+					
+					
+					<mx:HBox width="100%" horizontalGap="0"> 
+						<mx:TextInput id="ti_maintainviews" width="415" color="#000000" editable="false" 
+									  focusIn="MaintainViewsFocusIn(event)" focusOut="{MaintainViewsFocusOut(event)}"
+									  
+									  />    
+						<mx:Button id="btn_browseviews" icon="@Embed('image/icon_lookup.png')" click="{ButtonBrowseViewsFocusIn(event), LaunchOperatorGroupMaintenanceViews(event)}"
+								   focusIn="ButtonBrowseViewsFocusIn(event)" focusOut="{ButtonBrowseViewsFocusOut(event)}" width="33"/>
+					</mx:HBox>	
+					   
+					
+					<!-- mx:ComboBox id="cb_maintainviews" dataProvider="{viewAC}" labelField="description" width="475" color="#000000" / --> 
+				</mx:FormItem>
+				
+					<mx:HRule width="651" strokeColor="#000000"/>
+					<mx:FormItem label="Last Change Date:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+							<mx:TextInput id="ti_upddate" color="#000000" editable="false"  
+										  backgroundColor="#BEC5AA"  
+										  mouseEnabled="false"
+										  focusIn="{LastChangeFocus(event)}"
+										  />
+					</mx:FormItem>
+					<mx:FormItem label="Last Change Time:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+							<mx:TextInput id="ti_updtime" color="#000000"  editable="false" 
+										  backgroundColor="#BEC5AA"  
+										  mouseEnabled="false"
+										  focusIn="{LastChangeFocus(event)}"
+										  />
+					</mx:FormItem>
+					<!--
+					<mx:FormItem label="Unique Key:" fontSize="14" fontFamily="Arial" fontWeight="bold" color="#FCFAFA">
+							<mx:TextInput id="ti_uniquekey" color="#000000"  editable="false" backgroundColor="#BEC5AA"/>
+					</mx:FormItem>
+					-->   
+			</mx:Form>
+			
+			<mx:HBox width="100%" horizontalGap="0">         
+				<!-- mx:Button id="btn_add"  styleName ="btnog" focusIn="{BtnAddFocusIn(event)}" focusOut="{BtnAddFocusOut(event)}" label="Submit" / -->
+				<!-- mx:Button id="btn_add"   
+						   fillColors="[white, white, white, white]"
+						   icon="{cross}"
+						   focusOut="{BtnAddFocusOut(event)}" 
+						   focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnAddFocusIn(event) }" 
+						   label="Submit"  width="85" height="31"/ -->
+				
+				<!-- mx:TextInput
+					id="btn_add"  
+					width="85" height="25"
+					text="Submit"
+					fontSize="14" fontWeight="bold" color="#010101"
+					fontFamily="Verdana"
+					cornerRadius="10" 
+					borderStyle="solid"
+					textAlign="center" backgroundColor="#DFF1F1" backgroundAlpha="1.0" editable="false"
+					focusOut="{BtnAddFocusOut(event)}" 
+					focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnAddFocusIn(event) }" 
+					
+					mouseOver="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnAddFocusIn(event) }"
+					mouseOut="{BtnAddFocusOut(event)}" 
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					
+					
+					dropShadowEnabled="true"
+					shadowDirection= "right"
+					shadowDistance= "10"
+					
+					
+					
+					/ -->
+				
+				<local:InteractiveButton
+					id="btn_add"  
+					text="Submit"
+					focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white')}" 
+					
+					mouseOver="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white')}"
+					
+					>
+					
+				</local:InteractiveButton>
+				
+				
+				
+				
+				
+				<!-- mx:Button id="btn_update" 
+						   icon="{cross}"
+						   focusOut="{BtnUpdateFocusOut(event)}" 
+						   focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnUpdateFocusIn(event) }" label="Update" / -->
+				
+				
+				<!-- mx:TextInput
+					id="btn_update"  
+					width="85" height="25"
+					text="Update"
+					fontSize="14" fontWeight="bold" color="#010101"
+					fontFamily="Verdana"
+					cornerRadius="10" 
+					borderStyle="solid"
+					textAlign="center" backgroundColor="#DFF1F1" backgroundAlpha="1.0" editable="false"
+					focusOut="{BtnUpdateFocusOut(event)}" 
+					focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnUpdateFocusIn(event) }" 
+					
+					mouseOver="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnUpdateFocusIn(event) }"
+					mouseOut="{BtnUpdateFocusOut(event)}" 
+					
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					
+					
+					dropShadowEnabled="true"
+					shadowDirection= "right"
+					shadowDistance= "10"
+					
+					/ -->
+				
+				
+				<local:InteractiveButton
+					id="btn_update"  
+					text="Update"
+					focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white')}" 
+					
+					mouseOver="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white')}"
+						
+					>
+				
+					
+					
+					
+				</local:InteractiveButton>
+				
+				
+				
+				<!-- mx:Button id="btn_delete" label="Delete" 
+						   icon="{cross}"
+						   focusOut="{BtnDeleteFocusOut(event)}" 
+						   focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnDeleteFocusIn(event) }" 
+				
+						   
+						   / -->
+				
+				
+				
+				<!-- mx:TextInput
+					id="btn_delete"  
+					width="85" height="25"
+					text="Delete"
+					fontSize="14" fontWeight="bold" color="#010101"
+					fontFamily="Verdana"
+					cornerRadius="10" 
+					borderStyle="solid"
+					textAlign="center" backgroundColor="#DFF1F1" backgroundAlpha="1.0" editable="false"
+					focusOut="{BtnDeleteFocusOut(event)}" 
+					focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnDeleteFocusIn(event) }" 
+					
+					mouseOver="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnDeleteFocusIn(event) }"
+					mouseOut="{BtnDeleteFocusOut(event)}" 
+					
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					
+					
+					dropShadowEnabled="true"
+					shadowDirection= "right"
+					shadowDistance= "10"
+					/  -->
+				
+				
+				
+				<local:InteractiveButton
+					id="btn_delete"  
+					text="Delete"
+					focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white')}" 
+					
+					mouseOver="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white')}"
+						
+					>
+				</local:InteractiveButton>
+				
+				
+				
+				<mx:TextInput id="rendition_hidden_code" width="100" visible="false"/>
+				<mx:TextInput id="view_hidden_code" width="100" visible="false"/>
+				<mx:Spacer width="100%"/>
+				<!-- mx:Button id="btn_cancel" 
+						   icon="{cross}"
+						   focusOut="{BtnCancelFocusOut(event)}" 
+						   focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnCancelFocusIn(event) }"
+						   label="Cancel" click="{titleWindow_close(event)}"/ -->
+			
+			     
+				
+				<!-- mx:TextInput
+					id="btn_cancel"  
+					width="85" height="25"
+					text="Cancel"
+					fontSize="14" fontWeight="bold" color="#010101"
+					fontFamily="Verdana"
+					cornerRadius="10" 
+					borderStyle="solid"
+					textAlign="center" backgroundColor="#DFF1F1" backgroundAlpha="1.0" editable="false"
+					focusOut="{BtnCancelFocusOut(event)}" 
+					focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnCancelFocusIn(event) }" 
+					
+					mouseOver="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnCancelFocusIn(event) }"
+					mouseOut="{BtnCancelFocusOut(event)}" 
+					click="{titleWindow_close(event)}"
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					
+					
+					
+					dropShadowEnabled="true"
+					shadowDirection= "right"
+					shadowDistance= "10"
+					/ -->
+				
+				<!-- mx:TextInput
+					id="btn_cancel"  
+					width="85" height="25"
+					text="Cancel"
+					fontSize="14" fontWeight="bold" color="#010101"
+					fontFamily="Verdana"
+					cornerRadius="10" 
+					borderStyle="solid"
+					textAlign="center" backgroundColor="#DFF1F1" backgroundAlpha="1.0" editable="false"
+					focusOut="{BtnCancelFocusOut(event)}" 
+					focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnCancelFocusIn(event) }" 
+					
+					mouseOver="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white'),BtnCancelFocusIn(event) }"
+					mouseOut="{BtnCancelFocusOut(event)}" 
+					
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					
+					    
+					
+					dropShadowEnabled="true"
+					shadowDirection= "right"
+					shadowDistance= "10"
+					/ -->
+			
+				<local:InteractiveButton
+					id="btn_cancel"  
+					text="Cancel"
+					click="{titleWindow_close(event)}"
+					focusIn="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white')}" 
+					mouseOver="{ti_maintainrenditions.setStyle('backgroundColor','white'),ti_maintainviews.setStyle('backgroundColor','white')}"
+					>
+			</local:InteractiveButton>   
+			
+			
+			</mx:HBox>
+		</mx:VBox>	
+		
+		
+		
+	</mx:HBox>
+	
+</mx:TitleWindow>
+

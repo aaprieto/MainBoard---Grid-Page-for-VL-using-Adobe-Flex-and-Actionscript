@@ -1,0 +1,30 @@
+<root>
+<Panel>
+<code>024</code>
+<title>Sox Tickets</title>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="Sox Tickets" columnstart="0"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="ticket" dataField="ticket" title_header="Ticket" width="80" datatype="S" />
+<column columnId="1" columnName="call_date" dataField="call_date" title_header="Call Date" width="120" datatype="D" />
+<column columnId="2" columnName="call_time" dataField="call_time" title_header="Call Time" width="100" datatype="S" />
+<column columnId="3" columnName="client" dataField="client" title_header="Client" width="90" datatype="S" />
+<column columnId="4" columnName="last_event" dataField="last_event" title_header="Last Event" width="700" datatype="S" />
+<column columnId="5" columnName="contact" dataField="contact" title_header="Contact" width="170" datatype="S" />
+<column columnId="6" columnName="error" dataField="error" title_header="Error" width="80" datatype="S" />
+<column columnId="7" columnName="product" dataField="product" title_header="Module" width="80" datatype="S" />
+<column columnId="8" columnName="group_code" dataField="group_code" title_header="Build" width="120" datatype="S" />
+<column columnId="9" columnName="program" dataField="program" title_header="Program" width="120" datatype="S" />
+<column columnId="10" columnName="system" dataField="system" title_header="System" width="100" datatype="S" />
+<column columnId="11" columnName="remark" dataField="remark" title_header="Remark" width="700" datatype="S" />
+<column columnId="12" columnName="associate" dataField="associate" title_header="Assign" width="100" datatype="S" />
+<column columnId="13" columnName="date_start" dataField="date_start" title_header="Start Date" width="130" datatype="S" />
+<column columnId="14" columnName="time_start" dataField="time_start" title_header="Start Time" width="120" datatype="S" />
+<column columnId="15" columnName="date_close" dataField="date_close" title_header="Close Date" width="120" datatype="S" />
+<column columnId="16" columnName="time_close" dataField="time_close" title_header="Close Time" width="120" datatype="S" />
+<column columnId="17" columnName="showticket" dataField="showticket" title_header="Ticket" width="80" datatype="S" />
+<column columnId="18" columnName="" dataField="" title_header="" width="1500" datatype="S" />
+</AdvancedDataGridColumn>
+</root>

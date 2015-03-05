@@ -1,0 +1,83 @@
+<root>
+<Panel>
+<code>007</code>
+<title>Shipped History ActionGrid</title>
+<history>Yes</history>
+</Panel>
+<AdvancedDataGridColumnGroup>
+<columngroup headerText="General" columnstart="0"/>
+<columngroup headerText="Quantities" columnstart="21"/>
+<columngroup headerText="Status" columnstart="27"/>
+<columngroup headerText="Appointment" columnstart="35"/>
+<columngroup headerText="Destination" columnstart="43"/>
+<columngroup headerText="Transportation" columnstart="51"/>
+<columngroup headerText="Comments" columnstart="59"/>
+</AdvancedDataGridColumnGroup>
+<AdvancedDataGridColumn>
+<column columnId="0" columnName="order_num" dataField="order_num" title_header="Order" width="80" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="1" columnName="client" dataField="client" title_header="Client" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="2" columnName="csr_code" dataField="csr_code" title_header="CSR" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="3" columnName="broker" dataField="broker" title_header="Broker" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="4" columnName="client_ref" dataField="sellers_num" title_header="Client Ref" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="5" columnName="cust_ref" dataField="cust_ref" title_header="P.0. #" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="6" columnName="warehouse" dataField="warehouse" title_header="Warehouse" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="7" columnName="toshipdate" dataField="toshipdate" title_header="To Ship-Date" width="150" datatype="D" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="8" columnName="toshiptime" dataField="toshiptime" title_header="To Ship-Time" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="9" columnName="shippddate" dataField="shippddate" title_header="Shipped Date" width="150" datatype="D" docid="" wordwrap="false" analyzeby="no" filter_seq="1" tcv="" />
+<column columnId="10" columnName="shippdtime" dataField="shippdtime" title_header="Shipped Time" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="11" columnName="order_mode" dataField="order_mode" title_header="Order Mode" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="12" columnName="order_type" dataField="order_mthd" title_header="Order Type" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="13" columnName="rush" dataField="rush" title_header="Rush Order" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="14" columnName="client" dataField="client" title_header="Client" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="15" columnName="on_time" dataField="on_time" title_header="On Time" width="110" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="16" columnName="client_ref" dataField="sellers_num" title_header="Client Ref" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="17" columnName="master_ord" dataField="master_order" title_header="Master Order" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="18" columnName="parent_ord" dataField="parent_order" title_header="Parent Order" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="19" columnName="sales_grp" dataField="sales_grp" title_header="Sales Group" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="20" columnName="assgn_ops" dataField="assigned_ops" title_header="Assigned Operators" width="200" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="21" columnName="order_num" dataField="order_num" title_header="Order" width="80" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="22" columnName="client" dataField="client" title_header="Client" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="23" columnName="pieces" dataField="pieces" title_header="Pieces" width="120" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="24" columnName="weight" dataField="weight" title_header="Weight" width="120" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="25" columnName="cube" dataField="cube" title_header="Cube" width="120" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="26" columnName="pallets" dataField="pallets" title_header="Pallets" width="120" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="27" columnName="order_num" dataField="order_num" title_header="Order" width="80" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="28" columnName="client" dataField="client" title_header="Client" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="29" columnName="order_stat" dataField="order_status" title_header="Order Status" width="160" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="30" columnName="frttot_alt" dataField="frght_clas_tot" title_header="Order Hold" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="31" columnName="labour_est" dataField="labhours_est" title_header="Labour Hours - Estimated" width="230" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="32" columnName="labour_act" dataField="labhours_act" title_header="Labour Hours - Actual" width="200" datatype="N" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="33" columnName="staging_lo" dataField="staging_loc" title_header="Staging Location" width="170" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="34" columnName="loading_lo" dataField="loading_loc" title_header="Loading Location" width="170" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="35" columnName="order_num" dataField="order_num" title_header="Order" width="80" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="36" columnName="client" dataField="client" title_header="Client" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="37" columnName="appoint_no" dataField="appoint_no" title_header="Appointment #" width="170" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="38" columnName="dock_door" dataField="dock_door_loc" title_header="Dock Door Loc" width="200" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="39" columnName="apt_date" dataField="apt_date" title_header="Pickup Date" width="120" datatype="D" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="40" columnName="apt_time" dataField="apt_time" title_header="Pickup Time" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="41" columnName="deliv_date" dataField="deliv_date" title_header="Delivery Date" width="150" datatype="D" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="42" columnName="deliv_time" dataField="deliv_time" title_header="Delivery Time" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="43" columnName="order_num" dataField="order_num" title_header="Order" width="80" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="44" columnName="client" dataField="client" title_header="Client" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="45" columnName="cust_code" dataField="cust_code" title_header="Customer Code" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="46" columnName="cust_name" dataField="cust_name" title_header="Customer Name" width="380" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="47" columnName="address" dataField="address" title_header="Address" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="48" columnName="city" dataField="city" title_header="City" width="140" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="49" columnName="state" dataField="state" title_header="State/Province" width="200" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="50" columnName="zip" dataField="zip" title_header="Zip/Postal Code" width="200" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="51" columnName="order_num" dataField="order_num" title_header="Order" width="80" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="52" columnName="client" dataField="client" title_header="Client" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="53" columnName="carrier_cd" dataField="carrier_cd" title_header="Carrier Code" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="54" columnName="carrier_nm" dataField="carrier_nm" title_header="Carrier Name" width="380" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="55" columnName="serv_level" dataField="serv_level" title_header="Service Level" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="56" columnName="frght_type" dataField="frght_type" title_header="Freight Type" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="57" columnName="ctrl_mthd" dataField="ctrl_mthd" title_header="Control Method" width="150" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="58" columnName="pro_bill" dataField="pro_bill" title_header="Probill" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="59" columnName="order_num" dataField="order_num" title_header="Order" width="80" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="60" columnName="client" dataField="client" title_header="Client" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="61" columnName="spcl_instr" dataField="special_inst" title_header="Special Instructions" width="200" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="62" columnName="notes" dataField="notes" title_header="Notes" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="63" columnName="remarks" dataField="remarks" title_header="Remarks" width="120" datatype="S" docid="" wordwrap="false" analyzeby="no" filter_seq="2000" tcv="" />
+<column columnId="64" columnName="filler" dataField="" title_header="" width="1500" datatype="S" />
+</AdvancedDataGridColumn>
+</root>

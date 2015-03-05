@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+ <root>
+ 	<Panel>
+		<code>013</code>
+ 		<title>Run-Outs WiP ActionGrid</title>
+ 	</Panel>
+	<AdvancedDataGridColumnGroup>
+		<columngroup headerText="General" columnstart="0"/>
+	</AdvancedDataGridColumnGroup>
+	<AdvancedDataGridColumn>
+ 	    <column columnId="0"  dataField="run_num" title_header="Run Out" width="80" datatype="S"/>
+	</AdvancedDataGridColumn>
+
+ </root>
+ 
+

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml" >
+    <mx:Script>
+        <![CDATA[
+            [Bindable]
+            public var custom_id2:Number = 0;
+            public var custom_field2:String = "";
+            public var data_type2:String = "";
+            public var data_field2:String = "";
+        ]]>
+    </mx:Script>
+</mx:TextInput>

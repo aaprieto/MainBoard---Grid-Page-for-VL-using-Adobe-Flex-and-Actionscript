@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+ <root>
+ 	<Panel>
+		<code>200</code>
+ 		<title>ORDER</title> 	
+ 	</Panel>
+	<AdvancedDataGridColumnGroup>
+		<columngroup headerText="Order" columnstart="0"/>
+	</AdvancedDataGridColumnGroup>
+	<AdvancedDataGridColumn>
+ 	<column columnId="0"  dataField="line" title_header="Line" width="90" datatype="S"/>
+        <column columnId="1"  dataField="hazmatflag" title_header="Hazmatflag" width="90" datatype="S"/>
+        <column columnId="2"  dataField="ccode" title_header="C Code" width="100" datatype="S"/> 
+        <column columnId="3"  dataField="prodcode" title_header="Prod Code" width="90" datatype="S"/> 
+        <column columnId="4"  dataField="proddesc1" title_header="Prod Desc 1" width="200" datatype="S"/> 
+        <column columnId="5"  dataField="actcode" title_header="Act Code" width="90" datatype="S"/> 
+        <column columnId="6"  dataField="proddesc2" title_header="Prod Desc 2" width="200" datatype="S"/>
+	<column columnId="7"  dataField="ordqty" title_header="Ord Qty" width="90" datatype="N"/>
+        <column columnId="8"  dataField="shpqty" title_header="Shp Qty" width="90" datatype="N" />
+        <column columnId="9"  dataField="prodtype" title_header="Prod Type" width="90" datatype="S"/> 
+        <column columnId="10"  dataField="lotid" title_header="Lot Id" width="90" datatype="S"/> 
+        <column columnId="11" dataField="linewgt" title_header="Line Wgt" width="100" datatype="N"/> 
+        <column columnId="12" dataField="line_new_weight" title_header="Line New Wgt" width="190" datatype="N"/> 
+        <column columnId="13" dataField="line_plt" title_header="Line Plt" width="140" datatype="N"/> 
+
+   	<column columnId="14" dataField="" title_header="" width="1500" datatype="S"/> 
+	</AdvancedDataGridColumn>
+
+ </root>

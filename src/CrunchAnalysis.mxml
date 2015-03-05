@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 	width = "{FlexGlobals.topLevelApplication.width}"
+				height = "{FlexGlobals.topLevelApplication.height}"
+				  verticalScrollPolicy="off"
+	    layout="vertical"
+		showCloseButton="false"
+		close="titleWindow_close(event);"
+      	dropShadowEnabled="true"    
+        borderAlpha="1.0"
+      	backgroundColor="white"
+      	backgroundImage=""
+        creationComplete="init(event)"
+        color="#010101" fontSize="19" xmlns:local="*">
+ 
+
+     <mx:Style source="css/main.css"/>
+      <mx:Script>
+      	<![CDATA[
+			import mx.collections.*;
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.controls.Alert;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import mx.core.Application;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			import mx.utils.ArrayUtil;
+			import mx.core.FlexGlobals;
+			import mx.core.mx_internal;
+		 	
+		 	[Bindable]
+      		public var mfArray:ArrayCollection;
+      		[Bindable]
+      		public var columnArray:ArrayCollection;
+      		[Bindable]
+      		public var mainColumnArray:Object;
+      		[Bindable]
+      		public var headTitle:String;
+      		[Bindable]
+      		public var local_sesid:String;
+      		[Bindable]
+      		public var local_companycode:String;
+			
+			
+			[Bindable]
+			public var local_fdp:ArrayCollection;
+			
+			
+			[Bindable]
+			public var local_crunch:String;
+      		public var newObject1:datagrid_test = new datagrid_test();
+      		private var arr_crunchtoaction:ArrayCollection;
+      		//The location of the excel export file
+        	public var urlExcelExport:String = "exportexcel.php"; 
+      		
+      		private var dgc:AdvancedDataGridColumn = new AdvancedDataGridColumn();
+      		
+			private const TIMER_INTERVAL:int = 3000;
+			private var nt:Timer;   
+      		
+      		private function init(event:Event):void{
+      			
+				
+				/*
+				
+				obj.columnName = mainColumnArray[i]["dataField"];
+				obj.dataField = columnArray[ctr_i].cs_field;
+				obj.title_header = mainColumnArray[i]["title_header"];
+				obj.width = parseInt(mainColumnArray[i]["width"]);
+				obj.wordwrap = mainColumnArray[i]["wordwrap"];
+				obj.datatype = mainColumnArray[i]["datatype"];
+				*/
+				//for (var i:int=0;i<mainColumnArray.length;i++)  {
+				//	Alert.show( mainColumnArray[i]["dataField"] + " : " + mainColumnArray[i]["title_header"] + " : " + mainColumnArray[i]["datatype"]);
+				//} 
+				
+				
+      			if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+      				this.width = 1000;
+      				this.height = 575;
+      				vdivbox.height = 455;
+      			}
+      			
+      			buildDatagrid(event);
+				
+				
+			  
+			
+      		}
+			
+			
+           	private var total_xlcColumnCrunch:XML = new XML;
+           	[Bindable]
+           	private var arrcol:ArrayCollection = new ArrayCollection;
+           	private function buildDatagrid(event:Event):void{
+				
+           		var title_header:String = new String;
+           		var aColumnsNew:Array = new Array;
+           		var obj:Object = new Object();
+           		for (var ctr_i:int = 0; ctr_i < columnArray.length; ctr_i++){
+           			   
+           			for (var i:int=0;i<mainColumnArray.length;i++)  {
+           				if (columnArray[ctr_i].cs_field == mainColumnArray[i]["dataField"]){
+           					/* ****************************************************************  */
+           					/* New solution.  Will not create an XML anymore. just put everything to 
+           						an ArrayCollection then pass it to the actiongrid.  */
+           						//initialize the object
+           						obj = new Object();	
+           						obj.columnId = ctr_i;
+           						obj.columnName = mainColumnArray[i]["dataField"];
+           						obj.dataField = columnArray[ctr_i].cs_field;
+           						obj.title_header = mainColumnArray[i]["title_header"];
+           						obj.width = parseInt(mainColumnArray[i]["width"]);
+           						obj.wordwrap = mainColumnArray[i]["wordwrap"];
+           						obj.datatype = mainColumnArray[i]["datatype"];
+           						obj.tcv = "-";
+           						arrcol.addItem(obj);
+           						
+           					/* ****************************************************************  */
+           						
+           					
+           					if (mainColumnArray[i]["datatype"] == 'N'){
+           						dgc.setStyle("textAlign", "right");
+								dgc.setStyle('color','green');
+								
+           					}
+           					break;
+           					
+           			
+           				}
+           			} 
+           			
+           			aColumnsNew.push(dgc);
+					
+           			if (columnArray[ctr_i].cs_datatype == 'N'){
+           					/* ****************************************************************  */
+           					/* New solution.  Will not create an XML anymore. just put everything to 
+           						an ArrayCollection then pass it to the actiongrid.  */
+           						//initialize the object
+           						obj = new Object();	
+           						obj.columnId = ctr_i;
+           						obj.columnName = mainColumnArray[i]["dataField"];
+           						obj.dataField = 'pct_' + columnArray[ctr_i].cs_field;
+           						obj.title_header = '%';
+           						obj.width = '110';
+           						obj.wordwrap = false;
+           						obj.datatype = mainColumnArray[i]["datatype"];
+           						obj.tcv = "-";
+           						arrcol.addItem(obj);
+           						
+           					/* ****************************************************************  */
+           			}
+				}
+           			/* ****************************************************************  */
+           					/* New solution.  Will not create an XML anymore. just put everything to 
+           						an ArrayCollection then pass it to the actiongrid.  */
+           						//initialize the object
+           						obj = new Object();	
+           						obj.columnId = ctr_i;
+           						obj.columnName ='instance';
+           						obj.dataField = 'instance';
+           						obj.title_header = 'Instance';
+           						obj.width = '110';
+           						obj.wordwrap = false;
+           						obj.datatype = 'N';
+           						obj.tcv = "-";
+           						arrcol.addItem(obj);
+           						
+           				/* ****************************************************************  */
+           					/* New solution.  Will not create an XML anymore. just put everything to 
+           						an ArrayCollection then pass it to the actiongrid.  */
+           						//initialize the object
+           						obj = new Object();	
+           						obj.columnId = ctr_i;
+           						obj.columnName ='pct_instance';
+           						obj.dataField = 'pct_instance';
+           						obj.title_header = '%';
+           						obj.width = '110';
+           						obj.wordwrap = false;
+           						obj.datatype = 'N';
+           						obj.tcv = "-";
+           						arrcol.addItem(obj);
+								
+								
+								/*  Unique Key */
+								obj = new Object();	
+								obj.columnId = '100';
+								obj.columnName = "upd_unique";
+								obj.dataField ="upd_unique";
+								obj.title_header = "Unique Key";
+								obj.width = parseInt("200");
+								obj.wordwrap = "false";
+								obj.datatype = "S";
+								obj.analyzeby = "no";
+								obj.drilldown = "no";
+								obj.tcv = "-";
+								arrcol.addItem(obj);
+								
+           						
+           				/* ****************************************************************  */
+           					/* New solution.  Will not create an XML anymore. just put everything to 
+           						an ArrayCollection then pass it to the actiongrid.  */
+           						//initialize the object
+           						obj = new Object();	
+           						obj.columnId = ctr_i;
+           						obj.columnName ='';
+           						obj.dataField = '';
+           						obj.title_header = '';
+           						obj.width = '1500';
+           						obj.wordwrap = false;
+           						obj.datatype = 'N';
+           						obj.tcv = "-";
+           						arrcol.addItem(obj);
+           						
+           					/* ****************************************************************  */	
+           			 	arrcol.refresh();
+					
+						newObject1 = new datagrid_test();
+						
+						/*
+						for (var i:int=0;i<arrcol.length;i++)  { 
+							Alert.show( arrcol[i]["dataField"] + " : " + arrcol[i]["title_header"] + " : " + arrcol[i]["datatype"]);
+						}
+						*/
+						
+						
+						
+						newObject1._xlcTitle = local_crunch + ' Console';
+						newObject1._xlcColumn = arrcol;
+						//arr_crunchtoaction = mfArray;
+						newObject1.crunch_Array1 = mfArray;
+					
+						newObject1.ag_application_entry = parentApplication.application_entry;
+						newObject1.height = vdivbox.height; 
+						newObject1.my_sid = local_sesid;
+						newObject1.my_c_code1 = local_companycode;
+						newObject1.crunch = true;
+						newObject1.fdp = local_fdp;
+						vdivbox.addChild(newObject1); 
+						
+						/*
+						nt = new Timer(TIMER_INTERVAL);
+						nt.addEventListener(TimerEvent.TIMER, nt_update); 
+						nt.start();
+						*/
+           	}     
+			private function nt_update(evt:TimerEvent):void {
+				nt.stop();
+				showChart();  
+			}
+             
+
+  		   public var popshowChart:ShowChart; 
+  		   public function showChart():void {   
+  		   
+  		  
+           popshowChart = ShowChart(
+                PopUpManager.createPopUp(this, ShowChart, true));
+              
+                popshowChart.mfArray = newObject1.Array1; 
+				
+				popshowChart.ca_xlcColumn = newObject1._xlcColumn; 
+				
+				
+              popshowChart.adv_mfArray = newObject1.dg;
+                
+				
+				popshowChart.cap_title = crunchtitle.text;
+				popshowChart.showlocal_crunch = local_crunch;
+ 			}
+			
+			
+			
+  			  private function launchEZLearnMenu(event:Event):void{
+  		 
+  		 	if (parentApplication.mousehoverparslabel == "OFF")
+  		 	{
+  	           	parentApplication.mousehoverparslabel = "ON"
+  	           	parentApplication.mousehoverpars = "YES";
+  	           	
+      			 
+      		}
+      		else
+      		
+  		 	{
+  		 		
+  		 		parentApplication.mousehoverpars = "NO";
+  		 		parentApplication.mousehoverparslabel = "OFF"
+  	   		}
+      		
+         }
+			private function titleWindow_close(evt:Event):void { 
+				PopUpManager.removePopUp(this);
+			}
+      	]]>  
+      </mx:Script>
+     
+      
+     
+     <mx:VBox width="100%" height="100%">
+     
+		 <mx:HBox width="100%"  id="hdivbox1">
+			 
+			 <mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+						height="27"
+						width="78"
+						useHandCursor="true" buttonMode="true"   
+						mouseChildren="false"
+						click="{parentApplication.scholarcap_mousehovering(event,'',local_crunch + ' Console','BUTTON')}"
+						
+						/>
+			 <mx:Spacer width="100%"/>
+			 <mx:Label id="crunchtitle" text="{'Crunch Analysis - ' + headTitle}"   
+					   fontSize="19" color="#010000" fontWeight="bold"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.text,'VISUALOBJ')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+					   useHandCursor="true" buttonMode="true"
+					   mouseChildren="false"
+					   />
+			 <mx:Spacer width="100%"/>	
+			 <mx:Spacer width="78"/>
+			 <!-- local:HighViewButton id="btn_cancel_mc" doc_id="1036" label="Close" click="{titleWindow_close(event)}"  / -->
+			 <!-- local:HighViewButton id="btn_cancel_mc" doc_id="1036" label="Close"  / -->  
+		 </mx:HBox>                
+         
+      
+      <mx:VBox id="vdivbox" height="100%" width="100%" borderColor="#FEFFFF" borderStyle="none" color="#071C20">
+	</mx:VBox>
+	 
+       <mx:HBox width="100%">
+		   
+		   <!-- local:HighViewButton id="btn_cancel_mc" doc_id="1036" label="Back"  / -->
+		   <local:ActionGridImageButton id="btn_cancel_mc" source="image/ico_back1_red.png" 
+										height="28" 
+										
+										/>     
+		   
+		   <local:HighViewButton id="btn_cancel_mc_back" doc_id="1040" label="Back"/>  
+		   
+			<!-- local:HighViewButton id="btn_toExcel" doc_id="1033" label="Export to Excel" click="{convertCrunchDGToHTMLTable(event)}"  / -->
+			<!-- local:HighViewButton id="btn_toExcel" doc_id="1033" label="Export to Excel"  / -->
+			<!-- local:HighViewButton id="btn_viewSettings" doc_id="10344" label="View Settings" / --> 
+			<!-- local:HighViewButton id="btn_showChart" doc_id="1035" label="Show Chart"  click="{showChart()}" / -->
+		   <!-- local:HighViewButton id="btn_keepnumberofrow" doc_id="1035" label="Maximum # Row(s)"/ -->
+		   <local:HighViewButton id="btn_showChart" doc_id="1035" label="Show Chart"/> 
+		   <local:HighViewButton id="btn_saveCrunch" doc_id="1035" label="Create View"   /> 
+		  
+			<mx:Spacer width="100%"/>
+		  
+		   <!-- local:HighViewButton id="btn_cancel_mc" doc_id="1036" label="Close" click="{titleWindow_close(event)}"  / -->
+		   <!-- local:HighViewButton id="btn_cancel_mc" doc_id="1036" label="Close"  / -->  
+			<!-- local:HighViewButton id="btn_cancel_mc" doc_id="1036" label="Close" click="{titleWindow_close(event)}"  / -->
+			</mx:HBox>
+	
+     </mx:VBox>    
+	
+	
+	<!-- mx:AdvancedDataGrid id="transient_adg" dataProvider="{mfArray}" visible="true"  / -->
+</mx:TitleWindow>
+

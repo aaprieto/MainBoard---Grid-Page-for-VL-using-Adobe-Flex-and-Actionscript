@@ -1,0 +1,861 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" width="650" height="644"  x="600" y="100" -->
+<!-- mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" width="100%" height="100%"  x="0" y="0" -->
+ 
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"  verticalScrollPolicy="off"
+	        layout="vertical"
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="10" y="10"  
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+      
+		backgroundColor="white" 
+		backgroundImage=""
+        
+   		creationComplete="init(event)"
+   		initialize="i_init(event)"
+   	xmlns:ns1="com.fusioncharts.components.*"
+   	width="{resx - 300}"
+   		height="{resy - 350}"
+   		
+        alpha="1.0">
+
+<mx:Style source="css/main.css"/>
+<mx:Script source="AlertMessageHandler.as"/>
+<mx:Script>
+	<![CDATA[
+		import mx.charts.series.items.PlotSeriesItem;
+		import mx.collections.Sort;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+	 		import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.charts.chartClasses.ChartBase;
+        	import mx.charts.HitData;
+			import mx.events.FlexEvent;
+			import mx.collections.SortField;
+            
+            
+			[Bindable]
+		 	public var chartArray1:ArrayCollection;
+		 	[Bindable]
+		 	public var numericArray:ArrayCollection;	
+		 	[Bindable]
+		 	public var analyzeArray:ArrayCollection;	
+		 	[Bindable]
+ 		    public var myArray:Array;
+ 		    [Bindable]
+ 		    public var chart_xlcColumn:Object = new Object;
+ 		    //[Bindable]
+ 		    //public var chart_xlcColumn:ArrayCollection;
+ 		    
+ 		      
+			[Bindable]
+ 		    public var AlistArray:ArrayCollection; 
+			[Bindable]
+ 		    public var BlistArray:ArrayCollection;  		  	
+			[Bindable]
+			 public var ChartArray1_fg:Array;
+ 		    [Bindable]
+			 public var ChartArray1_fg_final:ArrayCollection; 
+		    [Bindable]
+ 		    public var dg_1_key:String = new String;
+			[Bindable]
+ 		    public var dg_2_key:String = new String;
+		    [Bindable]
+ 		    public var dg_1_key_titleheader:String = new String;
+			[Bindable]
+ 		    public var dg_2_key_titleheader:String = new String; 
+ 		    [Bindable]
+ 		    public var dg_3_key:String = new String;
+			[Bindable]
+ 		    public var dg_4_key:String = new String;
+		    [Bindable]
+ 		    public var dg_3_key_titleheader:String = new String;
+			[Bindable]
+ 		    public var dg_4_key_titleheader:String = new String; 
+ 		   
+ 		   	[Bindable]
+		 	public var ChartArrayGraph_2:Array=new Array();
+		 	[Bindable]
+		 	 public var Key1_th:String=new String;
+             [Bindable]
+            public var Key2_th:String=new String;
+            [Bindable]
+		 	 public var Key3_th:String=new String;
+             [Bindable]
+            public var Key4_th:String=new String;
+		 	 [Bindable]
+		 	private var _chartData:ArrayCollection=new ArrayCollection();
+		 	public var a_radiogroup:String=new String;
+ 		   /*
+ 		    private var _chartParam:ArrayCollection=new ArrayCollection([
+ 		    {xAxisName: 'Date'},
+			{yAxisName:'Numeric Attributes'},
+			{showShadow:'1'},
+			{useRoundEdges:'1'},
+			//{numVisiblePlot:'14'},
+			{plotGradientColor:''},
+			{legendPosition:'RIGHT'},
+			{showValues:'0'},
+			{baseFont:'13'},
+			{bold:'1'},
+			//{plotSpacePercent:'80'},
+			//{chartLeftMargin :'2'},
+			//{chartRightMargin :'2'},
+			{rotateLabels:'1'},
+			{labelDisplay:'ROTATE'},
+			{canvasBorderColor:'666666'},
+			{canvasBorderThickness:'1'}
+			 ])
+			;
+			*/
+			      [Bindable]
+			private var chartStyle:ArrayCollection=new ArrayCollection ([
+  					{name: 'CaptionSize', type: 'font', size: '24'},
+  					{name: 'X-AxisNameSize', type: 'font', size: '24'},
+  					{name: 'Y-AxisNameSize', type: 'font', size: '24'},
+					{name: 'myBevel', type: 'bevel', distance: '3'},
+					{name: 'myShadow', type: 'shadow', angle:'45', distance:'3'},
+					
+  					
+  					{toObject: 'Caption', styles: 'CaptionSize'},
+  					{toObject: 'X-AxisName', styles: 'X-AxisNameSize'},
+  					{toObject: 'Y-AxisName', styles: 'Y-AxisNameSize'},
+					{toObject: 'DATAPLOT', styles: 'myBevel, myShadow'},		
+					
+			]);
+			 [Bindable]
+      		private var _chartParam:ArrayCollection=new ArrayCollection;
+			private function populateFCParams():void{
+      		
+      			_chartParam = new ArrayCollection;
+      			//divLineColor='8CB1FF' divLineThickness='2' divLineAlpha='40'
+      			var obj:Object = new Object;
+      			
+      			obj.showShadow = '1';
+      			_chartParam.addItemAt(obj,0);
+      			obj = new Object
+      			obj.numVisiblePlot = '28';
+      			_chartParam.addItemAt(obj,1);
+      			obj = new Object
+      			obj.rotateLabels = '1';
+      			_chartParam.addItemAt(obj,2);
+      			obj = new Object
+      			obj.labelDisplay = 'ROTATE'; 
+      			_chartParam.addItemAt(obj,3);
+      			obj = new Object
+      			obj.useRoundEdges = '1';
+      			_chartParam.addItemAt(obj,4);
+      					var selitems:String = new String;
+      					for (var ab:int = 0; ab< dg_1.selectedItems.length; ab++){
+      						selitems = selitems +  dg_1.selectedItems[ab]["title_header"] + " - ";
+      					}
+      			obj = new Object
+      			obj.yAxisName = selitems;
+      			_chartParam.addItemAt(obj,5);
+      			obj = new Object
+      			obj.xAxisName = cb_analyzer.selectedItem.title_header.toString();
+      			_chartParam.addItemAt(obj,6);
+      			obj = new Object
+      			obj.caption = cb_analyzer.selectedItem.title_header.toString() + ' versus ' + cb_analyze.selectedItem.title_header.toString();
+      			_chartParam.addItemAt(obj,7);
+      			obj = new Object
+      			obj.canvasBorderColor='666666';
+      			_chartParam.addItemAt(obj,8);
+      			obj = new Object
+      			obj.canvasBorderThickness='1';
+      			_chartParam.addItemAt(obj,9);
+      			obj = new Object
+      			obj.showPercentageValues='0';
+      			_chartParam.addItemAt(obj,10);
+      			obj = new Object
+      			obj.exportEnabled='0';
+      			_chartParam.addItemAt(obj,11);
+				obj = new Object
+      			obj.exportFileName='myExportFile';
+      			_chartParam.addItemAt(obj,12);
+      			obj = new Object
+      			obj.showValues='0';
+      			_chartParam.addItemAt(obj,13);
+      			obj = new Object
+      			obj.baseFontSize='14';
+      			_chartParam.addItemAt(obj,14);
+      			obj = new Object
+      			obj.bgColor='EEEEEE';
+      			_chartParam.addItemAt(obj,15);
+      			
+      			
+      			
+      			_chartParam.refresh();
+      			return; 
+      		}
+
+			
+			private var resx:int = Capabilities.screenResolutionX;
+			private var resy:int = Capabilities.screenResolutionY;
+ 		  
+ 		   private function titleWindow_close(evt:Event):void {
+                 PopUpManager.removePopUp(this);	
+           }
+           
+            private function i_init(event:Event):void {
+           		if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+      				this.width = 1000;
+      				this.height = 575;
+      				
+      			}
+            }
+           
+           private function init(event:Event):void {
+           	/*
+           Alert.show("x: " + resx);
+			Alert.show("y: " + resy);
+			this.width= resx - 50;
+   		this.height=resy - 250;
+   		*/
+   //		A_dsr.selected=true;
+   //		B_der.selected=true;
+   		//initialize the radiobutton variable to Sum for group A List
+   		//a_radiogroup = "sum";
+   	//	Alert.show(chart_xlcColumn.length.toString());
+   		 rendered(event);
+           }
+           private function analyzeChange():void{
+           		var varheaderText:String = cb_analyze.selectedItem.dataField.toString();
+	  			AlistArray = new ArrayCollection();
+	  			BlistArray = new ArrayCollection();
+	  			var flag:Boolean = false;
+	  			var currentsflag:Boolean = false;
+	    		var str_column:String = new String;
+	  			var Aobj:Object = new Object();
+	  			var Bobj:Object = new Object();
+						for (var ix:int=0;ix< chart_xlcColumn.length; ix++)  { 
+							var datafield:String = (chart_xlcColumn[ix]["dataField"]).toString();
+									
+									if  ( varheaderText == datafield){
+										for( var i:int = 0; i < chartArray1.length; i++ ){
+											var columchartArray1_df:String = chartArray1[i][chart_xlcColumn[ix]["dataField"]];
+											if (columchartArray1_df == null || columchartArray1_df == ""){
+												columchartArray1_df = "-";
+											}
+											Aobj = new Object();
+											if (i==0){
+													Aobj.alist = columchartArray1_df;
+													AlistArray.addItem(Aobj);
+											}
+											if (i>0){
+												currentsflag = false;
+													for( var ia:int = 0; ia < AlistArray.length; ia++ ){
+														flag = false;	
+														if (columchartArray1_df == AlistArray[ia].alist){
+															flag = true;
+														}
+														currentsflag = (currentsflag || flag);
+													}
+													if (currentsflag == false){
+														Aobj.alist = columchartArray1_df;
+														AlistArray.addItem(Aobj);
+													}	
+											}
+										}	
+										break;
+									}	
+						}
+						AlistArray.refresh();
+						
+						for( var ib:int = 0; ib < AlistArray.length; ib++ ){
+								Bobj = new Object();
+								Bobj.blist = AlistArray[ib].alist;
+								BlistArray.addItem(Bobj);
+						}
+						BlistArray.refresh();     
+           } 
+           private function validations(event:Event){
+           			if (cb_analyze.selectedIndex == -1){
+           				AlertMessageShow("Please select an item from Analyze by.");
+           				return;
+           			}
+           			if (cb_analyzer.selectedIndex == -1){
+           				AlertMessageShow("Please select an item from Base Analyzer.");
+           				return;
+           			}
+           			if (dg_1.selectedItems.length == 0){
+           				AlertMessageShow("Please select an item(s) from Numeric Attributes.");
+           				return;
+           			}
+           			if (alist_dg.selectedItems.length == 0){
+           				AlertMessageShow("Please select an item(s) from List A.");
+           				return;
+           			}
+           }
+           private function validationsB(event:Event){
+           			if (blist_dg.selectedItems.length == 0){
+           				AlertMessageShow("Please select an item(s) from List B.");
+           				return;
+           			
+           			}
+           			
+           }
+           private function graphA(evt:Event):void{
+           		validations(evt);			
+           	
+          		ChartArray1_fg = new Array();
+          		ChartArray1_fg_final = new ArrayCollection();
+          				// Loop for Array1 first... 
+          				for( var a:int = 0; a < chartArray1.length; a++ ){
+          				var obj:Object = new Object;
+          					// Getting Base Analyzer
+          					var base_analyzer:String = chartArray1[a][cb_analyzer.selectedItem.dataField.toString()];
+          					obj[cb_analyzer.selectedItem.title_header.toString()] = base_analyzer;
+          					var common_factor:String = chartArray1[a][cb_analyze.selectedItem.dataField.toString()];
+          					if (common_factor == null || common_factor== ""){
+												common_factor = "-";
+											}
+          					var flag:Boolean = false;	
+          						// Loop for Numeric Attributes
+          						for (var b:int = 0; b< dg_1.selectedItems.length; b++){
+          							var num_att:int = chartArray1[a][dg_1.selectedItems[b]["headerText"]];
+          									// Loop for A list
+          									for (var c:int = 0; c< alist_dg.selectedItems.length; c++){
+          											
+          											if 	(common_factor == alist_dg.selectedItems[c]["alist"]){
+          												obj[dg_1.selectedItems[b]["headerText"]] = 	num_att;
+														//obj[dg_1.selectedItems[b]["title_header"]] = 	num_att;
+														flag = true;
+														break;					
+          											}
+          									}	
+          						}
+          						// Now time to check for the ChartArray1_fg
+          						if (flag == true){
+          								var ca_ctr:int = ChartArray1_fg.length;
+          								if (ca_ctr >= 1){
+												var mini_flag:Boolean = false;
+												for( var c:int = 0; c < ChartArray1_fg.length; c++ ){
+																		if (base_analyzer == ChartArray1_fg[c][cb_analyzer.selectedItem.title_header.toString()]){
+																				// Now loop inside the array for update
+																				for (var d:int = 0; d< dg_1.selectedItems.length; d++){
+																					ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]] = ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]] + obj[dg_1.selectedItems[d]["headerText"]];
+																				}
+																				mini_flag = true
+																				break;												
+																		}
+												}
+												if (mini_flag == false){
+														ChartArray1_fg.push(obj);
+												}
+										}
+										if (ca_ctr == 0){
+													ChartArray1_fg.push(obj);
+										}
+										
+          						}
+          				}
+          		
+          				for( var a_final:int = 0; a_final < ChartArray1_fg.length; a_final++ ){
+							var obj_final:Object = new Object;
+							obj_final[cb_analyzer.selectedItem.title_header.toString()] = ChartArray1_fg[a_final][cb_analyzer.selectedItem.title_header.toString()];
+							for (var e:int = 0; e< dg_1.selectedItems.length; e++){
+								//obj_final[dg_1.selectedItems[e]["headerText"]+'-A'] = ChartArray1_fg[a_final][dg_1.selectedItems[e]["headerText"]]
+								obj_final[dg_1.selectedItems[e]["title_header"]+'-A'] = ChartArray1_fg[a_final][dg_1.selectedItems[e]["headerText"]]
+							
+							}
+							ChartArray1_fg_final.addItem(obj_final);
+							ChartArray1_fg_final.refresh();
+						}
+				// sort data first by analyzedate
+                 var dataSortField:SortField = new SortField();
+                	dataSortField.name = cb_analyzer.selectedItem.title_header.toString();
+                	dataSortField.numeric = false;
+					dataSortField.descending = true;
+                /* Create the Sort object and add the SortField object created earlier to the array of fields to sort on. */
+                var stringDataSort:Sort = new Sort();
+                stringDataSort.fields = [dataSortField];
+
+                /* Set the ArrayCollection object's sort property to our custom sort, and refresh the ArrayCollection. */
+                ChartArray1_fg_final.sort = stringDataSort;
+                ChartArray1_fg_final.refresh();
+				ChartArray1_fg = ChartArray1_fg_final.toArray();
+				//dg_test.dataProvider = ChartArray1_fg_final;
+				create_chart(evt);
+           }
+           
+           
+            private function graphAB(evt:Event):void{
+            	validations(evt);
+            	validationsB(evt);
+          		ChartArray1_fg = new Array();
+          		ChartArray1_fg_final = new ArrayCollection();
+          				// Loop for Array1 first... 
+          				for( var a:int = 0; a < chartArray1.length; a++ ){
+          				var obj:Object = new Object;
+          					// Getting Base Analyzer
+          					var base_analyzer:String = chartArray1[a][cb_analyzer.selectedItem.dataField.toString()];
+          					obj[cb_analyzer.selectedItem.title_header.toString()] = base_analyzer;
+          					var common_factor:String = chartArray1[a][cb_analyze.selectedItem.dataField.toString()];
+          						if (common_factor == null || common_factor== ""){
+												common_factor = "-";
+											}
+          				
+          					var flag:Boolean = false;	
+          						// Loop for Numeric Attributes
+          						for (var b:int = 0; b< dg_1.selectedItems.length; b++){
+          							var num_att:int = chartArray1[a][dg_1.selectedItems[b]["headerText"]];
+          									obj[dg_1.selectedItems[b]["headerText"]+'-A'] = 0;
+          									obj[dg_1.selectedItems[b]["headerText"]+'-B'] = 0;
+          									// Loop for A list
+          									for (var c:int = 0; c< alist_dg.selectedItems.length; c++){
+          											if 	(common_factor == alist_dg.selectedItems[c]["alist"]){
+          												obj[dg_1.selectedItems[b]["headerText"]+'-A'] = 	num_att;
+          												//obj[dg_1.selectedItems[b]["headerText"]+'-B'] = 	0;
+														//obj[dg_1.selectedItems[b]["title_header"]] = 	num_att;
+														flag = true;
+														break;					
+          											}
+          									}	
+          									
+          									// Loop for B list
+          									for (var bb:int = 0; bb< blist_dg.selectedItems.length; bb++){
+          											if 	(common_factor == blist_dg.selectedItems[bb]["blist"]){
+          											//	obj[dg_1.selectedItems[b]["headerText"]+'-A'] = 	0;
+          												obj[dg_1.selectedItems[b]["headerText"]+'-B'] = 	num_att;
+														////obj[dg_1.selectedItems[b]["title_header"]] = 	num_att;
+														flag = true;
+														break;					
+          											}
+          									}
+          									
+          									
+          						}
+          						// Now time to check for the ChartArray1_fg
+          						if (flag == true){
+          								var ca_ctr:int = ChartArray1_fg.length;
+          								if (ca_ctr >= 1){
+												var mini_flag:Boolean = false;
+												for( var c:int = 0; c < ChartArray1_fg.length; c++ ){
+																		if (base_analyzer == ChartArray1_fg[c][cb_analyzer.selectedItem.title_header.toString()]){
+																				// Now loop inside the array for update
+																				for (var d:int = 0; d< dg_1.selectedItems.length; d++){
+																					
+																					if ((ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-A'] == 'undefined' )||(ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-A'] == 'NaN' )||(ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-A'] == null )||(ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-A'] == null )){
+																								ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-A'] = 0;
+																					}
+																					if ((ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-B'] == 'undefined' )||(ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-B'] == 'NaN' )||(ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-B'] == null )||(ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-B'] == null )){
+																								ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-B'] = 0;
+																					}
+																					ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-A'] = ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-A'] + obj[dg_1.selectedItems[d]["headerText"]+'-A'];
+																					ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-B'] = ChartArray1_fg[c][dg_1.selectedItems[d]["headerText"]+'-B'] + obj[dg_1.selectedItems[d]["headerText"]+'-B'];
+																				}
+																				mini_flag = true
+																				break;												
+																		}
+												}
+												if (mini_flag == false){
+														ChartArray1_fg.push(obj);
+												}
+										}
+										if (ca_ctr == 0){
+													ChartArray1_fg.push(obj);
+										}
+										
+          						}
+          				}
+          				
+          				for( var a_final:int = 0; a_final < ChartArray1_fg.length; a_final++ ){
+							var obj_final:Object = new Object;
+							obj_final[cb_analyzer.selectedItem.title_header.toString()] = ChartArray1_fg[a_final][cb_analyzer.selectedItem.title_header.toString()];
+							for (var e:int = 0; e< dg_1.selectedItems.length; e++){
+								obj_final[dg_1.selectedItems[e]["title_header"]+'-A'] = ChartArray1_fg[a_final][dg_1.selectedItems[e]["headerText"]+'-A']
+								obj_final[dg_1.selectedItems[e]["title_header"]+'-B'] = ChartArray1_fg[a_final][dg_1.selectedItems[e]["headerText"]+'-B']
+							
+							}
+							ChartArray1_fg_final.addItem(obj_final);
+							ChartArray1_fg_final.refresh();
+						}
+				// sort data first by analyzedate
+                 var dataSortField:SortField = new SortField();
+                	dataSortField.name = cb_analyzer.selectedItem.title_header.toString();
+                	dataSortField.numeric = false;
+					dataSortField.descending = true;
+                /* Create the Sort object and add the SortField object created earlier to the array of fields to sort on. */
+                var stringDataSort:Sort = new Sort();
+                stringDataSort.fields = [dataSortField];
+
+                /* Set the ArrayCollection object's sort property to our custom sort, and refresh the ArrayCollection. */
+                ChartArray1_fg_final.sort = stringDataSort;
+                ChartArray1_fg_final.refresh();
+				ChartArray1_fg = ChartArray1_fg_final.toArray();
+				create_chartAB(evt);
+           }
+           
+           	private function rendered(e:Event):void
+			{
+				fc.FCData(xm);
+				fc.FCParams(_chartParam);
+				fc.FCChartType=chart_combo.selectedItem.value;
+				fc.FCRender();   
+			}
+           	[Bindable]
+      		private var xm:XML = new XML;
+			private function create_chart(evt:Event):void{
+				var chart_head:String = "<chart>" ;
+      			var categories_head:String = "<categories>";
+				var categories_main:String = new String;
+				var categories_tail:String = "</categories>"; 
+				var total_categories:String = new String;
+				var dataset_head:String = new String;
+				var dataset_main:String = new String;	
+				var dataset_tail:String = "</dataset>"; 
+				var total_dataset:String = new String;
+				
+				
+				var chart_tail:String = "</chart>";
+				
+				var set_value:String = new String;
+				var final_dataset = new String;
+				var final_xml_str = new String
+				
+				// Format for Categories
+				for( var ca:int = 0; ca < ChartArray1_fg_final.length; ca++ ){
+					categories_main = categories_main + "<category label='" +  ChartArray1_fg_final[ca][cb_analyzer.selectedItem.title_header.toString()] + "' />";
+					
+				}
+				
+				var final_categories:String = categories_head + categories_main + categories_tail;
+				
+				// Format for dataset
+				for (var cc:int = 0; cc< dg_1.selectedItems.length; cc++){
+					dataset_head = "<dataset seriesName='"  + dg_1.selectedItems[cc]["title_header"]+'-A' + "'>";
+					
+								set_value = new String;
+								for( var cb:int = 0; cb < ChartArray1_fg_final.length; cb++ ){
+									set_value = set_value + "<set value='" + 	ChartArray1_fg_final[cb][dg_1.selectedItems[cc]["title_header"]+'-A'] + "' />";
+								}
+					final_dataset = final_dataset + dataset_head + set_value + dataset_tail;	
+								
+				}
+				final_xml_str = chart_head + final_categories + final_dataset + chart_tail;
+				xm = new XML(final_xml_str); 
+				populateFCParams();
+				rendered(evt);
+				
+				
+			}
+			
+		private function create_chartAB(evt:Event):void{
+				var chart_head:String = "<chart>" ;
+      			var categories_head:String = "<categories>";
+				var categories_main:String = new String;
+				var categories_tail:String = "</categories>"; 
+				var total_categories:String = new String;
+				var dataset_head:String = new String;
+				var dataset_main:String = new String;	
+				var dataset_tail:String = "</dataset>"; 
+				var total_dataset:String = new String;
+				var chart_tail:String = "</chart>";
+				
+				var set_value:String = new String;
+				var final_dataset = new String;
+				var final_xml_str = new String
+				
+				// Format for Categories
+				for( var ca:int = 0; ca < ChartArray1_fg_final.length; ca++ ){
+					categories_main = categories_main + "<category label='" +  ChartArray1_fg_final[ca][cb_analyzer.selectedItem.title_header.toString()] + "' />";
+					
+				}
+				
+				var final_categories:String = categories_head + categories_main + categories_tail;
+				
+				// Format for dataset
+				for (var cc:int = 0; cc< dg_1.selectedItems.length; cc++){
+					dataset_head = "<dataset seriesName='"  + dg_1.selectedItems[cc]["title_header"]+'-A' + "'>";
+					
+								set_value = new String;
+								for( var cb:int = 0; cb < ChartArray1_fg_final.length; cb++ ){
+									set_value = set_value + "<set value='" + 	ChartArray1_fg_final[cb][dg_1.selectedItems[cc]["title_header"]+'-A'] + "' />";
+								}
+					final_dataset = final_dataset + dataset_head + set_value + dataset_tail;	
+				
+					dataset_head = "<dataset seriesName='"  + dg_1.selectedItems[cc]["title_header"]+'-B' + "'>";
+					
+								set_value = new String;
+								for( var cb:int = 0; cb < ChartArray1_fg_final.length; cb++ ){
+									set_value = set_value + "<set value='" + 	ChartArray1_fg_final[cb][dg_1.selectedItems[cc]["title_header"]+'-B'] + "' />";
+								}
+					final_dataset = final_dataset + dataset_head + set_value + dataset_tail;	
+				
+								
+				}
+				final_xml_str = chart_head + final_categories + final_dataset + chart_tail;
+				xm = new XML(final_xml_str); 
+				populateFCParams();
+				rendered(evt);
+			}
+			
+           
+          
+          
+          private function sortArraytoArrayCollection():void{
+          var obj_final:Object;
+          				ChartArray1_fg_final = new ArrayCollection();
+ 						for( var a_final:int = 0; a_final < ChartArray1_fg.length; a_final++ ){
+							obj_final = new Object;
+							obj_final.analyzedate = ChartArray1_fg[a_final].analyzedate;
+							obj_final.col1 = ChartArray1_fg[a_final].col1;
+							obj_final.col2 = ChartArray1_fg[a_final].col2;
+							obj_final.col3 = ChartArray1_fg[a_final].col3;
+							obj_final.col4 = ChartArray1_fg[a_final].col4;
+							
+							ChartArray1_fg_final.addItem(obj_final);
+						}
+				
+				               // sort data first by analyzedate
+                  var dataSortField:SortField = new SortField();
+                	dataSortField.name = "analyzedate";
+                	dataSortField.numeric = false;
+					dataSortField.descending = true;
+                // Create the Sort object and add the SortField object created earlier to the array of fields to sort on. 
+                var stringDataSort:Sort = new Sort();
+                stringDataSort.fields = [dataSortField];
+
+                // Set the ArrayCollection object's sort property to our custom sort, and refresh the ArrayCollection. 
+         
+                ChartArray1_fg_final.sort = stringDataSort;
+                ChartArray1_fg_final.refresh();
+				//	dg_test.dataProvider = ChartArray1_fg_final;
+				ChartArray1_fg = ChartArray1_fg_final.toArray();
+				
+
+          }
+          
+          
+          
+         
+        
+       	// Function invoked when chart type get changed by selecting conbo-box
+			private function change_chart(e:Event):void
+			{
+				// Changing chart type by FCChartType property				
+				// Calling FCrender function to take effect visually with a blank data.
+				fc.FCChartType=e.currentTarget.selectedItem.value;
+				fc.FCData(xm);
+				fc.FCParams(_chartParam);
+				fc.FCRender();
+			}
+			
+			
+			private function selectAllchart(p_dg:AdvancedDataGrid, arr:ArrayCollection):void {
+					p_dg.selectedItems = arr.toArray();
+            }
+            private function deselectAllchart(p_dg:AdvancedDataGrid, arr:ArrayCollection):void {
+					p_dg.selectedIndex = -1;
+            }
+
+	]]>
+</mx:Script>
+<mx:Style source="css/main.css"/>
+<mx:ApplicationControlBar id="main" width="100%" height="40">
+
+	<mx:Label text="Analyze by:" fontSize="14" fontWeight="bold" fontFamily="Verdana"/>
+	<!-- mx:ComboBox  id="cb_analyze" dataProvider="{analyzeArray}"  labelField="title_header" prompt="Pls. select here." change="analyzeChange()"/ -->
+	  
+	<mx:ComboBox  id="cb_analyze" dataProvider="{chart_xlcColumn}"  labelField="title_header" prompt="Pls. select here." change="analyzeChange()" fontSize="14" fontFamily="Verdana"/>
+	
+
+	<mx:Label text="Base Analyzer:" fontSize="14" fontWeight="bold" fontFamily="Verdana"/>
+	<mx:ComboBox  id="cb_analyzer" dataProvider="{chart_xlcColumn}"  labelField="title_header" prompt="Pls. select here." change="analyzeChange()" fontFamily="Verdana" fontSize="14"/>
+	<mx:Spacer width="50%"/>
+	<mx:Label text="Charting Dialog" fontFamily="Arial" fontSize="18" height="30" 
+		  				 color="#000000" fontWeight="bold" textAlign="left"/>
+	<mx:Spacer width="100%"/>	  			 	 
+</mx:ApplicationControlBar>
+
+<!-- mx:HBox width="100%" -->
+	
+	<!-- mx:Label text="Analyze by:" fontSize="12" fontWeight="bold"/ -->
+	<!-- mx:ComboBox  id="cb_analyze" dataProvider="{analyzeArray}"  labelField="title_header" prompt="Pls. select here." change="analyzeChange()"/ -->  
+	<!-- mx:Spacer width="100%"/ -->
+	<!-- mx:Button label="Reset All" click="(numberOfArrayRecord(event))"/ -->
+<!-- /mx:HBox -->
+
+   <!-- Define custom colors for use as pie wedge fills. -->
+
+<mx:HBox width="100%" height="140">
+<!--
+     <mx:VBox width="100%" height="100%"  borderThickness="1" borderColor="0xAAB3B3">
+        <mx:AdvancedDataGrid id="dg_test"   draggableColumns="false" editable="true" allowMultipleSelection="true"
+						width="559" height="100%" horizontalScrollPolicy="auto" verticalScrollPolicy="on" variableRowHeight="true"
+						dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" 
+						>
+					
+		</mx:AdvancedDataGrid> 	
+     	
+     </mx:VBox>   
+-->
+
+<!-- mx:Spacer width="100%"/ -->
+     <mx:VBox width="100%" height="100%"  borderThickness="1" borderColor="0xAAB3B3">
+        <mx:AdvancedDataGrid id="dg_1" dataProvider="{numericArray}" draggableColumns="false" editable="true" allowMultipleSelection="true"
+						width="100%" height="100%" horizontalScrollPolicy="auto" verticalScrollPolicy="on" variableRowHeight="true"
+						dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" 
+						>
+						<mx:columns> 
+							<mx:AdvancedDataGridColumn id="title_header" dataField="title_header"  headerText="Numeric Attributes" editable="false" />
+							<mx:AdvancedDataGridColumn id="headerText" dataField="headerText"  headerText="headerText" editable="false" visible="false" />
+		 				</mx:columns>
+		</mx:AdvancedDataGrid> 	
+		<!--
+		<mx:HBox width="100%"  horizontalGap="0">
+			<mx:Button label="Reset"  width="100%" height="100%" />
+			<mx:Button label="Keep" width="100%" height="100%"/>
+			<mx:Button label="Discard" width="100%" height="100%"/>
+		</mx:HBox>
+     	-->
+     </mx:VBox>   
+ 
+	
+  <mx:VBox width="100%" height="100%" >
+        <mx:AdvancedDataGrid id="alist_dg" dataProvider="{AlistArray}" draggableColumns="false" editable="true" allowMultipleSelection="true"
+						width="100%" height="100%" horizontalScrollPolicy="auto" verticalScrollPolicy="on" variableRowHeight="true"
+						dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" 
+						>
+						<mx:columns> 
+							<mx:AdvancedDataGridColumn id="group_a" dataField="alist"  headerText="List A" wordWrap="true" editable="false" />
+		 				</mx:columns>
+		</mx:AdvancedDataGrid> 	
+		<!--
+		<mx:HBox width="100%"  horizontalGap="0">
+			<mx:Button label="Graph 'A' List Only"  width="100%" height="100%" click="{graphA(event)}"/>
+		</mx:HBox>
+		<mx:HBox width="100%"  horizontalGap="0">
+			<mx:Button label="Reset"  width="100%" height="100%"/>
+			<mx:Button label="Keep" width="100%" height="100%"/>
+			<mx:Button label="Discard" width="100%" height="100%"/>
+		</mx:HBox>
+		-->
+	</mx:VBox>   
+	
+	  <mx:VBox width="100%" height="100%"  borderThickness="1" borderColor="0xAAB3B3">
+   	
+	<mx:VBox>
+            
+             <mx:Button id="A_select_all" label="Select All - A" click="{selectAllchart(alist_dg, AlistArray)}"  width="124"/>
+              <!-- mx:Button id="A_deselect" label="Deselect" click="{deselectAllchart(alist_dg, AlistArray)}"/ -->
+              <!--
+              <mx:RadioButton groupName="A_rowview" 
+        			id="A_der"
+        			label="Breakout selection" 
+        			click = "{a_radiogroup = 'breakout'}"
+        		/>
+             
+    			<mx:RadioButton groupName="A_rowview" 
+        			id="A_dsr"
+        			label="Sum selection" 
+        			click = "{a_radiogroup = 'sum'}"
+        		/>
+        		-->	
+        		 <mx:Button id="chartA" label="Chart A" click="{graphA(event)}"  width="124"/>	
+     
+           
+    </mx:VBox>
+  </mx:VBox>  
+  
+	<mx:VBox width="100%" height="100%">
+	
+        <mx:AdvancedDataGrid id="blist_dg" dataProvider="{BlistArray}" draggableColumns="false" editable="true" allowMultipleSelection="true"
+						width="100%" height="100%" horizontalScrollPolicy="auto" verticalScrollPolicy="on" variableRowHeight="true"
+						dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" 
+						>
+						<mx:columns> 
+							<mx:AdvancedDataGridColumn id="group_b" dataField="blist"  headerText="List B" wordWrap="true" editable="false" />
+		 				</mx:columns> 
+		</mx:AdvancedDataGrid> 	 
+		<!--
+				<mx:HBox width="100%"  horizontalGap="0">
+			<mx:Button label="Graph 'A' List to 'B' List"  width="100%" height="100%" click="{graphAandB(event)}"/>
+		</mx:HBox>
+		<mx:HBox width="100%"  horizontalGap="0">
+			<mx:Button label="Reset"  width="100%" height="100%"/>
+			<mx:Button label="Keep" width="100%" height="100%"/>
+			<mx:Button label="Discard" width="100%" height="100%"/>
+		</mx:HBox>
+		-->
+		
+	</mx:VBox> 
+	
+	
+	  <mx:VBox width="100%" height="100%"  borderThickness="1" borderColor="0xAAB3B3">
+   	
+	<mx:VBox>
+            
+             <mx:Button id="B_select_all" label="Select All - B" click="{selectAllchart(blist_dg, BlistArray)}"  width="124"/>
+              <!-- mx:Button id="B_deselect" label="Deselect" click="{deselectAllchart(blist_dg, BlistArray)}"/ -->
+             <!--
+              <mx:RadioButton groupName="B_rowview" 
+        			id="B_der"
+        			label="Breakout selection" 
+        		/>
+             
+    			<mx:RadioButton groupName="B_rowview" 
+        			id="B_dsr"
+        			label="Sum selection" 
+        		/>
+        		-->	
+        		 <mx:Button id="B_chartA" label="Chart A - B" click="{graphAB(event)}" width="124"/>	
+    
+           
+    </mx:VBox>
+    
+  </mx:VBox>  
+	
+	
+	<mx:Spacer width="100%"/>
+	 
+	
+</mx:HBox>
+<mx:HBox width="100%" height="100%" horizontalGap="0">
+
+<!--
+
+<ns1:FusionCharts id="fc" width="100%" height="100%"   FCChartType="ScrollColumn2D"  FCRenderEvent="rendered(event)"  FCDataXML="."  >
+				<ns1:FCChartData ChartNoDataText="Please select data and click on Graph button" />
+			</ns1:FusionCharts>
+			
+	-->		
+			
+<ns1:FusionCharts id="fc" FCChartType="MSColumn3D" width="100%" height="100%" 
+			FCDataXML="." 
+		>	
+		<ns1:FCChartData  FCStyles="{chartStyle}"  ChartNoDataText="Please select data and click on Chart button"  />
+	</ns1:FusionCharts>	
+			
+<!-- ns1:FusionCharts id="fc_line" width="100%" height="100%"    FCChartType="ScrollLine2D"  FCDataXML="." >
+				<ns1:FCChartData ChartNoDataText="Please select data and click on Graph button" />
+			</ns1:FusionCharts -->	
+</mx:HBox>				
+		
+		<mx:ControlBar>
+				<mx:HBox horizontalAlign="left" width="100%">
+					<mx:Button label="Close" click="{titleWindow_close(event)}"/>
+				</mx:HBox>
+				<mx:Spacer width="100%"/>
+				<mx:HBox horizontalAlign="right" width="100%">
+					<mx:Text text="Select chart type:" fontFamily="Verdana" fontSize="14" fontWeight="bold"/>
+					<mx:ComboBox id="chart_combo" change="change_chart(event)" enabled="true" fontFamily="Verdana" fontSize="14">
+						<mx:ArrayCollection>
+							<mx:Object label="Column3D" value='MSColumn3D'/>
+							<mx:Object label="Column Chart" value='ScrollColumn2D'/>
+			         		<mx:Object label="Line Chart" value='ScrollLine2D'/>
+			        		<mx:Object label="Area Chart" value='ScrollArea2D'/>
+			        		<!-- mx:Object label="Combi 2D" value='ScrollColumn2D'/ -->
+			        		<!-- mx:Object label="Combi DY 2D" value='ScrollCombiDY2D'/ -->
+	      				</mx:ArrayCollection>
+					</mx:ComboBox>
+				</mx:HBox>
+			</mx:ControlBar>
+    
+<!-- /mx:Panel -->        	
+</mx:TitleWindow>

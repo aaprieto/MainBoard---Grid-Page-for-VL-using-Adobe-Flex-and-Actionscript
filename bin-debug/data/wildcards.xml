@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wildcards>
+	<wildcard>
+		<symbol>/</symbol>
+		<string>Yes</string>
+		<numeric>No</numeric>
+		<date>No</date>
+		<description>All column entries that contain text/Strings.</description>
+	</wildcard>
+	<wildcard>
+		<symbol>-</symbol>
+		<string>Yes</string>
+		<numeric>No</numeric>
+		<date>No</date>
+		<description>All column entries that contain no text/Strings.</description>
+	</wildcard>
+	<wildcard>
+		<symbol>&lt;</symbol>
+		<string>No</string>
+		<numeric>Yes</numeric>
+		<date>No</date>
+		<description>Less than value.</description>
+	</wildcard>
+	<wildcard>
+		<symbol>&gt;</symbol>
+		<string>No</string>
+		<numeric>Yes</numeric>
+		<date>No</date>
+		<description>Greater than value.</description>
+	</wildcard>
+	<wildcard>
+		<symbol>&lt;=</symbol>
+		<string>No</string>
+		<numeric>Yes</numeric>
+		<date>Yes</date>
+		<description>Less than or equal to value.</description>
+	</wildcard>
+	<wildcard>
+		<symbol>&gt;=</symbol>
+		<string>No</string>
+		<numeric>Yes</numeric>
+		<date>Yes</date>
+		<description>Greater than or equal to value.</description>
+	</wildcard>
+	<wildcard>
+		<symbol>+</symbol>
+		<string>No</string>
+		<numeric>Yes</numeric>
+		<date>No</date>
+		<description>Joins two numeric evaluations.</description>
+	</wildcard>
+	<wildcard>
+		<symbol>;</symbol>
+		<string>Yes</string>
+		<numeric>No</numeric>
+		<date>No</date>
+		<description>Denotes OR function for multiple text/strings.</description>
+	</wildcard>
+	<wildcard>
+		<symbol>*</symbol>  
+		<string>Yes</string>
+		<numeric>Yes</numeric>
+		<date>Yes</date>
+		<description>Denotes a wildcard.  Matches all values.</description>
+	</wildcard>
+
+</wildcards>

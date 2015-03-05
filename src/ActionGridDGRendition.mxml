@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:DataGrid xmlns:mx="http://www.adobe.com/2006/mxml" >
+	<mx:Script>
+		<![CDATA[ 
+			import mx.collections.ArrayCollection;
+			import mx.collections.SortField;
+			import mx.controls.Alert;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			//import mx.controls.dataGridClasses.DataGridHeaderInfo;
+			import mx.controls.dataGridClasses.DataGridHeader
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridHeaderInfo;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.controls.listClasses.IDropInListItemRenderer;
+			import mx.controls.listClasses.IListItemRenderer;
+			import mx.core.Application;
+			import mx.core.IDataRenderer;
+			import mx.events.AdvancedDataGridEvent;
+			import mx.events.DataGridEvent;
+			import mx.rpc.events.HeaderEvent; 
+			 
+			[Bindable]
+			public var passObject:Object;
+			[Bindable]
+			public var xmlheaderdoccode:String;  
+			override protected function mouseOutHandler(event:MouseEvent):void 
+			{
+				
+				if (parentApplication.mousehoverpars == "YES"){
+					
+					var item:IListItemRenderer = super.mouseEventToItemRenderer(event);
+					//  if (super.isHeaderItemRenderer(item))
+					
+					if (item.data && (item.data is mx.controls.dataGridClasses.DataGridColumn)){ 
+						parentApplication.mouseout_alternate(); 
+					}
+				}		
+				super.mouseOutHandler(event);
+			} 
+			
+			
+			override protected function mouseOverHandler(event:MouseEvent):void 
+			{
+				var str_columnname:String = new String;
+				
+				
+				
+				if (parentApplication.mousehoverpars == "YES"){  
+					
+					var item:IListItemRenderer = super.mouseEventToItemRenderer(event);
+				//	Alert.show(item.data.toString());
+					if (item.data && (item.data is mx.controls.dataGridClasses.DataGridColumn)){
+				//		Alert.show("check 2");
+						
+						/*
+						Alert.show('Rendition: ' + item.data.dataField.toString());
+						for (var ctr:int=0;ctr<passObject.length;ctr++){
+						if (passObject[ctr]["dataField"] ==  item.data.dataField){
+						str_columnname = passObject[ctr]["columnName"];
+						//							Alert.show(str_columnname);
+						break;
+						}
+						}
+						*/
+						//parentApplication.hovercolumn(event,item.data.dataField.toString(),item.data.headerText.toString());
+						
+						parentApplication.hovercolumn(event,'',item.data.headerText.toString(),item.data.headerText.toString()); 
+					}
+				}
+				
+				super.mouseOverHandler(event);
+				
+			}
+			
+			
+			
+		]]>
+	</mx:Script>
+</mx:DataGrid>
